@@ -2,6 +2,7 @@
 "use client";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import BadgeComponent from "../BadgeComponent/BadgeComponent.js";
+import StatusDotComponent from "../StatusDotComponent/StatusDotComponent.js";
 import styles from "./StatusBadgeComponent.module.css";
 /**
  * StatusBadgeComponent — Semantic badge for service health status.
@@ -15,6 +16,6 @@ import styles from "./StatusBadgeComponent.module.css";
 export default function StatusBadgeComponent({ healthy, className, ...rest }) {
     const variant = healthy ? "success" : "error";
     const label = healthy ? "Healthy" : "Down";
-    return (_jsxs(BadgeComponent, { variant: variant, className: `${styles.badge} ${className || ""}`, ...rest, children: [_jsx("span", { className: `${styles.dot} ${healthy ? styles.dotHealthy : styles.dotUnhealthy}` }), label] }));
+    return (_jsxs(BadgeComponent, { variant: variant, className: `${styles.badge} ${className || ""}`, ...rest, children: [_jsx(StatusDotComponent, { variant: healthy ? "healthy" : "unhealthy", size: "sm", pulse: healthy }), label] }));
 }
 //# sourceMappingURL=StatusBadgeComponent.js.map

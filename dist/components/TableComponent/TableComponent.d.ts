@@ -1,5 +1,6 @@
-export default function TableComponent({ title, columns, data, getRowKey, getSubRows, renderExpandedContent, onRowClick, emptyText, sortKey: externalSortKey, sortDir: externalSortDir, onSort, maxHeight, activeRowKey, highlightedRowKey, highlightedRowRef, onRowMouseEnter, onRowMouseLeave, getRowClassName, getRowStyle, mini, storageKey, }: {
+export default function TableComponent({ title, subtitle, columns, data, getRowKey, getSubRows, renderExpandedContent, onRowClick, emptyText, sortKey: externalSortKey, sortDir: externalSortDir, onSort, maxHeight, activeRowKey, highlightedRowKey, highlightedRowRef, onRowMouseEnter, onRowMouseLeave, getRowClassName, getRowStyle, mini, storageKey, }: {
     title: any;
+    subtitle: any;
     columns: any;
     data?: never[] | undefined;
     getRowKey: any;

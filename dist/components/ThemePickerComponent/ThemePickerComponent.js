@@ -3,6 +3,7 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState, useRef, useEffect, useCallback } from "react";
 import * as Icons from "lucide-react";
+import TooltipComponent from "../TooltipComponent/TooltipComponent";
 import styles from "./ThemePickerComponent.module.css";
 /**
  * Theme metadata — icon, label, and representative color for each built-in theme.
@@ -89,12 +90,17 @@ const THEME_CATALOG = {
 export default function ThemePickerComponent({ theme, themes = [], onSelectTheme, collapsed = false, className, }) {
     const [open, setOpen] = useState(false);
     const wrapperRef = useRef(null);
-    // Close on outside click
+    const triggerRef = useRef(null);
+    const popoverRef = useRef(null);
+    const [popoverStyle, setPopoverStyle] = useState({});
+    // Close on outside click (check both wrapper and popover — popover may be fixed-positioned outside wrapper)
     useEffect(() => {
         if (!open)
             return;
         const handleClick = (e) => {
-            if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+            const inWrapper = wrapperRef.current?.contains(e.target);
+            const inPopover = popoverRef.current?.contains(e.target);
+            if (!inWrapper && !inPopover) {
                 setOpen(false);
             }
         };
@@ -112,13 +118,29 @@ export default function ThemePickerComponent({ theme, themes = [], onSelectTheme
         document.addEventListener("keydown", handleKey);
         return () => document.removeEventListener("keydown", handleKey);
     }, [open]);
+    // Compute fixed position when opening in collapsed mode
+    useEffect(() => {
+        if (!open || !collapsed || !triggerRef.current) {
+            setPopoverStyle({});
+            return;
+        }
+        const rect = triggerRef.current.getBoundingClientRect();
+        setPopoverStyle({
+            position: 'fixed',
+            bottom: 'auto',
+            left: `${rect.right + 8}px`,
+            top: `${Math.max(8, rect.bottom - 400)}px`, // anchor near trigger bottom, clamp to viewport
+            right: 'auto',
+        });
+    }, [open, collapsed]);
     const handleSelect = useCallback((themeName) => {
         onSelectTheme?.(themeName);
         setOpen(false);
     }, [onSelectTheme]);
     const currentMeta = THEME_CATALOG[theme] || THEME_CATALOG.dark;
     const CurrentIcon = Icons[currentMeta.icon] || Icons.Palette;
-    return (_jsxs("div", { ref: wrapperRef, className: `${styles.wrapper} ${collapsed ? styles.collapsed : ""} ${className || ""}`, children: [_jsxs("button", { className: styles.trigger, onClick: () => setOpen((v) => !v), title: "Change theme", type: "button", children: [_jsx("span", { className: styles.triggerSwatch, style: { background: currentMeta.color } }), _jsx(CurrentIcon, { size: 18, strokeWidth: 1.8, className: styles.triggerIcon }), _jsx("span", { className: styles.triggerLabel, children: currentMeta.label }), _jsx(Icons.ChevronUp, { size: 14, className: `${styles.triggerChevron} ${open ? styles.triggerChevronOpen : ""}` })] }), open && (_jsxs("div", { className: styles.popover, children: [_jsx("div", { className: styles.popoverHeader, children: "Theme" }), _jsx("div", { className: styles.themeList, children: themes.map((t) => {
+    const triggerButton = (_jsxs("button", { ref: triggerRef, className: styles.trigger, onClick: () => setOpen((v) => !v), title: "Change theme", type: "button", children: [_jsx("span", { className: styles.triggerSwatch, style: { background: currentMeta.color } }), _jsx(CurrentIcon, { size: 18, strokeWidth: 1.8, className: styles.triggerIcon }), _jsx("span", { className: styles.triggerLabel, children: currentMeta.label }), _jsx(Icons.ChevronUp, { size: 14, className: `${styles.triggerChevron} ${open ? styles.triggerChevronOpen : ""}` })] }));
+    return (_jsxs("div", { ref: wrapperRef, className: `${styles.wrapper} ${collapsed ? styles.collapsed : ""} ${className || ""}`, children: [collapsed ? (_jsx(TooltipComponent, { label: currentMeta.label, position: "right", delay: 200, disabled: open, className: styles.tooltipFill, children: triggerButton })) : (triggerButton), open && (_jsxs("div", { ref: popoverRef, className: `${styles.popover} ${collapsed ? styles.popoverFlyout : ""}`, style: collapsed ? popoverStyle : undefined, children: [_jsx("div", { className: styles.popoverHeader, children: "Theme" }), _jsx("div", { className: styles.themeList, children: themes.map((t) => {
                             const meta = THEME_CATALOG[t] || { label: t, icon: "Palette", color: "#888", bg: "#222" };
                             const ThemeIcon = Icons[meta.icon] || Icons.Palette;
                             const isActive = t === theme;

@@ -14,6 +14,7 @@ import styles from "./TableComponent.module.css";
  *
  * @param {Object} props
  * @param {string} [props.title] — Section title above the table
+ * @param {string} [props.subtitle] — Subtitle/description below the title
  * @param {Array<{key, label, description?, sortable?, align?, render?, sortValue?, className?}>} props.columns
  * @param {Array} props.data — Array of row objects
  * @param {Function} [props.getRowKey] — (row, i) => unique key
@@ -122,7 +123,7 @@ function ColumnFilter({ columns, hiddenColumns, onToggle, storageKey }) {
                                 return (_jsxs("button", { className: `${styles.columnFilterItem} ${visible ? styles.columnFilterItemVisible : ""}`, onClick: () => onToggle(col.key), children: [_jsx("span", { className: styles.columnFilterCheck, children: visible && _jsx(Check, { size: 10 }) }), _jsx("span", { className: styles.columnFilterLabel, children: col.label })] }, col.key));
                             }) })] }), document.body)] }));
 }
-export default function TableComponent({ title, columns, data = [], getRowKey, getSubRows, renderExpandedContent, onRowClick, emptyText = "No data", sortKey: externalSortKey, sortDir: externalSortDir, onSort, maxHeight, activeRowKey, highlightedRowKey, highlightedRowRef, onRowMouseEnter, onRowMouseLeave, getRowClassName, getRowStyle, mini = false, storageKey, }) {
+export default function TableComponent({ title, subtitle, columns, data = [], getRowKey, getSubRows, renderExpandedContent, onRowClick, emptyText = "No data", sortKey: externalSortKey, sortDir: externalSortDir, onSort, maxHeight, activeRowKey, highlightedRowKey, highlightedRowRef, onRowMouseEnter, onRowMouseLeave, getRowClassName, getRowStyle, mini = false, storageKey, }) {
     const { sound } = useComponents();
     const [internalSort, setInternalSort] = useState({ key: null, dir: "desc" });
     const sort = onSort
@@ -263,7 +264,8 @@ export default function TableComponent({ title, columns, data = [], getRowKey, g
         }
         return SoundService.interactive(clickHandler, enterHandler);
     };
-    return (_jsxs("div", { className: `${styles.container} ${mini ? styles.mini : ""}`, children: [(title || storageKey) && (_jsxs("div", { className: styles.tableHeader, children: [title && _jsx("h2", { className: styles.title, children: title }), storageKey && (_jsx(ColumnFilter, { columns: columns, hiddenColumns: hiddenColumns, onToggle: toggleColumn, storageKey: storageKey }))] })), _jsx("div", { ref: scrollRef, className: styles.tableScroll, style: maxHeight ? { maxHeight, overflowY: "auto" } : undefined, "data-table-scroll": true, onPointerDown: onPointerDown, onPointerMove: onPointerMove, onPointerUp: onPointerUp, onPointerCancel: onPointerUp, children: _jsxs("table", { className: styles.table, children: [_jsx("thead", { children: _jsx("tr", { children: visibleColumns.map((col) => {
+    const showHeader = !!(title || subtitle || storageKey);
+    return (_jsxs("div", { className: `${styles.container} ${mini ? styles.mini : ""} ${showHeader ? styles.hasHeader : ""}`, children: [showHeader && (_jsxs("div", { className: styles.tableHeader, children: [(title || subtitle) && (_jsxs("div", { className: styles.tableHeaderContent, children: [title && _jsx("h2", { className: styles.title, children: title }), subtitle && _jsx("p", { className: styles.subtitle, children: subtitle })] })), storageKey && (_jsx(ColumnFilter, { columns: columns, hiddenColumns: hiddenColumns, onToggle: toggleColumn, storageKey: storageKey }))] })), _jsx("div", { ref: scrollRef, className: styles.tableScroll, style: maxHeight ? { maxHeight, overflowY: "auto" } : undefined, "data-table-scroll": true, onPointerDown: onPointerDown, onPointerMove: onPointerMove, onPointerUp: onPointerUp, onPointerCancel: onPointerUp, children: _jsxs("table", { className: styles.table, children: [_jsx("thead", { children: _jsx("tr", { children: visibleColumns.map((col) => {
                                     const isSortable = col.sortable !== false;
                                     const isActive = sort.key === col.key;
                                     const thClasses = [

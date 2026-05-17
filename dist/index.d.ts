@@ -57,6 +57,7 @@ export { default as SnackbarComponent, useSnackbar } from "./components/Snackbar
 export { default as SplitButtonComponent } from "./components/SplitButtonComponent/SplitButtonComponent.js";
 export { default as StatsCardComponent } from "./components/StatsCardComponent/StatsCardComponent.js";
 export { default as StatusBadgeComponent } from "./components/StatusBadgeComponent/StatusBadgeComponent.js";
+export { default as StatusDotComponent } from "./components/StatusDotComponent/StatusDotComponent.js";
 export { default as SwitchComponent } from "./components/SwitchComponent/SwitchComponent.js";
 export { default as TabBarComponent, tabBarStyles, } from "./components/TabBarComponent/TabBarComponent.js";
 export { default as TableComponent } from "./components/TableComponent/TableComponent.js";
