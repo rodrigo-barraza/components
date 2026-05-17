@@ -138,14 +138,14 @@ class ChatService {
       ...(options.headers as Record<string, string>),
     };
 
-    const res = await fetch(url, {
+    const response = await fetch(url, {
       ...options,
       headers,
     });
 
-    if (!res.ok) {
+    if (!response.ok) {
       // ── Auto-recover from stale conversation ────────────────
-      if (res.status === 404 && path.includes("/conversations/") && this.conversationId) {
+      if (response.status === 404 && path.includes("/conversations/") && this.conversationId) {
         this.clearSession();
         await this.createConversation();
 
@@ -161,13 +161,13 @@ class ChatService {
         return retryRes.json() as Promise<Record<string, unknown>>;
       }
 
-      const body = await res.text().catch(() => "");
+      const body = await response.text().catch(() => "");
       throw new Error(
-        `ChatService: ${res.status} ${res.statusText} — ${body}`,
+        `ChatService: ${response.status} ${response.statusText} — ${body}`,
       );
     }
 
-    return res.json() as Promise<Record<string, unknown>>;
+    return response.json() as Promise<Record<string, unknown>>;
   }
 
   // ── Widget Config ────────────────────────────────────────────
@@ -296,9 +296,9 @@ class ChatService {
       return this._consumeAgentStream(res, { onToken, onComplete, onThinking });
     };
 
-    run().catch((err: unknown) => {
-      if (err instanceof Error && err.name === "AbortError") return;
-      onError?.(err instanceof Error ? err : new Error(String(err)));
+    run().catch((error: unknown) => {
+      if (error instanceof Error && error.name === "AbortError") return;
+      onError?.(error instanceof Error ? error : new Error(String(error)));
     });
 
     return () => this._abortStream();

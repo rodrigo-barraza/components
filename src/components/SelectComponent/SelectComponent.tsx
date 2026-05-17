@@ -59,7 +59,7 @@ export default function SelectComponent({
   }, [open]);
 
   const renderOption = (opt) => {
-    const btn = (
+    const button = (
       <button
         key={opt.value}
         type="button"
@@ -82,12 +82,12 @@ export default function SelectComponent({
           position="right"
           delay={200}
         >
-          {btn}
+          {button}
         </TooltipComponent>
       );
     }
 
-    return btn;
+    return button;
   };
 
   const triggerButton = (

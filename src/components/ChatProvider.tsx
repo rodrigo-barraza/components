@@ -94,8 +94,8 @@ export function ChatProvider({
       .then((remote) => {
         if (!cancelled) setConfig(remote);
       })
-      .catch((err: unknown) => {
-        const message = err instanceof Error ? err.message : "Unknown error";
+      .catch((error: unknown) => {
+        const message = error instanceof Error ? error.message : "Unknown error";
         console.warn("[Chat] Failed to fetch widget config:", message);
       })
       .finally(() => {

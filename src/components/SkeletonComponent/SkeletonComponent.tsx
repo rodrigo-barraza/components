@@ -30,8 +30,8 @@ export default function SkeletonComponent({
   className = "",
   id,
 }) {
-  const resolveSize = (val) =>
-    val == null ? undefined : typeof val === "number" ? `${val}px` : val;
+  const resolveSize = (value) =>
+    value == null ? undefined : typeof value === "number" ? `${value}px` : value;
 
   const baseClass = [
     styles.skeleton,

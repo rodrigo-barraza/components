@@ -26,10 +26,10 @@ export default function ChatInputComponent({ onSend, isTyping = false }: ChatInp
   const maxLength = CHAT_DEFAULTS.MAX_MESSAGE_LENGTH;
 
   const autoResize = useCallback(() => {
-    const el = textareaRef.current;
-    if (!el) return;
-    el.style.height = "auto";
-    el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
+    const element = textareaRef.current;
+    if (!element) return;
+    element.style.height = "auto";
+    element.style.height = `${Math.min(element.scrollHeight, 96)}px`;
   }, []);
 
   useEffect(() => {

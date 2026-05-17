@@ -44,10 +44,10 @@ export default function ChatPanelComponent({
 
   // ── Auto-scroll to bottom on new messages ──────────────────
   const scrollToBottom = useCallback((instant = false) => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.scrollTo({
-      top: el.scrollHeight,
+    const element = scrollRef.current;
+    if (!element) return;
+    element.scrollTo({
+      top: element.scrollHeight,
       behavior: instant ? "instant" : "smooth",
     });
   }, []);
@@ -64,16 +64,16 @@ export default function ChatPanelComponent({
 
   // Track scroll position — only auto-scroll if user is near bottom
   useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
+    const element = scrollRef.current;
+    if (!element) return;
 
     const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = el;
+      const { scrollTop, scrollHeight, clientHeight } = element;
       shouldSnap.current = scrollHeight - scrollTop - clientHeight < 80;
     };
 
-    el.addEventListener("scroll", handleScroll, { passive: true });
-    return () => el.removeEventListener("scroll", handleScroll);
+    element.addEventListener("scroll", handleScroll, { passive: true });
+    return () => element.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Snap when panel opens
@@ -138,10 +138,10 @@ export default function ChatPanelComponent({
 
       {/* ── Messages Area ──────────────────────────────────── */}
       <div className={styles.messagesArea} ref={scrollRef}>
-        {messages.map((msg, i) => (
+        {messages.map((message, i) => (
           <ChatMessageComponent
-            key={msg.id}
-            message={msg}
+            key={message.id}
+            message={message}
             isFirst={i === 0}
             previousRole={i > 0 ? messages[i - 1].role : null}
           />

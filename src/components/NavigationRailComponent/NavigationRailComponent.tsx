@@ -104,10 +104,10 @@ export default function NavigationRailComponent({
   // Sync focusedIndex when active item changes externally
   useEffect(() => {
     if (!activeItem) return;
-    const idx = items.findIndex(
+    const index = items.findIndex(
       (it) => (it.id || it.key) === activeItem
     );
-    if (idx !== -1) setFocusedIndex(idx);
+    if (index !== -1) setFocusedIndex(index);
   }, [activeItem, items]);
 
   return (

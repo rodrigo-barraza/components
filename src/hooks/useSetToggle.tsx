@@ -36,8 +36,8 @@ export default function useSetToggle(options: UseSetToggleOptions = {}): UseSetT
         const raw = localStorage.getItem(storageKey);
         if (raw) {
           const parsed = JSON.parse(raw);
-          const arr = storageField ? parsed[storageField] : parsed;
-          if (Array.isArray(arr)) return new Set(arr as string[]);
+          const array = storageField ? parsed[storageField] : parsed;
+          if (Array.isArray(array)) return new Set(array as string[]);
         }
       } catch {
         /* localStorage unavailable */

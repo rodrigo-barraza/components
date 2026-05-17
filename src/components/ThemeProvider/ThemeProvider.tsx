@@ -115,8 +115,8 @@ export function ThemeProvider({
   // Cycle to the next theme in the ordered list
   const toggleTheme = useCallback(() => {
     setThemeState((prev) => {
-      const idx = themes.indexOf(prev);
-      return themes[(idx + 1) % themes.length];
+      const index = themes.indexOf(prev);
+      return themes[(index + 1) % themes.length];
     });
   }, [themes]);
 

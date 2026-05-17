@@ -73,8 +73,8 @@ export default function CheckboxComponent({
           className={styles.hiddenInput}
           checked={checked}
           disabled={disabled}
-          ref={(el) => {
-            if (el) el.indeterminate = indeterminate;
+          ref={(element) => {
+            if (element) element.indeterminate = indeterminate;
           }}
           onChange={(e) => {
             if (sound) SoundService.playClickButton({ event: e });

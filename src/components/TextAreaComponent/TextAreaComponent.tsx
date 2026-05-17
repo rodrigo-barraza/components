@@ -34,16 +34,16 @@ export default function TextAreaComponent({
   const ref = useRef(null);
 
   const resize = useCallback(() => {
-    const el = ref.current;
-    if (!el || !autoResize) return;
+    const element = ref.current;
+    if (!element || !autoResize) return;
 
-    el.style.height = "auto";
-    const lineHeight = parseFloat(getComputedStyle(el).lineHeight) || 20;
+    element.style.height = "auto";
+    const lineHeight = parseFloat(getComputedStyle(element).lineHeight) || 20;
     const minHeight = lineHeight * minRows + 20;
     const maxHeight = lineHeight * maxRows + 20;
-    const scrollH = el.scrollHeight;
+    const scrollH = element.scrollHeight;
 
-    el.style.height = `${Math.min(Math.max(scrollH, minHeight), maxHeight)}px`;
+    element.style.height = `${Math.min(Math.max(scrollH, minHeight), maxHeight)}px`;
   }, [autoResize, minRows, maxRows]);
 
   useEffect(() => {

@@ -137,9 +137,9 @@ export default function ChatComponent({ className = "" }: ChatComponentProps) {
             );
             if (!isOpen) setUnreadCount((c) => c + 1);
           },
-          onError: (err: Error) => {
+          onError: (error: Error) => {
             setIsTyping(false);
-            console.error("[Chat] Agent error:", err.message);
+            console.error("[Chat] Agent error:", error.message);
             setMessages((prev) =>
               prev.map((m) =>
                 m.id === agentMessageId

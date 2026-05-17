@@ -125,16 +125,16 @@ const TextFieldComponent = forwardRef(function TextFieldComponent(
 
   // ── Auto-resize for textarea ───────────────────────
   const resizeTextarea = useCallback(() => {
-    const el = typeof inputRef === "object" ? inputRef.current : null;
-    if (!el || !multiline || !autoResize) return;
+    const element = typeof inputRef === "object" ? inputRef.current : null;
+    if (!element || !multiline || !autoResize) return;
 
-    el.style.height = "auto";
-    const lineHeight = parseFloat(getComputedStyle(el).lineHeight) || 24;
+    element.style.height = "auto";
+    const lineHeight = parseFloat(getComputedStyle(element).lineHeight) || 24;
     const minHeight = lineHeight * rows;
     const maxHeight = lineHeight * maxRows;
-    const scrollH = el.scrollHeight;
+    const scrollH = element.scrollHeight;
 
-    el.style.height = `${Math.min(Math.max(scrollH, minHeight), maxHeight)}px`;
+    element.style.height = `${Math.min(Math.max(scrollH, minHeight), maxHeight)}px`;
   }, [multiline, autoResize, rows, maxRows, inputRef]);
 
   useEffect(() => {
@@ -153,8 +153,8 @@ const TextFieldComponent = forwardRef(function TextFieldComponent(
   };
 
   const handleContainerClick = () => {
-    const el = typeof inputRef === "object" ? inputRef.current : null;
-    if (el && !disabled) el.focus();
+    const element = typeof inputRef === "object" ? inputRef.current : null;
+    if (element && !disabled) element.focus();
   };
 
   // ── Root classes ───────────────────────────────────

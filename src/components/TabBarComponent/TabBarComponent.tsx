@@ -179,8 +179,8 @@ export default function TabBarComponent({
         const button = (
           <button
             key={tab.key}
-            ref={(el) => {
-              tabRefs.current[tab.key] = el;
+            ref={(element) => {
+              tabRefs.current[tab.key] = element;
             }}
             className={tabClasses}
             role="tab"

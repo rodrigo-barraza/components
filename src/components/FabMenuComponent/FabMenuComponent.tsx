@@ -97,10 +97,10 @@ const FabMenuComponent = forwardRef(function FabMenuComponent(
 
   // ── Ripple on trigger ─────────────────────────────────
   const handleRipple = useCallback((e) => {
-    const el = triggerRef.current;
-    if (!el) return;
+    const element = triggerRef.current;
+    if (!element) return;
 
-    const rect = el.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height);
     const x = e.clientX - rect.left - size / 2;
     const y = e.clientY - rect.top - size / 2;
@@ -112,7 +112,7 @@ const FabMenuComponent = forwardRef(function FabMenuComponent(
     ripple.style.left = `${x}px`;
     ripple.style.top = `${y}px`;
 
-    el.appendChild(ripple);
+    element.appendChild(ripple);
     ripple.addEventListener("animationend", () => ripple.remove(), {
       once: true,
     });
@@ -312,8 +312,8 @@ const FabMenuComponent = forwardRef(function FabMenuComponent(
 
                 {/* Small FAB */}
                 <button
-                  ref={(el) => {
-                    itemRefs.current[index] = el;
+                  ref={(element) => {
+                    itemRefs.current[index] = element;
                   }}
                   className={styles.itemFab}
                   role="menuitem"

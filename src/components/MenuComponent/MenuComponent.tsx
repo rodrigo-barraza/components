@@ -167,18 +167,18 @@ export function SubMenu({
       }
 
       const focusable = itemRefs.current.filter(Boolean);
-      const idx = focusable.indexOf(document.activeElement);
+      const index = focusable.indexOf(document.activeElement);
 
       switch (e.key) {
         case "ArrowDown":
           e.preventDefault();
           e.stopPropagation();
-          focusable[(idx + 1) % focusable.length]?.focus();
+          focusable[(index + 1) % focusable.length]?.focus();
           break;
         case "ArrowUp":
           e.preventDefault();
           e.stopPropagation();
-          focusable[(idx - 1 + focusable.length) % focusable.length]?.focus();
+          focusable[(index - 1 + focusable.length) % focusable.length]?.focus();
           break;
         case "ArrowLeft":
         case "Escape":
@@ -198,13 +198,13 @@ export function SubMenu({
 
   // Collect refs from children
   const indexedChildren = useMemo(() => {
-    let idx = 0;
+    let index = 0;
     return Children.map(children, (child) => {
       if (isValidElement(child) && child.type === MenuItem) {
-        const currentIdx = idx++;
+        const currentIdx = index++;
         return cloneElement(child, {
-          ref: (el) => {
-            itemRefs.current[currentIdx] = el;
+          ref: (element) => {
+            itemRefs.current[currentIdx] = element;
           },
           tabIndex: isOpen ? 0 : -1,
         });
@@ -475,8 +475,8 @@ const MenuComponent = forwardRef(function MenuComponent(
               typeAheadBuffer.current = "";
             }, 500);
 
-            const match = focusable.find((el) => {
-              const text = el.textContent?.toLowerCase() || "";
+            const match = focusable.find((element) => {
+              const text = element.textContent?.toLowerCase() || "";
               return text.startsWith(typeAheadBuffer.current);
             });
 
@@ -491,7 +491,7 @@ const MenuComponent = forwardRef(function MenuComponent(
 
   // ── Build children with refs ────────────────────────────
   const indexedChildren = useMemo(() => {
-    let idx = 0;
+    let index = 0;
     itemRefs.current = [];
 
     return Children.map(children, (child) => {
@@ -499,12 +499,12 @@ const MenuComponent = forwardRef(function MenuComponent(
 
       // MenuItem or SubMenu trigger — assign roving tabindex ref
       if (child.type === MenuItem || child.type === SubMenu) {
-        const currentIdx = idx++;
+        const currentIdx = index++;
         const originalOnClick = child.props.onClick;
 
         return cloneElement(child, {
-          ref: (el) => {
-            itemRefs.current[currentIdx] = el;
+          ref: (element) => {
+            itemRefs.current[currentIdx] = element;
           },
           tabIndex: isOpen ? 0 : -1,
           onClick: (e) => {
@@ -541,12 +541,12 @@ const MenuComponent = forwardRef(function MenuComponent(
   // ── Clone trigger to inject ARIA + click ────────────────
   const clonedTrigger = isValidElement(trigger)
     ? cloneElement(trigger, {
-        ref: (el) => {
-          triggerElRef.current = el;
+        ref: (element) => {
+          triggerElRef.current = element;
           // Forward the trigger's own ref
           const triggerRef = trigger.ref;
-          if (typeof triggerRef === "function") triggerRef(el);
-          else if (triggerRef) triggerRef.current = el;
+          if (typeof triggerRef === "function") triggerRef(element);
+          else if (triggerRef) triggerRef.current = element;
         },
         "aria-haspopup": "menu",
         "aria-expanded": isOpen,

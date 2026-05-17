@@ -70,10 +70,10 @@ const ExtendedFabComponent = forwardRef(function ExtendedFabComponent(
 
   // ── Ripple effect (M3 pressed state) ──────────────────
   const handleRipple = useCallback((e) => {
-    const el = containerRef.current;
-    if (!el) return;
+    const element = containerRef.current;
+    if (!element) return;
 
-    const rect = el.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height);
     const x = e.clientX - rect.left - size / 2;
     const y = e.clientY - rect.top - size / 2;
@@ -85,7 +85,7 @@ const ExtendedFabComponent = forwardRef(function ExtendedFabComponent(
     ripple.style.left = `${x}px`;
     ripple.style.top = `${y}px`;
 
-    el.appendChild(ripple);
+    element.appendChild(ripple);
     ripple.addEventListener("animationend", () => ripple.remove(), {
       once: true,
     });

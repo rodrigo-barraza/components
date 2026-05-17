@@ -334,15 +334,15 @@ function ImageAttachments({ attachments }) {
   if (!images.length) return null;
   return (
     <div className={styles.attachments}>
-      {images.map((img, i) => {
-        const src = img.proxyURL || img.url;
+      {images.map((image, i) => {
+        const src = image.proxyURL || image.url;
         const maxW = 400, maxH = 300;
-        let w = img.width || maxW, h = img.height || maxH;
+        let w = image.width || maxW, h = image.height || maxH;
         if (w > maxW) { h = Math.round(h * (maxW / w)); w = maxW; }
         if (h > maxH) { w = Math.round(w * (maxH / h)); h = maxH; }
         return (
-          <a key={i} href={img.url || src} target="_blank" rel="noopener noreferrer" className={styles.attachmentLink}>
-            <img src={src} alt={img.name || "attachment"} width={w} height={h}
+          <a key={i} href={image.url || src} target="_blank" rel="noopener noreferrer" className={styles.attachmentLink}>
+            <img src={src} alt={image.name || "attachment"} width={w} height={h}
               className={styles.attachmentImage} loading="lazy" />
           </a>
         );
@@ -591,12 +591,12 @@ function loadReactedSet() {
 
 function persistReactedSet(set) {
   try {
-    let arr = Array.from(set);
+    let array = Array.from(set);
     // FIFO eviction if over limit
-    if (arr.length > REACT_MAX_ENTRIES) {
-      arr = arr.slice(arr.length - REACT_MAX_ENTRIES);
+    if (array.length > REACT_MAX_ENTRIES) {
+      array = array.slice(array.length - REACT_MAX_ENTRIES);
     }
-    localStorage.setItem(REACT_STORAGE_KEY, JSON.stringify(arr));
+    localStorage.setItem(REACT_STORAGE_KEY, JSON.stringify(array));
   } catch {
     // localStorage full or unavailable — silent
   }
@@ -667,8 +667,8 @@ function EmojiPicker({ anchorRef, serverEmojis, onSelect, onClose }) {
   const scrollToCategory = (catId) => {
     setActiveCategory(catId);
     if (filter) setFilter(""); // clear search when clicking a category
-    const el = bodyRef.current?.querySelector(`[data-category="${catId}"]`);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    const element = bodyRef.current?.querySelector(`[data-category="${catId}"]`);
+    if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   // When searching, show filtered results from all categories
@@ -1042,9 +1042,9 @@ export default function DiscordChatComponent({
 
   // ── Scroll to bottom ────────────────────────────────────────────
   const scrollToBottom = useCallback((instant = false) => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.scrollTo({ top: el.scrollHeight, behavior: instant ? "instant" : "smooth" });
+    const element = scrollRef.current;
+    if (!element) return;
+    element.scrollTo({ top: element.scrollHeight, behavior: instant ? "instant" : "smooth" });
   }, []);
 
   // ── Snap to bottom after React commits DOM (useLayoutEffect) ───
@@ -1110,9 +1110,9 @@ export default function DiscordChatComponent({
               if (hasRealNames) return prev;
 
               const channelMap = new Map();
-              for (const msg of reversed) {
-                if (msg.channelId && msg.channelName) {
-                  channelMap.set(msg.channelId, msg.channelName);
+              for (const message of reversed) {
+                if (message.channelId && message.channelName) {
+                  channelMap.set(message.channelId, message.channelName);
                 }
               }
               if (channelMap.size === 0) return prev;
@@ -1148,7 +1148,7 @@ export default function DiscordChatComponent({
           const { ids } = JSON.parse(e.data);
           if (!ids?.length) return;
           const deletedSet = new Set(ids);
-          setMessages((prev) => prev.filter((msg) => !deletedSet.has(msg.id)));
+          setMessages((prev) => prev.filter((message) => !deletedSet.has(message.id)));
         } catch (error) {
           console.error("[DiscordChat] Delete event parse error:", error);
         }
@@ -1163,9 +1163,9 @@ export default function DiscordChatComponent({
           if (!updatedMsgs?.length) return;
           const updateMap = new Map(updatedMsgs.map((m) => [m.id, m]));
           setMessages((prev) =>
-            prev.map((msg) => {
-              const updated = updateMap.get(msg.id);
-              return updated ? { ...msg, reactions: updated.reactions } : msg;
+            prev.map((message) => {
+              const updated = updateMap.get(message.id);
+              return updated ? { ...message, reactions: updated.reactions } : message;
             }),
           );
         } catch (error) {
@@ -1194,9 +1194,9 @@ export default function DiscordChatComponent({
     let cancelled = false;
     async function fetchMembers() {
       try {
-        const res = await fetch(membersUrl);
-        if (res.ok && !cancelled) {
-          setMembers(await res.json());
+        const response = await fetch(membersUrl);
+        if (response.ok && !cancelled) {
+          setMembers(await response.json());
         }
       } catch {
         // silently ignore — sidebar is non-critical
@@ -1247,16 +1247,16 @@ export default function DiscordChatComponent({
     // Parses the emojiIdentifier ("name:id" for custom, raw string for Unicode) and either
     // increments an existing reaction's count or appends a new reaction entry.
     setMessages((prev) =>
-      prev.map((msg) => {
-        if (msg.id !== messageId) return msg;
-        const reactions = msg.reactions ? [...msg.reactions] : [];
+      prev.map((message) => {
+        if (message.id !== messageId) return message;
+        const reactions = message.reactions ? [...message.reactions] : [];
         const isCustom = /^\w+:\d+$/.test(emojiIdentifier);
-        const idx = reactions.findIndex((r) => {
+        const index = reactions.findIndex((r) => {
           if (isCustom) return r.emoji.id === emojiIdentifier.split(":")[1];
           return r.emoji.name === emojiIdentifier && !r.emoji.id;
         });
-        if (idx >= 0) {
-          reactions[idx] = { ...reactions[idx], count: reactions[idx].count + 1 };
+        if (index >= 0) {
+          reactions[index] = { ...reactions[index], count: reactions[index].count + 1 };
         } else {
           // New reaction
           if (isCustom) {
@@ -1266,12 +1266,12 @@ export default function DiscordChatComponent({
             reactions.push({ emoji: { id: null, name: emojiIdentifier, animated: false }, count: 1 });
           }
         }
-        return { ...msg, reactions };
+        return { ...message, reactions };
       }),
     );
 
     try {
-      const res = await fetch(reactUrl, {
+      const response = await fetch(reactUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1283,9 +1283,9 @@ export default function DiscordChatComponent({
 
       // 409 = already reacted (bot already had that reaction)
       // That's fine — keep the localStorage entry
-      if (!res.ok && res.status !== 409) {
+      if (!response.ok && response.status !== 409) {
         // Revert optimistic update on real failure
-        console.warn("[DiscordChat] React failed:", res.status);
+        console.warn("[DiscordChat] React failed:", response.status);
         setReactedSet((prev) => {
           const next = new Set(prev);
           next.delete(reactKey);
@@ -1462,63 +1462,63 @@ export default function DiscordChatComponent({
             {!loading && !error && (() => {
               // Build a lookup map for reply references
               const messageMap = new Map(messages.map((m) => [m.id, m]));
-              return messages.map((msg, i) => {
+              return messages.map((message, i) => {
                 const prev = i > 0 ? messages[i - 1] : null;
-                const grouped = shouldGroup(msg, prev);
-                const newDay = isDifferentDay(msg, prev);
-                const nameStyle = resolveRoleColorStyle(msg.author);
+                const grouped = shouldGroup(message, prev);
+                const newDay = isDifferentDay(message, prev);
+                const nameStyle = resolveRoleColorStyle(message.author);
                 return (
-                  <div key={msg.id}>
+                  <div key={message.id}>
                     {newDay && (
                       <div className={styles.dateSeparator}>
-                        <span className={styles.dateSeparatorText}>{formatDateSeparator(msg.createdAtISO)}</span>
+                        <span className={styles.dateSeparatorText}>{formatDateSeparator(message.createdAtISO)}</span>
                       </div>
                     )}
                     {grouped && !newDay ? (
                       <div className={styles.messageRowGrouped}>
-                        <span className={styles.timestampInline}>{formatShortTime(msg.createdAtISO)}</span>
+                        <span className={styles.timestampInline}>{formatShortTime(message.createdAtISO)}</span>
                         <MessageActions
-                          messageId={msg.id}
+                          messageId={message.id}
                           onOpenPicker={handleOpenPicker}
                           pickerMessageId={pickerMessageId}
                         />
                         <div className={styles.messageContent}>
-                          <p className={styles.messageText}>{formatContent(msg.content, msg.cleanContent)}</p>
-                          <TenorEmbeds content={msg.content} tenorOembedUrl={tenorOembedUrl} />
-                          <ImageAttachments attachments={msg.attachments} />
-                          <EmbedMedia embeds={msg.embeds} />
+                          <p className={styles.messageText}>{formatContent(message.content, message.cleanContent)}</p>
+                          <TenorEmbeds content={message.content} tenorOembedUrl={tenorOembedUrl} />
+                          <ImageAttachments attachments={message.attachments} />
+                          <EmbedMedia embeds={message.embeds} />
                           <Reactions
-                            reactions={msg.reactions}
-                            messageId={msg.id}
+                            reactions={message.reactions}
+                            messageId={message.id}
                             reactedSet={reactedSet}
                             onReact={handleReact}
                           />
                         </div>
                       </div>
                     ) : (
-                      <div className={`${styles.messageRow} ${msg.replyTo ? styles.messageRowReply : ""}`}>
-                        {msg.replyTo && (
-                          <ReplyContext replyTo={msg.replyTo} messageMap={messageMap} />
+                      <div className={`${styles.messageRow} ${message.replyTo ? styles.messageRowReply : ""}`}>
+                        {message.replyTo && (
+                          <ReplyContext replyTo={message.replyTo} messageMap={messageMap} />
                         )}
-                        {msg.author.avatarUrl ? (
-                          <img className={styles.avatar} src={msg.author.avatarUrl}
-                            alt={msg.author.displayName} width={40} height={40} loading="lazy" />
+                        {message.author.avatarUrl ? (
+                          <img className={styles.avatar} src={message.author.avatarUrl}
+                            alt={message.author.displayName} width={40} height={40} loading="lazy" />
                         ) : (
-                          <div className={styles.avatarFallback} style={{ background: getAvatarColor(msg.author.id) }}>
-                            {(msg.author.displayName || "?")[0].toUpperCase()}
+                          <div className={styles.avatarFallback} style={{ background: getAvatarColor(message.author.id) }}>
+                            {(message.author.displayName || "?")[0].toUpperCase()}
                           </div>
                         )}
                         <MessageActions
-                          messageId={msg.id}
+                          messageId={message.id}
                           onOpenPicker={handleOpenPicker}
                           pickerMessageId={pickerMessageId}
                         />
                         <div className={styles.messageContent}>
                           <div className={styles.messageHeader}>
                             <span className={styles.authorName} style={nameStyle}>
-                              {msg.author.displayName}
+                              {message.author.displayName}
                             </span>
-                            {msg.author.isBot && (
+                            {message.author.isBot && (
                               <span className={styles.botBadge}>
                                 <svg className={styles.botBadgeIcon} viewBox="0 0 16 16" fill="currentColor">
                                   <path d="M7.4,11.17,4,8.62,5,7.26l2,1.53L10.64,4l1.36,1Z" />
@@ -1526,17 +1526,17 @@ export default function DiscordChatComponent({
                                 BOT
                               </span>
                             )}
-                            <UserBadges badges={msg.author.badges} />
-                            <RoleTags roleTags={msg.author.roleTags} />
-                            <span className={styles.timestamp}>{formatTimestamp(msg.createdAtISO)}</span>
+                            <UserBadges badges={message.author.badges} />
+                            <RoleTags roleTags={message.author.roleTags} />
+                            <span className={styles.timestamp}>{formatTimestamp(message.createdAtISO)}</span>
                           </div>
-                          <p className={styles.messageText}>{formatContent(msg.content, msg.cleanContent)}</p>
-                          <TenorEmbeds content={msg.content} tenorOembedUrl={tenorOembedUrl} />
-                          <ImageAttachments attachments={msg.attachments} />
-                          <EmbedMedia embeds={msg.embeds} />
+                          <p className={styles.messageText}>{formatContent(message.content, message.cleanContent)}</p>
+                          <TenorEmbeds content={message.content} tenorOembedUrl={tenorOembedUrl} />
+                          <ImageAttachments attachments={message.attachments} />
+                          <EmbedMedia embeds={message.embeds} />
                           <Reactions
-                            reactions={msg.reactions}
-                            messageId={msg.id}
+                            reactions={message.reactions}
+                            messageId={message.id}
                             reactedSet={reactedSet}
                             onReact={handleReact}
                           />

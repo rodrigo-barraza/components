@@ -24,7 +24,7 @@ interface StereoVolume {
   right: number;
 }
 
-let ctx: AudioContext | null = null;
+let context: AudioContext | null = null;
 
 let hoverBuffer: AudioBuffer | null = null;
 let clickBuffer: AudioBuffer | null = null;
@@ -36,13 +36,13 @@ let buttonClickBuffer: AudioBuffer | null = null;
  * Must be called from a user-gesture context on first invocation.
  */
 function ensureContext(): AudioContext {
-  if (!ctx) {
-    ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+  if (!context) {
+    context = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
   }
-  if (ctx.state === "suspended") {
-    ctx.resume();
+  if (context.state === "suspended") {
+    context.resume();
   }
-  return ctx;
+  return context;
 }
 
 // ─── Sound generators ──────────────────────────────────────────────
@@ -257,10 +257,10 @@ function connectStereo(source: AudioBufferSourceNode, left: number, right: numbe
  * Element at right edge → { left: 0,   right: 100 }
  */
 function spatialFromEvent(event?: Event): StereoVolume {
-  const el = (event as { currentTarget?: Element } | undefined)?.currentTarget;
-  if (!el || !("getBoundingClientRect" in el)) return { left: 50, right: 50 };
+  const element = (event as { currentTarget?: Element } | undefined)?.currentTarget;
+  if (!element || !("getBoundingClientRect" in element)) return { left: 50, right: 50 };
 
-  const rect = (el as Element).getBoundingClientRect();
+  const rect = (element as Element).getBoundingClientRect();
   const centerX = rect.left + rect.width / 2;
   const ratio = Math.max(0, Math.min(1, centerX / window.innerWidth));
 
@@ -360,9 +360,9 @@ const SoundService = {
    * Tear down the AudioContext (e.g. on unmount / navigation).
    */
   dispose(): void {
-    if (ctx) {
-      ctx.close().catch(() => {});
-      ctx = null;
+    if (context) {
+      context.close().catch(() => {});
+      context = null;
     }
     hoverBuffer = null;
     clickBuffer = null;
