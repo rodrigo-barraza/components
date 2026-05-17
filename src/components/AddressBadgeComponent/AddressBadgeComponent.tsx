@@ -13,7 +13,14 @@ import styles from "./AddressBadgeComponent.module.css";
  * @param {boolean} [link=false] — Render as an anchor tag
  * @param {string} [className] — Additional CSS class
  */
-export default function AddressBadgeComponent({ address, link = false, className, ...rest }) {
+interface AddressBadgeProps {
+  address: string;
+  link?: boolean;
+  className?: string;
+  [key: string]: unknown;
+}
+
+export default function AddressBadgeComponent({ address, link = false, className, ...rest }: AddressBadgeProps) {
   if (!address) return null;
 
   const display = address.replace(/^https?:\/\//, "");
