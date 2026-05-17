@@ -8,10 +8,12 @@
  * @param {boolean} [link=false] — Render as an anchor tag
  * @param {string} [className] — Additional CSS class
  */
-export default function AddressBadgeComponent({ address, link, className, ...rest }: {
-    [x: string]: any;
-    address: any;
+interface AddressBadgeProps {
+    address: string;
     link?: boolean;
-    className: any;
-}): import("react/jsx-runtime").JSX.Element;
+    className?: string;
+    [key: string]: unknown;
+}
+export default function AddressBadgeComponent({ address, link, className, ...rest }: AddressBadgeProps): import("react/jsx-runtime").JSX.Element;
+export {};
 //# sourceMappingURL=AddressBadgeComponent.d.ts.map
