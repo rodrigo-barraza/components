@@ -7,15 +7,13 @@
  *
  * Props:
  *   date       — ISO string, Date, or epoch ms
- *   mini       — smaller variant
  *   showIcon   — show Calendar icon (default: true)
  *   relative   — show relative time (default: true for recent, absolute otherwise)
  *   highlightNew — pulse glow when "just now", fade out on transition
  *   className  — additional class
  */
-export default function DateTimeBadgeComponent({ date, mini, showIcon, relative, highlightNew, className, }: {
+export default function DateTimeBadgeComponent({ date, showIcon, relative, highlightNew, className, }: {
     date: any;
-    mini?: boolean;
     showIcon?: boolean;
     relative?: boolean;
     highlightNew?: boolean;

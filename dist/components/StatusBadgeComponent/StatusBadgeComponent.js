@@ -6,15 +6,18 @@ import styles from "./StatusBadgeComponent.module.css";
 /**
  * StatusBadgeComponent — Semantic badge for service health status.
  *
- * Renders a pulsing dot indicator alongside "Healthy" or "Down" text,
- * color-coded green/red respectively.
+ * Renders a pulsing dot indicator alongside a Noto Emoji glyph:
+ *   ✓ (U+2713 CHECK MARK) for healthy
+ *   ✗ (U+2717 BALLOT X) for down
+ *
+ * The glyphs are rendered in the monochrome "Noto Emoji" typeface
+ * via the `--font-emoji` design token.
  *
  * @param {boolean} healthy — Whether the service is healthy
  * @param {string} [className] — Additional CSS class
  */
 export default function StatusBadgeComponent({ healthy, className, ...rest }) {
     const variant = healthy ? "success" : "error";
-    const label = healthy ? "Healthy" : "Down";
-    return (_jsxs(BadgeComponent, { variant: variant, className: `${styles.badge} ${className || ""}`, ...rest, children: [_jsx(StatusDotComponent, { variant: healthy ? "healthy" : "unhealthy", size: "sm", pulse: healthy }), label] }));
+    return (_jsxs(BadgeComponent, { variant: variant, className: `${styles.badge} ${className || ""}`, tooltip: healthy ? "Healthy" : "Down", ...rest, children: [_jsx(StatusDotComponent, { variant: healthy ? "healthy" : "unhealthy", size: "sm", pulse: healthy }), _jsx("span", { className: styles.icon, "aria-label": healthy ? "Healthy" : "Down", children: healthy ? "✓" : "✗" })] }));
 }
 //# sourceMappingURL=StatusBadgeComponent.js.map

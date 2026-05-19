@@ -6,3 +6,12 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+
+/* ── Noto Emoji icon glyph ────────────────────────── */
+
+.icon {
+  font-family: var(--font-emoji, "Noto Emoji", sans-serif);
+  font-size: 0.75rem;
+  line-height: 1;
+  flex-shrink: 0;
+}

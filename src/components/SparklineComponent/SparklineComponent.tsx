@@ -54,7 +54,7 @@ export default function SparklineComponent({
     // ── Optional grid background ──
     if (showGrid) {
       ctx.save();
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+      ctx.strokeStyle = "rgba(128, 128, 128, 0.15)";
       ctx.lineWidth = 0.5;
 
       // Horizontal grid lines (3 evenly spaced)

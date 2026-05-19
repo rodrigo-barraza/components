@@ -62,7 +62,6 @@ function computeLabel(dt, relative) {
  *
  * Props:
  *   date       — ISO string, Date, or epoch ms
- *   mini       — smaller variant
  *   showIcon   — show Calendar icon (default: true)
  *   relative   — show relative time (default: true for recent, absolute otherwise)
  *   highlightNew — pulse glow when "just now", fade out on transition
@@ -70,7 +69,6 @@ function computeLabel(dt, relative) {
  */
 export default function DateTimeBadgeComponent({
   date,
-  mini = false,
   showIcon = true,
   relative = true,
   highlightNew = false,
@@ -148,9 +146,9 @@ export default function DateTimeBadgeComponent({
   return (
     <TooltipComponent label={fullDateTime} position="top">
       <span
-        className={`${styles.badge} ${mini ? styles.mini : ""} ${highlightClass} ${className}`}
+        className={`${styles.badge} ${highlightClass} ${className}`}
       >
-        {showIcon && <Calendar size={mini ? 8 : 10} />}
+        {showIcon && <Calendar size={10} />}
         {shortLabel}
       </span>
     </TooltipComponent>

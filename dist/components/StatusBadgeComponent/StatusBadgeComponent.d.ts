@@ -1,8 +1,12 @@
 /**
  * StatusBadgeComponent — Semantic badge for service health status.
  *
- * Renders a pulsing dot indicator alongside "Healthy" or "Down" text,
- * color-coded green/red respectively.
+ * Renders a pulsing dot indicator alongside a Noto Emoji glyph:
+ *   ✓ (U+2713 CHECK MARK) for healthy
+ *   ✗ (U+2717 BALLOT X) for down
+ *
+ * The glyphs are rendered in the monochrome "Noto Emoji" typeface
+ * via the `--font-emoji` design token.
  *
  * @param {boolean} healthy — Whether the service is healthy
  * @param {string} [className] — Additional CSS class

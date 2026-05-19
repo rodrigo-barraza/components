@@ -327,7 +327,7 @@ describe("ResponseTimeBadgeComponent", () => {
 describe("StatusBadgeComponent", () => {
   it("renders healthy state", () => {
     render(<StatusBadgeComponent healthy />);
-    expect(screen.getByText(/Healthy/i)).toBeInTheDocument();
+    expect(screen.getByText("✓")).toBeInTheDocument();
   });
 });
 

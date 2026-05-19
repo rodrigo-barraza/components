@@ -58,13 +58,12 @@ function computeLabel(dt, relative) {
  *
  * Props:
  *   date       — ISO string, Date, or epoch ms
- *   mini       — smaller variant
  *   showIcon   — show Calendar icon (default: true)
  *   relative   — show relative time (default: true for recent, absolute otherwise)
  *   highlightNew — pulse glow when "just now", fade out on transition
  *   className  — additional class
  */
-export default function DateTimeBadgeComponent({ date, mini = false, showIcon = true, relative = true, highlightNew = false, className = "", }) {
+export default function DateTimeBadgeComponent({ date, showIcon = true, relative = true, highlightNew = false, className = "", }) {
     const dt = useMemo(() => {
         if (!date)
             return null;
@@ -125,6 +124,6 @@ export default function DateTimeBadgeComponent({ date, mini = false, showIcon = 
         : fading
             ? styles.justNowFadeOut
             : "";
-    return (_jsx(TooltipComponent, { label: fullDateTime, position: "top", children: _jsxs("span", { className: `${styles.badge} ${mini ? styles.mini : ""} ${highlightClass} ${className}`, children: [showIcon && _jsx(Calendar, { size: mini ? 8 : 10 }), shortLabel] }) }));
+    return (_jsx(TooltipComponent, { label: fullDateTime, position: "top", children: _jsxs("span", { className: `${styles.badge} ${highlightClass} ${className}`, children: [showIcon && _jsx(Calendar, { size: 10 }), shortLabel] }) }));
 }
 //# sourceMappingURL=DateTimeBadgeComponent.js.map

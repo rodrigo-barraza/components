@@ -42,7 +42,7 @@ export default function SparklineComponent({ data, color = "#10b981", maxValue =
         // ── Optional grid background ──
         if (showGrid) {
             ctx.save();
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+            ctx.strokeStyle = "rgba(128, 128, 128, 0.15)";
             ctx.lineWidth = 0.5;
             // Horizontal grid lines (3 evenly spaced)
             const hLines = 3;

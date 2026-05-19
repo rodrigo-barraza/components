@@ -27,18 +27,7 @@
   opacity: 0.5;
 }
 
-/* ── Mini ─────────────────────────────────────────── */
 
-.mini {
-  font-size: 8px;
-  padding: 1px 5px;
-  gap: 3px;
-}
-
-.mini svg {
-  width: 8px;
-  height: 8px;
-}
 
 /* ── "Just now" highlight ────────────────────────── */
 

@@ -68,6 +68,7 @@ export { default as TextFieldComponent } from "./components/TextFieldComponent/T
 export { default as ThemePickerComponent } from "./components/ThemePickerComponent/ThemePickerComponent.js";
 export { default as ToastComponent, useToast } from "./components/ToastComponent/ToastComponent.js";
 export { default as ToggleComponent } from "./components/ToggleComponent/ToggleComponent.js";
+export { default as ToolCardComponent } from "./components/ToolCardComponent/ToolCardComponent.js";
 export { default as ToolbarComponent } from "./components/ToolbarComponent/ToolbarComponent.js";
 export { default as TooltipComponent } from "./components/TooltipComponent/TooltipComponent.js";
 export { default as TopAppBarComponent } from "./components/TopAppBarComponent/TopAppBarComponent.js";
