@@ -6,21 +6,26 @@
  * visually-pleasant curves, a gradient fill under the line, a glow
  * effect on the stroke, and a trailing "current value" dot.
  *
+ * On hover, a vertical crosshair and floating tooltip display the
+ * Y-axis value at the nearest data point.
+ *
  * @param {number[]} data — Array of numeric samples (newest last)
  * @param {string} [color="#10b981"] — Line/fill color (hex or CSS var())
  * @param {number} [maxValue=100] — Y-axis ceiling (data is clamped to this)
  * @param {number} [height=48] — Canvas CSS height in px
  * @param {number} [historyMax=60] — Total slots in the X axis (controls density)
  * @param {boolean} [showGrid=false] — Show faint grid lines behind the sparkline
+ * @param {(value: number) => string} [formatValue] — Custom formatter for tooltip value
  * @param {string} [className] — Extra class for the wrapper div
  */
-export default function SparklineComponent({ data, color, maxValue, height, historyMax, showGrid, className, }: {
+export default function SparklineComponent({ data, color, maxValue, height, historyMax, showGrid, formatValue, className, }: {
     data: any;
     color?: string;
     maxValue?: number;
     height?: number;
     historyMax?: number;
     showGrid?: boolean;
+    formatValue: any;
     className: any;
 }): import("react/jsx-runtime").JSX.Element;
 //# sourceMappingURL=SparklineComponent.d.ts.map

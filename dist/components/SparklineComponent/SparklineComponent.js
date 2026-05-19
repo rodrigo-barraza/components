@@ -1,6 +1,6 @@
 "use client";
-import { jsx as _jsx } from "react/jsx-runtime";
-import { useRef, useEffect } from "react";
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { useRef, useEffect, useState, useCallback } from "react";
 import styles from "./SparklineComponent.module.css";
 /**
  * SparklineComponent — GPU-composited Canvas sparkline area chart.
@@ -10,17 +10,70 @@ import styles from "./SparklineComponent.module.css";
  * visually-pleasant curves, a gradient fill under the line, a glow
  * effect on the stroke, and a trailing "current value" dot.
  *
+ * On hover, a vertical crosshair and floating tooltip display the
+ * Y-axis value at the nearest data point.
+ *
  * @param {number[]} data — Array of numeric samples (newest last)
  * @param {string} [color="#10b981"] — Line/fill color (hex or CSS var())
  * @param {number} [maxValue=100] — Y-axis ceiling (data is clamped to this)
  * @param {number} [height=48] — Canvas CSS height in px
  * @param {number} [historyMax=60] — Total slots in the X axis (controls density)
  * @param {boolean} [showGrid=false] — Show faint grid lines behind the sparkline
+ * @param {(value: number) => string} [formatValue] — Custom formatter for tooltip value
  * @param {string} [className] — Extra class for the wrapper div
  */
-export default function SparklineComponent({ data, color = "#10b981", maxValue = 100, height = 48, historyMax = 60, showGrid = false, className, }) {
+export default function SparklineComponent({ data, color = "#10b981", maxValue = 100, height = 48, historyMax = 60, showGrid = false, formatValue, className, }) {
     const canvasRef = useRef(null);
     const containerRef = useRef(null);
+    // Hover state — null when mouse is outside
+    const [hover, setHover] = useState(null);
+    // Cache resolved color components for crosshair drawing
+    const colorRef = useRef({ r: 16, g: 185, b: 129, resolved: "#10b981" });
+    // ── Resolve color once on change ──
+    useEffect(() => {
+        const resolvedColor = color.startsWith("var(")
+            ? getComputedStyle(document.documentElement)
+                .getPropertyValue(color.slice(4, -1))
+                .trim() || "#10b981"
+            : color;
+        const parseColor = (c) => {
+            if (c.startsWith("#")) {
+                const hex = c.slice(1);
+                return [
+                    parseInt(hex.slice(0, 2), 16),
+                    parseInt(hex.slice(2, 4), 16),
+                    parseInt(hex.slice(4, 6), 16),
+                ];
+            }
+            const match = c.match(/(\d+)/);
+            return match ? [+match[1], +match[1], +match[1]] : [16, 185, 129];
+        };
+        const [r, g, b] = parseColor(resolvedColor);
+        colorRef.current = { r, g, b, resolved: resolvedColor };
+    }, [color]);
+    // ── Mouse handlers ──
+    const handleMouseMove = useCallback((e) => {
+        const container = containerRef.current;
+        if (!container || data.length < 2)
+            return;
+        const rect = container.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const w = rect.width;
+        const padding = { left: 0, right: 0 };
+        const chartW = w - padding.left - padding.right;
+        // Find nearest data index from mouse X position
+        const ratio = (mouseX - padding.left) / chartW;
+        const floatIndex = ratio * (historyMax - 1);
+        const nearestIndex = Math.round(floatIndex);
+        const clampedIndex = Math.max(0, Math.min(data.length - 1, nearestIndex));
+        const val = data[clampedIndex];
+        const pointX = padding.left + (clampedIndex / (historyMax - 1)) * chartW;
+        setHover({ x: pointX, value: val, containerWidth: w });
+    }, [data, historyMax]);
+    const handleMouseLeave = useCallback(() => {
+        setHover(null);
+    }, []);
+    // ── Main draw effect ──
     useEffect(() => {
         const canvas = canvasRef.current;
         const container = containerRef.current;
@@ -66,26 +119,7 @@ export default function SparklineComponent({ data, color = "#10b981", maxValue =
         }
         if (data.length < 2)
             return;
-        // Resolve CSS variable to actual color value
-        const resolvedColor = color.startsWith("var(")
-            ? getComputedStyle(document.documentElement)
-                .getPropertyValue(color.slice(4, -1))
-                .trim() || "#10b981"
-            : color;
-        // Parse hex/rgb to extract RGB components for alpha variations
-        const parseColor = (c) => {
-            if (c.startsWith("#")) {
-                const hex = c.slice(1);
-                return [
-                    parseInt(hex.slice(0, 2), 16),
-                    parseInt(hex.slice(2, 4), 16),
-                    parseInt(hex.slice(4, 6), 16),
-                ];
-            }
-            const match = c.match(/(\d+)/);
-            return match ? [+match[1], +match[1], +match[1]] : [16, 185, 129];
-        };
-        const [r, g, b] = parseColor(resolvedColor);
+        const { r, g, b } = colorRef.current;
         const padding = { top: 2, bottom: 2, left: 0, right: 0 };
         const chartW = w - padding.left - padding.right;
         const chartH = h - padding.top - padding.bottom;
@@ -136,8 +170,43 @@ export default function SparklineComponent({ data, color = "#10b981", maxValue =
         ctx.shadowBlur = 4;
         ctx.stroke();
         ctx.shadowBlur = 0;
-        // ── Current value dot ──
-        if (points.length > 0) {
+        // ── Hover crosshair + dot ──
+        if (hover) {
+            const hx = hover.x;
+            // Vertical crosshair line
+            ctx.save();
+            ctx.beginPath();
+            ctx.setLineDash([3, 3]);
+            ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.4)`;
+            ctx.lineWidth = 1;
+            ctx.moveTo(hx, 0);
+            ctx.lineTo(hx, h);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.restore();
+            // Find the Y coordinate for this hover point
+            const hoverIndex = Math.round(((hx - padding.left) / chartW) * (historyMax - 1));
+            const ci = Math.max(0, Math.min(data.length - 1, hoverIndex));
+            const hoverY = padding.top +
+                chartH -
+                (Math.min(data[ci], clampedMax) / clampedMax) * chartH;
+            // Hover dot
+            ctx.beginPath();
+            ctx.arc(hx, hoverY, 3.5, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 1)`;
+            ctx.shadowColor = `rgba(${r}, ${g}, ${b}, 0.6)`;
+            ctx.shadowBlur = 8;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            // White ring around hover dot
+            ctx.beginPath();
+            ctx.arc(hx, hoverY, 3.5, 0, Math.PI * 2);
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
+            ctx.lineWidth = 1.2;
+            ctx.stroke();
+        }
+        // ── Current value dot (only when not hovering) ──
+        if (!hover && points.length > 0) {
             const last = points[points.length - 1];
             ctx.beginPath();
             ctx.arc(last.x, last.y, 2.5, 0, Math.PI * 2);
@@ -147,7 +216,28 @@ export default function SparklineComponent({ data, color = "#10b981", maxValue =
             ctx.fill();
             ctx.shadowBlur = 0;
         }
-    }, [data, color, maxValue, height, historyMax, showGrid]);
-    return (_jsx("div", { ref: containerRef, className: `${styles.sparklineContainer} ${className || ""}`, children: _jsx("canvas", { ref: canvasRef, className: styles.sparklineCanvas }) }));
+    }, [data, color, maxValue, height, historyMax, showGrid, hover]);
+    // ── Format the tooltip value ──
+    const formattedValue = hover != null
+        ? formatValue
+            ? formatValue(hover.value)
+            : typeof hover.value === "number"
+                ? hover.value % 1 === 0
+                    ? String(hover.value)
+                    : hover.value.toFixed(1)
+                : String(hover.value)
+        : "";
+    // Tooltip positioning — nudge left when near right edge
+    const tooltipStyle = hover != null
+        ? {
+            left: hover.x > hover.containerWidth - 60
+                ? `${hover.x - 4}px`
+                : `${hover.x + 4}px`,
+            transform: hover.x > hover.containerWidth - 60
+                ? "translateX(-100%)"
+                : "translateX(0)",
+        }
+        : {};
+    return (_jsxs("div", { ref: containerRef, className: `${styles.sparklineContainer} ${className || ""}`, onMouseMove: handleMouseMove, onMouseLeave: handleMouseLeave, children: [_jsx("canvas", { ref: canvasRef, className: styles.sparklineCanvas }), hover != null && (_jsx("div", { className: styles.sparklineTooltip, style: tooltipStyle, children: formattedValue }))] }));
 }
 //# sourceMappingURL=SparklineComponent.js.map
