@@ -16,6 +16,7 @@ import styles from "./SparklineComponent.module.css";
  * @param {number} [maxValue=100] — Y-axis ceiling (data is clamped to this)
  * @param {number} [height=48] — Canvas CSS height in px
  * @param {number} [historyMax=60] — Total slots in the X axis (controls density)
+ * @param {boolean} [showGrid=false] — Show faint grid lines behind the sparkline
  * @param {string} [className] — Extra class for the wrapper div
  */
 export default function SparklineComponent({
@@ -24,6 +25,7 @@ export default function SparklineComponent({
   maxValue = 100,
   height = 48,
   historyMax = 60,
+  showGrid = false,
   className,
 }) {
   const canvasRef = useRef(null);
@@ -48,6 +50,35 @@ export default function SparklineComponent({
     if (!ctx) return;
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, w, h);
+
+    // ── Optional grid background ──
+    if (showGrid) {
+      ctx.save();
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+      ctx.lineWidth = 0.5;
+
+      // Horizontal grid lines (3 evenly spaced)
+      const hLines = 3;
+      for (let i = 1; i <= hLines; i++) {
+        const y = (h / (hLines + 1)) * i;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // Vertical grid lines — every ~15 sample slots
+      const vStep = Math.max(15, Math.round(historyMax / 5));
+      for (let i = vStep; i < historyMax; i += vStep) {
+        const x = (i / (historyMax - 1)) * w;
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+    }
 
     if (data.length < 2) return;
 
@@ -141,7 +172,7 @@ export default function SparklineComponent({
       ctx.fill();
       ctx.shadowBlur = 0;
     }
-  }, [data, color, maxValue, height, historyMax]);
+  }, [data, color, maxValue, height, historyMax, showGrid]);
 
   return (
     <div

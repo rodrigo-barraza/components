@@ -11,14 +11,16 @@
  * @param {number} [maxValue=100] — Y-axis ceiling (data is clamped to this)
  * @param {number} [height=48] — Canvas CSS height in px
  * @param {number} [historyMax=60] — Total slots in the X axis (controls density)
+ * @param {boolean} [showGrid=false] — Show faint grid lines behind the sparkline
  * @param {string} [className] — Extra class for the wrapper div
  */
-export default function SparklineComponent({ data, color, maxValue, height, historyMax, className, }: {
+export default function SparklineComponent({ data, color, maxValue, height, historyMax, showGrid, className, }: {
     data: any;
     color?: string;
     maxValue?: number;
     height?: number;
     historyMax?: number;
+    showGrid?: boolean;
     className: any;
 }): import("react/jsx-runtime").JSX.Element;
 //# sourceMappingURL=SparklineComponent.d.ts.map
