@@ -320,6 +320,7 @@
     pointer-events: auto;
     box-shadow: none;
     border-right: 1px solid var(--border-color, #333);
+    z-index: 1000;
   }
 
   .mobileWrapper.mobileOpen .sidebar {
