@@ -11,10 +11,6 @@
  */
 /**
  * Create a pre-configured fetch helper bound to a base URL.
- *
- * @param baseUrl — API root (e.g. "/api/ledger", "https://api.example.com")
- * @param options — optional configuration
- * @returns request(method, path, body?) → Promise<any>
  */
 export function createApiClient(baseUrl, { defaultHeaders = {}, noCache = false } = {}) {
     return async function request(method, path, body = null) {

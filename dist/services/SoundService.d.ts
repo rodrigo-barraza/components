@@ -11,7 +11,9 @@
  */
 export interface SoundOptions {
     /** DOM or React synthetic event for spatial stereo positioning */
-    event?: any;
+    event?: {
+        currentTarget?: EventTarget | null;
+    };
     /** Left speaker volume 0-100 (override) */
     left?: number;
     /** Right speaker volume 0-100 (override) */

@@ -20,11 +20,6 @@ export function MenuDivider() {
 export function MenuGroupLabel({ children }) {
     return (_jsx("div", { className: styles.groupLabel, role: "presentation", children: children }));
 }
-// ──────────────────────────────────────────────────────────────────
-//  MenuItem — Individual selectable row
-//  M3 anatomy: state-layer → [leading-icon] → label → [trailing]
-//  Height: 48px · Padding: 0 12px
-// ──────────────────────────────────────────────────────────────────
 export const MenuItem = forwardRef(function MenuItem({ leadingIcon, trailingIcon, trailingText, disabled = false, selected = false, onClick, onMouseEnter, onFocus, children, className = "", ...rest }, ref) {
     const { sound } = useComponents();
     const handleClick = useCallback((e) => {
@@ -124,41 +119,6 @@ export function SubMenu({ label, leadingIcon, disabled = false, children, }) {
     const chevronSvg = (_jsx("svg", { width: "18", height: "18", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", children: _jsx("polyline", { points: "9 18 15 12 9 6" }) }));
     return (_jsx(MenuDepthContext.Provider, { value: depth + 1, children: _jsxs("div", { ref: containerRef, className: styles.submenuAnchor, onMouseEnter: open, onMouseLeave: close, onKeyDown: handleKeyDown, children: [_jsxs("button", { type: "button", role: "menuitem", className: styles.menuItem, "aria-haspopup": "menu", "aria-expanded": isOpen, disabled: disabled, tabIndex: -1, children: [leadingIcon && (_jsx("span", { className: styles.leadingIcon, "aria-hidden": "true", children: leadingIcon })), _jsx("span", { className: styles.label, children: label }), _jsx("span", { className: styles.submenuArrow, "aria-hidden": "true", children: chevronSvg })] }), _jsx("div", { className: styles.submenuSurface, role: "menu", "data-open": isOpen, "aria-label": label, children: indexedChildren })] }) }));
 }
-// ══════════════════════════════════════════════════════════════════
-//  MenuComponent — Material Design 3 Dropdown Menu
-//
-//  Displays a list of choices on a temporary elevated surface,
-//  triggered from buttons, icon buttons, or other anchor elements.
-//
-//  M3 Specs: https://m3.material.io/components/menus/specs
-//
-//  Anatomy:
-//    anchor → surface → [ menu-item | divider | group-label | sub-menu ]
-//
-//  Accessibility (per M3):
-//    • Surface has role="menu"
-//    • Items have role="menuitem"
-//    • Arrow-key roving focus within items
-//    • Escape closes the menu and restores focus to trigger
-//    • Home/End jump to first/last item
-//    • Type-ahead character search
-//    • Focus trapped within menu when open
-//
-//  @param {Object} props
-//  @param {React.ReactElement} props.trigger
-//    The element that anchors and opens the menu (e.g., IconButton).
-//    Gets aria-haspopup and aria-expanded injected automatically.
-//  @param {boolean}  [props.open]           — Controlled open state
-//  @param {Function} [props.onOpenChange]   — Callback for open changes
-//  @param {"bottom-start"|"bottom-end"|"top-start"|"top-end"}
-//         [props.position="bottom-start"]   — Menu placement
-//  @param {boolean}  [props.matchWidth=false]  — Match trigger width
-//  @param {boolean}  [props.closeOnSelect=true]— Close after item click
-//  @param {number}   [props.maxHeight]         — Max height in px
-//  @param {string}   [props.ariaLabel="Menu"]
-//  @param {string}   [props.className]
-//  @param {React.ReactNode} props.children — MenuItem, MenuDivider, etc.
-// ══════════════════════════════════════════════════════════════════
 const MenuComponent = forwardRef(function MenuComponent({ trigger, open: controlledOpen, onOpenChange, position = "bottom-start", matchWidth = false, closeOnSelect = true, maxHeight, ariaLabel = "Menu", className = "", children, ...rest }, ref) {
     const isControlled = controlledOpen !== undefined;
     const [internalOpen, setInternalOpen] = useState(false);

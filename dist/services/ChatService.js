@@ -206,8 +206,6 @@ class ChatService {
     // ── AI Agent SSE Streaming ───────────────────────────────────
     /**
      * Send a message and stream the AI agent's response via SSE.
-     *
-     * @returns abort — Call to cancel the stream
      */
     sendAgentMessage(content, { onToken, onComplete, onError, onThinking }) {
         // Abort any in-flight stream

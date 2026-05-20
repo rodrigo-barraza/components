@@ -56,8 +56,6 @@ declare class ChatService {
     sendMessage(content: string): Promise<Record<string, unknown>>;
     /**
      * Send a message and stream the AI agent's response via SSE.
-     *
-     * @returns abort — Call to cancel the stream
      */
     sendAgentMessage(content: string, { onToken, onComplete, onError, onThinking }: AgentStreamCallbacks): () => void;
     /**

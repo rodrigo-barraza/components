@@ -17,15 +17,6 @@
  *   • Keyboard: Tab/Shift+Tab through items, Enter/Space to activate
  *
  * @see https://m3.material.io/components/navigation-drawer/overview
- *
- * @param {"standard"|"modal"} [variant="standard"] — drawer type
- * @param {"start"|"end"}      [anchor="start"]     — side the drawer appears on
- * @param {boolean}   [open=true]       — controls drawer visibility
- * @param {Function}  [onClose]         — called when user dismisses modal
- * @param {string}    [headline]        — optional title text at the top
- * @param {string}    [ariaLabel]       — accessible label for <nav>
-
-
  */
 declare function NavigationDrawerComponent({ variant, anchor, open, onClose, headline, ariaLabel, className, style, children, ...rest }: {
     [x: string]: any;
@@ -51,17 +42,6 @@ export default NavigationDrawerComponent;
  *
  * M3 spec: 56dp height, full-width rounded-pill shape,
  *          leading icon, label, optional trailing badge.
- *
- * @param {React.ComponentType} [icon]   — leading icon (Lucide etc.)
- * @param {string}    label              — destination label text
- * @param {string}    [badge]            — trailing badge text (e.g. "24")
- * @param {boolean}   [active=false]     — active/selected state
-
- * @param {string}    [href]             — renders as <a> if provided
-
- * @param {React.ComponentType} [LinkComponent] — custom router Link
-
- * @param {React.ReactNode} children     — overrides icon+label rendering
  */
 declare function DrawerItem({ icon: Icon, label, badge, active, disabled, href, onClick, LinkComponent, className, children, ...rest }: {
     [x: string]: any;
@@ -80,9 +60,6 @@ declare function DrawerItem({ icon: Icon, label, badge, active, disabled, href, 
  * DrawerSectionHeader — labelled group heading.
  *
  * M3 spec: title-small typography, 56dp total height with padding.
- *
-
-
  */
 declare function DrawerSectionHeader({ className, children }: {
     className: any;
@@ -90,17 +67,12 @@ declare function DrawerSectionHeader({ className, children }: {
 }): import("react/jsx-runtime").JSX.Element;
 /**
  * DrawerDivider — horizontal visual separator between sections.
- *
-
  */
 declare function DrawerDivider({ className }: {
     className: any;
 }): import("react/jsx-runtime").JSX.Element;
 /**
  * DrawerFooter — bottom-pinned slot for actions or secondary content.
- *
-
-
  */
 declare function DrawerFooter({ className, children }: {
     className: any;

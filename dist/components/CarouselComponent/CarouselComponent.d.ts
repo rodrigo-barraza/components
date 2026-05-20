@@ -12,17 +12,6 @@
  *   CarouselComponent.Item       — individual carousel item container
  *   CarouselComponent.ItemMedia  — full-bleed image/video slot
  *   CarouselComponent.ItemLabel  — overlaid label with gradient scrim
- *
-
- * @param {boolean}  [showArrows=true]     — show prev/next nav arrows
- * @param {boolean}  [showIndicators=true] — show dot indicators
- * @param {boolean}  [peekEdge=false]      — subtle edge-fade gradient
- * @param {number}   [autoPlay=0]          — auto-advance interval in ms (0=disabled)
- * @param {boolean}  [loop=false]          — loop back to start at end
- * @param {number}   [gap=8]              — gap between items in px
-
- * @param {string}   [ariaLabel]           — accessible label for the carousel region
- * @param {React.ReactNode} children       — CarouselComponent.Item elements
  */
 declare function CarouselComponent({ layout, showArrows, showIndicators, peekEdge, autoPlay, loop, gap, className, ariaLabel, children, }: {
     layout?: string;
@@ -47,13 +36,6 @@ export default CarouselComponent;
  *
  * M3 spec: rounded-corner container (28px shape-large) with
  * optional content masking and state layer for interaction.
- *
- * @param {number|string}  [width]      — fixed width (px or CSS value)
- * @param {number|string}  [height]     — fixed height
- * @param {string}         [aspectRatio] — CSS aspect-ratio (e.g. "16/9")
- * @param {"large"|"small"} [size]      — hero layout item sizing
-
-
  */
 declare function CarouselItem({ width, height, aspectRatio, size, onClick, className, children, ...rest }: {
     [x: string]: any;
@@ -67,10 +49,6 @@ declare function CarouselItem({ width, height, aspectRatio, size, onClick, class
 }): import("react/jsx-runtime").JSX.Element;
 /**
  * CarouselComponent.ItemMedia — full-bleed image/video slot.
- *
- * @param {string}  src   — image source URL
- * @param {string}  [alt] — alt text
-
  */
 declare function CarouselItemMedia({ src, alt, className, children }: {
     src: any;
@@ -83,10 +61,6 @@ declare function CarouselItemMedia({ src, alt, className, children }: {
  *
  * M3 spec: optional label text with supporting text, positioned
  * at the bottom of the carousel item over a gradient scrim.
- *
- * @param {string}  title      — primary label text
- * @param {string}  [subtitle] — supporting text
-
  */
 declare function CarouselItemLabel({ title, subtitle, className, children }: {
     title: any;

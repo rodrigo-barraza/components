@@ -4,10 +4,6 @@
  *
  * Requires `lucide-react` icons to be passed via the `icons` prop
  * to keep the library icon-library-agnostic.
- *
- * @param {"external"|"internal"} visibility — The visibility value
- * @param {{ Globe: React.ComponentType, Lock: React.ComponentType }} icons — Lucide icon components
- * @param {string} [className] — Additional CSS class
  */
 export default function VisibilityBadgeComponent({ visibility, icons, className, ...rest }: {
     [x: string]: any;

@@ -2,34 +2,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState, useRef, useEffect, useCallback, forwardRef } from "react";
 import styles from "./SearchInputComponent.module.css";
-/* ══════════════════════════════════════════════════════════════════════
-   SearchInputComponent — M3 Search (Search Bar + Search View)
-
-   Material Design 3 defines two anatomies:
-     • Search Bar  — collapsed pill-shaped bar (56px) with leading icon,
-                     supporting text, and optional trailing elements
-     • Search View — expanded overlay with text field + suggestions list
-
-   Compound sub-components:
-     SearchInputComponent.Suggestion      — a single suggestion row
-     SearchInputComponent.SuggestionGroup — a labeled group of suggestions
-
-   ──────────────────────────────────────────────────────────────────────
-   @param {string}   value             — controlled query value
-   @param {Function} onChange          — (value: string) => void
-   @param {string}   [placeholder]     — placeholder / supporting text
-   @param {boolean}  [autoFocus=false] — focus on mount
-   @param {boolean}  [compact=false]   — 48px compact variant
-   @param {boolean}  [useScrim=false]  — show scrim overlay when expanded
-   @param {string}   [className]       — extra class on root
-   @param {React.ReactNode} [leadingIcon]   — slot: leading icon element
-   @param {React.ReactNode} [trailingIcon]  — slot: trailing icon/avatar
-   @param {Function} [onTrailingClick]      — handler for trailing icon
-   @param {Function} [onSubmit]             — called on Enter
-   @param {Function} [onExpand]             — called when view expands
-   @param {Function} [onCollapse]           — called when view collapses
-   @param {React.ReactNode} children        — Suggestion/SuggestionGroup
-   ══════════════════════════════════════════════════════════════════════ */
 const SearchInputComponent = forwardRef(function SearchInputComponent({ value = "", onChange, placeholder = "Search…", autoFocus = false, compact = false, useScrim = false, className, leadingIcon, trailingIcon, onTrailingClick, onSubmit, onExpand, onCollapse, children, ...rest }, ref) {
     const [expanded, setExpanded] = useState(false);
     const [highlightIndex, setHighlightIndex] = useState(-1);
@@ -167,9 +139,7 @@ const SearchInputComponent = forwardRef(function SearchInputComponent({ value = 
                         }, type: "button", "aria-label": "Clear search", children: clearIcon })), trailingIcon && (_jsx("button", { className: styles.trailingAction, onClick: (e) => {
                             e.stopPropagation();
                             onTrailingClick?.();
-                        }, type: "button", "aria-label": "Search options", children: typeof trailingIcon === "function" || trailingIcon.$$typeof
-                            ? trailingIcon
-                            : trailingIcon }))] }), hasSuggestions && (_jsxs("div", { ref: panelRef, id: "search-suggestions", className: `${styles.suggestionsPanel}${expanded ? ` ${styles.open}` : ""}`, role: "listbox", "aria-label": "Search suggestions", children: [_jsx("div", { className: styles.suggestionsDivider }), _jsx(SearchSuggestionsContext.Provider, { value: { highlightIndex, collapse, onChange }, children: children })] })), useScrim && (_jsx("div", { className: `${styles.scrim}${expanded ? ` ${styles.visible}` : ""}`, onClick: collapse, "aria-hidden": "true" }))] }));
+                        }, type: "button", "aria-label": "Search options", children: trailingIcon }))] }), hasSuggestions && (_jsxs("div", { ref: panelRef, id: "search-suggestions", className: `${styles.suggestionsPanel}${expanded ? ` ${styles.open}` : ""}`, role: "listbox", "aria-label": "Search suggestions", children: [_jsx("div", { className: styles.suggestionsDivider }), _jsx(SearchSuggestionsContext.Provider, { value: { highlightIndex, collapse, onChange }, children: children })] })), useScrim && (_jsx("div", { className: `${styles.scrim}${expanded ? ` ${styles.visible}` : ""}`, onClick: collapse, "aria-hidden": "true" }))] }));
 });
 /* ══════════════════════════════════════════════════════════════════════
    Context for passing state to suggestion items
@@ -178,7 +148,7 @@ import { createContext, useContext } from "react";
 const SearchSuggestionsContext = createContext({
     highlightIndex: -1,
     collapse: () => { },
-    onChange: () => { },
+    onChange: undefined,
 });
 /* ══════════════════════════════════════════════════════════════════════
    Suggestion — individual suggestion row
@@ -224,8 +194,10 @@ function SuggestionsEmpty({ message = "No results found" }) {
     return _jsx("div", { className: styles.suggestionsEmpty, children: message });
 }
 /* ── Attach sub-components ──────────────────────────────────────── */
-SearchInputComponent.Suggestion = Suggestion;
-SearchInputComponent.SuggestionGroup = SuggestionGroup;
-SearchInputComponent.Empty = SuggestionsEmpty;
-export default SearchInputComponent;
+const SearchInputWithSubcomponents = Object.assign(SearchInputComponent, {
+    Suggestion,
+    SuggestionGroup,
+    Empty: SuggestionsEmpty,
+});
+export default SearchInputWithSubcomponents;
 //# sourceMappingURL=SearchInputComponent.js.map

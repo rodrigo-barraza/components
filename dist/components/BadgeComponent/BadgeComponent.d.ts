@@ -1,16 +1,12 @@
 /**
  * BadgeComponent — standardized inline badge/pill.
- *
-
- * @param {string} [tooltip] — optional tooltip label shown on hover
  */
-interface BadgeProps {
+interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
     variant?: string;
-    children?: any;
+    children?: React.ReactNode;
     className?: string;
     mini?: boolean;
-    tooltip?: any;
-    [key: string]: any;
+    tooltip?: React.ReactNode;
 }
 export default function BadgeComponent({ variant, children, className, mini, tooltip, ...rest }: BadgeProps): import("react/jsx-runtime").JSX.Element;
 export {};

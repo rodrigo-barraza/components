@@ -14,17 +14,6 @@
  *   Native <input type="radio"> within a shared `name` group enables
  *   arrow-key navigation per WAI-ARIA Radio Group pattern.
  *   Tab moves focus into/out of the group; arrows cycle within.
- *
- * @param {string}            value             — This radio's value
- * @param {string}            selectedValue     — Currently selected value in group
- * @param {Function}          onChange           — (value: string) => void
- * @param {string}            [label]           — Optional label text
- * @param {boolean}           [disabled]        — Disabled state
- * @param {boolean}           [error]           — Error-state styling
- * @param {string}            [className]       — Additional wrapper class
- * @param {string}            [id]              — Element ID for accessibility
- * @param {string}            [name]            — Form radio group name
- * @param {"start"|"end"}     [labelPlacement]  — Label position relative to radio
  */
 declare function RadioComponent({ value, selectedValue, onChange, label, disabled, error, className, id, name, labelPlacement, }: {
     value: any;

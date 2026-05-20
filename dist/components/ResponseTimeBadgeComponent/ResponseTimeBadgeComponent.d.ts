@@ -6,10 +6,6 @@
  * - ≤ 50ms  → Good (blue)
  * - ≤ 100ms → Fair (amber)
  * - > 100ms → Slow (red)
- *
- * @param {number} ms — Response time in milliseconds
- * @param {(ms: number) => string} [formatter] — Custom formatter (defaults to `${ms}ms`)
- * @param {string} [className] — Additional CSS class
  */
 export default function ResponseTimeBadgeComponent({ ms, formatter, className, ...rest }: {
     [x: string]: any;

@@ -33,13 +33,22 @@
 
  *   Explicit accessible label. When omitted the text content of `children`
  *   is used. Always required when `collapsed` is true.
- * @param {React.ReactNode} props.children
- *   The text label for the FAB.
 
  *   Additional CSS class.
 
 
  */
-declare const ExtendedFabComponent: import("react").ForwardRefExoticComponent<Omit<any, "ref"> & import("react").RefAttributes<any>>;
+declare const ExtendedFabComponent: import("react").ForwardRefExoticComponent<import("react").ButtonHTMLAttributes<HTMLButtonElement> & {
+    variant?: string;
+    icon?: React.ComponentType<{
+        size?: number;
+        strokeWidth?: number;
+        className?: string;
+    }>;
+    collapsed?: boolean;
+    lowered?: boolean;
+    fixed?: boolean;
+    ariaLabel?: string;
+} & import("react").RefAttributes<HTMLButtonElement>>;
 export default ExtendedFabComponent;
 //# sourceMappingURL=ExtendedFabComponent.d.ts.map

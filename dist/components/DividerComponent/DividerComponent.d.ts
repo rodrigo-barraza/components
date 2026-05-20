@@ -11,14 +11,6 @@
  *
  * @see https://m3.material.io/components/divider/overview
  * @see https://m3.material.io/components/divider/specs
- *
- * @param {"fullWidth"|"inset"|"middleInset"} [variant="fullWidth"] — M3 inset variant
- * @param {"horizontal"|"vertical"} [orientation="horizontal"] — axis of the divider
- * @param {"sm"|"md"|"lg"}  [spacing]       — optional spacing preset around the divider
- * @param {boolean}          [decorative=false] — if true, renders as `role="none"` (purely visual)
-
- * @param {object}           [style]        — use --divider-color / --divider-thickness to theme
-
  */
 declare function DividerComponent({ variant, orientation, spacing, decorative, className, style, ...rest }: {
     [x: string]: any;
@@ -39,10 +31,6 @@ export default DividerComponent;
  * Renders a horizontal rule split by a centered text label.
  * Common in lists, settings panels, and form sections.
  * Always decorative — the label itself provides the semantic meaning.
- *
- * @param {string}  label      — the section label text
-
-
  */
 declare function DividerSubheader({ label, variant, className, style, ...rest }: {
     [x: string]: any;

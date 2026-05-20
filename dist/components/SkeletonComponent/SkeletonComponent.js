@@ -10,14 +10,6 @@ import styles from "./SkeletonComponent.module.css";
  *
  * Supports text lines, circular avatars, rectangular cards, and fully custom
  * dimensions via width/height props.
- *
- * @param {"text"|"circular"|"rectangular"} [variant="text"] — Shape preset
- * @param {string|number} [width]  — CSS width override (e.g. "200px", "100%", 200)
- * @param {string|number} [height] — CSS height override (e.g. "40px", 40)
- * @param {number} [lines=1]       — Number of text lines to render (variant="text" only)
- * @param {boolean} [animate=true] — Enable shimmer animation
- * @param {string} [className]     — Additional CSS class
- * @param {string} [id]            — Element ID
  */
 export default function SkeletonComponent({ variant = "text", width, height, lines = 1, animate = true, className = "", id, }) {
     const resolveSize = (value) => value == null ? undefined : typeof value === "number" ? `${value}px` : value;
@@ -48,11 +40,6 @@ export default function SkeletonComponent({ variant = "text", width, height, lin
 }
 /**
  * SkeletonGroup — Compose multiple skeleton shapes inside a container.
- *
- * @param {string} [gap="12px"] — Gap between skeleton children
- * @param {"row"|"column"} [direction="column"] — Flex direction
-
-
  */
 export function SkeletonGroup({ gap = "12px", direction = "column", className = "", children, }) {
     return (_jsx("div", { className: `${styles.group} ${className}`, style: { gap, flexDirection: direction }, role: "status", "aria-label": "Loading content", children: children }));

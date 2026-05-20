@@ -8,23 +8,6 @@
  * @see https://m3.material.io/components/dialogs
  *
  * Anatomy: [scrim] → [container] → [icon?] → [headline?] → [body] → [actions]
- *
-
- * @param {boolean}  props.open                — Controls dialog visibility
- * @param {Function} props.onClose             — Called when dismissed (scrim click / Escape)
- * @param {React.ReactNode}  [props.icon]      — Optional hero icon (centered above headline)
- * @param {string}           [props.headline]  — Dialog headline / title
- * @param {Function}         [props.onConfirm] — Confirm action handler
- * @param {string}           [props.confirmLabel="OK"]    — Confirm button label
- * @param {string}           [props.cancelLabel="Cancel"] — Cancel button label
- * @param {boolean}          [props.hideCancel=false]      — Omit cancel button (acknowledgment dialogs)
- * @param {"default"|"destructive"} [props.confirmVariant="default"] — Visual emphasis
- * @param {boolean}          [props.confirmDisabled=false] — Disable confirm action
- * @param {boolean}          [props.fullscreen=false]      — Mobile fullscreen mode
- * @param {boolean}          [props.dismissible=true]      — Allow scrim/Escape dismissal
- * @param {string}           [props.className]             — Additional container class
- * @param {string}           [props.id]                    — Unique dialog ID for ARIA
- * @param {React.ReactNode}  props.children    — Supporting text / body content
  */
 export default function DialogComponent({ open, onClose, icon, headline, onConfirm, confirmLabel, cancelLabel, hideCancel, confirmVariant, confirmDisabled, fullscreen, dismissible, className, id, children, }: {
     open: any;

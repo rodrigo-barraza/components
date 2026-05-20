@@ -4,17 +4,6 @@ import { useRef, useEffect, useCallback } from "react";
 import styles from "./TextAreaComponent.module.css";
 /**
  * TextAreaComponent — Reusable auto-resizing textarea with consistent styling.
- *
- * @param {string}   value       — Current value
- * @param {Function} onChange    — (e) => void
- * @param {string}   [placeholder] — Placeholder text
- * @param {number}   [minRows=3]  — Minimum visible rows
- * @param {number}   [maxRows=12] — Maximum visible rows before scrolling
- * @param {boolean}  [autoResize=true] — Auto-grow to content
-
-
- * @param {string}   [className] — Additional class
- * @param {string}   [id]       — Element ID for accessibility
  */
 export default function TextAreaComponent({ value, onChange, placeholder, minRows = 3, maxRows = 12, autoResize = true, disabled = false, readOnly = false, className, id, ...rest }) {
     const ref = useRef(null);

@@ -21,15 +21,6 @@ import styles from "./NavigationDrawerComponent.module.css";
  *   • Keyboard: Tab/Shift+Tab through items, Enter/Space to activate
  *
  * @see https://m3.material.io/components/navigation-drawer/overview
- *
- * @param {"standard"|"modal"} [variant="standard"] — drawer type
- * @param {"start"|"end"}      [anchor="start"]     — side the drawer appears on
- * @param {boolean}   [open=true]       — controls drawer visibility
- * @param {Function}  [onClose]         — called when user dismisses modal
- * @param {string}    [headline]        — optional title text at the top
- * @param {string}    [ariaLabel]       — accessible label for <nav>
-
-
  */
 export default function NavigationDrawerComponent({ variant = "standard", anchor = "start", open = true, onClose, headline, ariaLabel = "Navigation drawer", className, style, children, ...rest }) {
     const drawerRef = useRef(null);
@@ -121,17 +112,6 @@ export default function NavigationDrawerComponent({ variant = "standard", anchor
  *
  * M3 spec: 56dp height, full-width rounded-pill shape,
  *          leading icon, label, optional trailing badge.
- *
- * @param {React.ComponentType} [icon]   — leading icon (Lucide etc.)
- * @param {string}    label              — destination label text
- * @param {string}    [badge]            — trailing badge text (e.g. "24")
- * @param {boolean}   [active=false]     — active/selected state
-
- * @param {string}    [href]             — renders as <a> if provided
-
- * @param {React.ComponentType} [LinkComponent] — custom router Link
-
- * @param {React.ReactNode} children     — overrides icon+label rendering
  */
 function DrawerItem({ icon: Icon, label, badge, active = false, disabled = false, href, onClick, LinkComponent, className, children, ...rest }) {
     const classes = [
@@ -165,9 +145,6 @@ function DrawerItem({ icon: Icon, label, badge, active = false, disabled = false
  * DrawerSectionHeader — labelled group heading.
  *
  * M3 spec: title-small typography, 56dp total height with padding.
- *
-
-
  */
 function DrawerSectionHeader({ className, children }) {
     return (_jsx("div", { className: `${styles.sectionHeader}${className ? ` ${className}` : ""}`, role: "heading", "aria-level": 2, children: children }));
@@ -175,8 +152,6 @@ function DrawerSectionHeader({ className, children }) {
 /* ── Divider ─────────────────────────────────────────────────────── */
 /**
  * DrawerDivider — horizontal visual separator between sections.
- *
-
  */
 function DrawerDivider({ className }) {
     return (_jsx("div", { role: "separator", className: `${styles.divider}${className ? ` ${className}` : ""}` }));
@@ -184,9 +159,6 @@ function DrawerDivider({ className }) {
 /* ── Footer ──────────────────────────────────────────────────────── */
 /**
  * DrawerFooter — bottom-pinned slot for actions or secondary content.
- *
-
-
  */
 function DrawerFooter({ className, children }) {
     return (_jsx("div", { className: `${styles.footer}${className ? ` ${className}` : ""}`, children: children }));

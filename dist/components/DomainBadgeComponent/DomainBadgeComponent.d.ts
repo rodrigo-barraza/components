@@ -3,10 +3,6 @@
  *
  * Renders the domain as a clickable badge linking to the HTTPS URL.
  * Accepts a Globe icon via props to stay icon-library-agnostic.
- *
- * @param {string} domain — Domain name (e.g. "prism.rod.dev")
- * @param {{ Globe: React.ComponentType }} [icons] — Icon components
- * @param {string} [className] — Additional CSS class
  */
 export default function DomainBadgeComponent({ domain, icons, className, ...rest }: {
     [x: string]: any;

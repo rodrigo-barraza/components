@@ -23,15 +23,6 @@ import styles from "./ToolbarComponent.module.css";
  *   • Roving tabindex: arrow keys move focus between items
  *   • Home / End jump to first / last item
  *   • Tab moves focus out of the toolbar entirely
- *
- * @param {"standard"|"dense"}  [variant="standard"]  — height variant
- * @param {"horizontal"|"vertical"} [orientation="horizontal"] — layout direction
- * @param {boolean}   [divider=false]    — renders a bottom border
- * @param {boolean}   [sticky=false]     — makes toolbar sticky at top
- * @param {boolean}   [elevated=false]   — adds subtle shadow
- * @param {string}    [ariaLabel]        — accessible label for the toolbar
-
-
  */
 export default function ToolbarComponent({ variant = "standard", orientation = "horizontal", divider = false, sticky = false, elevated = false, ariaLabel, className, style, children, ...rest }) {
     const toolbarRef = useRef(null);
@@ -100,10 +91,6 @@ export default function ToolbarComponent({ variant = "standard", orientation = "
  *
  * M3 toolbars organize actions into leading, center, and trailing
  * groups. Use `role="group"` with an aria-label for screen readers.
- *
- * @param {string}    [ariaLabel]  — accessible group label
-
-
  */
 function ToolbarGroup({ ariaLabel, className, children }) {
     return (_jsx("div", { role: "group", "aria-label": ariaLabel, className: `${styles.group}${className ? ` ${className}` : ""}`, children: children }));
@@ -116,14 +103,6 @@ function ToolbarGroup({ ariaLabel, className, children }) {
  * Participates in roving tabindex via `data-toolbar-item`.
  *
  * M3 spec: 48×48dp touch target, 24×24dp icon optical size.
- *
- * @param {React.ComponentType} [icon]  — Lucide or similar icon component
- * @param {string}    [label]           — visible text label
- * @param {string}    [ariaLabel]       — accessible label (overrides label)
- * @param {boolean}   [active=false]    — active/selected state
-
-
- * @param {React.ReactNode} children    — overrides icon + label rendering
  */
 const ToolbarItem = forwardRef(function ToolbarItem({ icon: Icon, label, ariaLabel, active = false, disabled = false, onClick, className, children, ...rest }, ref) {
     const classes = [
@@ -141,8 +120,6 @@ const ToolbarItem = forwardRef(function ToolbarItem({ icon: Icon, label, ariaLab
  * ToolbarSeparator — visual divider between toolbar groups.
  *
  * M3 spec: 1px outline-variant line, 24px height, 4px horizontal margin.
- *
-
  */
 function ToolbarSeparator({ className }) {
     return (_jsx("div", { role: "separator", "aria-orientation": "vertical", className: `${styles.separator}${className ? ` ${className}` : ""}` }));
@@ -152,9 +129,6 @@ function ToolbarSeparator({ className }) {
  * ToolbarTitle — text label displayed within the toolbar.
  *
  * M3 spec: title-medium typography (16px / 500 weight).
- *
-
-
  */
 function ToolbarTitle({ className, children }) {
     return (_jsx("span", { className: `${styles.title}${className ? ` ${className}` : ""}`, children: children }));

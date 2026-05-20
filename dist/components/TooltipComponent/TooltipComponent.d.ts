@@ -24,39 +24,25 @@
  *   • prefers-reduced-motion: skip entrance animation
  *
  * Props — Plain variant (default):
- *   @param {string}            label          — Plain tooltip text
- *   @param {"top"|"bottom"|"left"|"right"} [position="top"] — Preferred position
- *   @param {"hover"|"click"}   [trigger="hover"] — Trigger mode
- *   @param {number}            [enterDelay=500]  — Hover delay before show (ms)
- *   @param {number}            [exitDelay=1500]  — Auto-hide delay (ms) for click trigger
- *   @param {boolean}           [disabled=false]  — Disable tooltip entirely
- *   @param {string}            [className=""]    — Extra class on wrapper
  *
  * Props — Rich variant (activates when `rich` is truthy):
- *   @param {boolean}           [rich=false]      — Enable rich tooltip variant
- *   @param {string}            [title]           — Rich tooltip subhead text
- *   @param {React.ReactNode}   [content]         — Rich tooltip supporting text (can be JSX)
- *   @param {React.ReactNode}   [action]          — Rich tooltip action slot (e.g. button)
- *   @param {boolean}           [persistent=false] — Rich tooltip stays visible until dismissed
- *
- * @param {React.ReactNode} children — The trigger/anchor element(s)
  */
 interface TooltipProps {
-    label?: any;
+    label?: React.ReactNode;
     position?: string;
     trigger?: string;
     enterDelay?: number;
     exitDelay?: number;
     disabled?: boolean;
-    children: any;
+    children: React.ReactNode;
     className?: string;
     rich?: boolean;
-    title?: any;
-    content?: any;
-    action?: any;
+    title?: React.ReactNode;
+    content?: React.ReactNode;
+    action?: React.ReactNode;
     persistent?: boolean;
-    delay?: any;
+    delay?: number;
 }
-export default function TooltipComponent({ label, position, trigger, enterDelay, exitDelay, disabled, children, className, rich, title, content, action, persistent, delay, }: TooltipProps): any;
+export default function TooltipComponent({ label, position, trigger, enterDelay, exitDelay, disabled, children, className, rich, title, content, action, persistent, delay, }: TooltipProps): string | number | bigint | boolean | Iterable<import("react").ReactNode> | Promise<string | number | bigint | boolean | import("react").ReactPortal | import("react").ReactElement<unknown, string | import("react").JSXElementConstructor<any>> | Iterable<import("react").ReactNode>> | import("react/jsx-runtime").JSX.Element;
 export {};
 //# sourceMappingURL=TooltipComponent.d.ts.map

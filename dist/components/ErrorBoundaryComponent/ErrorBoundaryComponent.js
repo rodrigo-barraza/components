@@ -8,13 +8,6 @@ import styles from "./ErrorBoundaryComponent.module.css";
  *
  * Wrap page layouts or critical subtrees to prevent the entire app from
  * unmounting on an unexpected exception.
- *
- * @param {React.ReactNode} children — Protected subtree
- * @param {React.ReactNode} [fallback] — Custom fallback UI (default: built-in error card)
- * @param {string} [title] — Error card heading (default: "Something went wrong")
- * @param {string} [subtitle] — Error card description
- * @param {(error: Error, info: { componentStack: string }) => void} [onError] — Error callback
- * @param {boolean} [showDetails] — Show error.message in the fallback (default: false)
  */
 export default class ErrorBoundaryComponent extends Component {
     constructor(props) {

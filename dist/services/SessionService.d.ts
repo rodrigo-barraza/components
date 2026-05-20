@@ -15,9 +15,6 @@ export interface SessionServiceInstance {
 }
 /**
  * Create a SessionService instance for a specific project.
- *
- * @param projectId — Unique project identifier (e.g. "clock-crew-client")
- * @param options — optional configuration
  */
 export declare function createSessionService(projectId: string, options?: SessionServiceOptions): SessionServiceInstance;
 //# sourceMappingURL=SessionService.d.ts.map

@@ -19,9 +19,6 @@
  *   • Screen-reader announcements via `aria-label`
  *
 
- * @param {Array<{icon: React.ComponentType, label: string, onClick: Function, ariaLabel?: string}>} props.items
- *   Array of 3–6 menu actions. Each item has an icon component,
- *   a visible label, an onClick handler, and optional ariaLabel.
 
  *   Icon for the trigger FAB. Defaults to a "+" shape if omitted.
 

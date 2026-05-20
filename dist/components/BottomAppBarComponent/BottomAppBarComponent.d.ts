@@ -31,16 +31,6 @@ export interface BottomAppBarComponentProps extends HTMLAttributes<HTMLDivElemen
  *   • Roving tabindex across action buttons (ArrowLeft/ArrowRight)
  *   • FAB is outside the roving tabindex group
  *   • All buttons require aria-labels
- *
- * @param {React.ReactNode} [fab] — FAB element rendered in the trailing slot
- * @param {"fixed"|"relative"} [position="fixed"] — CSS positioning
- * @param {boolean} [hideOnScroll=true] — hides bar when scrolling down
- * @param {React.RefObject} [scrollTargetRef] — scrollable element ref (defaults to window)
- * @param {number} [scrollThreshold=8] — min scroll delta to trigger hide/show
- * @param {string} [ariaLabel="Bottom actions"] — accessible label for the toolbar
-
-
- * @param {React.ReactNode} children — BottomAppBarComponent.Action items
  */
 declare function BottomAppBarComponent({ fab, position, hideOnScroll, scrollTargetRef, scrollThreshold, ariaLabel, className, style, children, ...rest }: BottomAppBarComponentProps): import("react/jsx-runtime").JSX.Element;
 declare namespace BottomAppBarComponent {

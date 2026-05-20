@@ -3,10 +3,6 @@
  *
  * Strips the protocol prefix and displays the raw address in monospace.
  * Optionally renders as a clickable link.
- *
- * @param {string} address — Full URL or raw address (e.g. "http://192.168.86.2:3000")
- * @param {boolean} [link=false] — Render as an anchor tag
- * @param {string} [className] — Additional CSS class
  */
 interface AddressBadgeProps {
     address: string;

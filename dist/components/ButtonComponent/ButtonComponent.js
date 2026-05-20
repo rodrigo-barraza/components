@@ -23,18 +23,6 @@ import SoundService from "../../services/SoundService.js";
  * Audio is enabled when the app is wrapped with
  * `<ComponentsProvider sound>`. Without the provider, the button
  * renders silently.
- *
-
-
- * @param {"small"|"medium"|"large"} [props.size="medium"] — M3 size scale
- * @param {React.ComponentType} [props.icon] — Lucide-compatible icon component (leading)
- * @param {number} [props.iconSize] — Override icon size (default: auto by button size)
- * @param {boolean} [props.loading] — Shows spinner, disables interaction
- * @param {boolean} [props.disabled] — Disables the button
- * @param {boolean} [props.fullWidth] — Stretches to container width
- * @param {boolean} [props.isGenerating] — Submit variant: shows stop icon with conic spinner
- * @param {string} [props.href] — If provided, renders as <a> tag
- * @param {React.ReactNode} props.children — Button label text
  */
 const ButtonComponent = forwardRef(function ButtonComponent({ variant = "primary", size = "medium", icon: Icon, iconSize, loading = false, disabled = false, fullWidth = false, isGenerating = false, href, children, className = "", onClick, onMouseEnter, ...rest }, ref) {
     const { sound } = useComponents();

@@ -12,14 +12,6 @@
  *   CardComponent.Body        — main content area with padding
  *   CardComponent.Footer      — bottom bar (e.g. action buttons)
  *   CardComponent.ActionArea  — makes the card (or a region) clickable with ripple
- *
- * @param {"elevated"|"filled"|"outlined"} [variant="outlined"] — M3 card variant
- * @param {boolean}   [interactive=false]   — enables hover / press state layer
- * @param {boolean}   [draggable=false]     — adds dragged state elevation
- * @param {boolean}   [fullWidth=false]     — stretches to container width
-
- * @param {object}    [style]               — use --card-accent to theme
-
  */
 declare function CardComponent({ variant, interactive, draggable: isDraggable, fullWidth, className, style, children, ...rest }: {
     [x: string]: any;
@@ -48,14 +40,6 @@ declare function CardHeader({ icon: Icon, title, subtitle, children, className }
 }): import("react/jsx-runtime").JSX.Element;
 /**
  * CardMedia — M3 media slot for full-bleed images, video, or illustrations.
- *
- * @param {string}   [src]        — image source URL
- * @param {string}   [alt]        — alt text for image
- * @param {number}   [height]     — fixed height in px (default: auto, aspect-ratio used if set)
- * @param {string}   [aspectRatio] — CSS aspect-ratio value, e.g. "16/9"
- * @param {"top"|"bottom"|"full"} [position="top"] — clip-path rounding position
-
- * @param {React.ReactNode} children — custom content (overrides src/alt)
  */
 declare function CardMedia({ src, alt, height, aspectRatio, position, className, children, }: {
     src: any;

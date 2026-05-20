@@ -39,8 +39,6 @@ import SoundService from "../../services/SoundService.js";
 
  *   Explicit accessible label. When omitted the text content of `children`
  *   is used. Always required when `collapsed` is true.
- * @param {React.ReactNode} props.children
- *   The text label for the FAB.
 
  *   Additional CSS class.
 

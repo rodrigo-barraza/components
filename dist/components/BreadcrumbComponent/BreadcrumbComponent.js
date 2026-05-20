@@ -7,11 +7,6 @@ import styles from "./BreadcrumbComponent.module.css";
  * Renders a horizontal chain of path segments separated by
  * a chevron divider. The last item is styled as the current page
  * (non-interactive, bold). Supports icon prefixes per segment.
- *
- * @param {Array<{label: string, href?: string, icon?: React.ComponentType, onClick?: Function}>} items
- *   — Ordered breadcrumb segments
- * @param {"chevron"|"slash"|"dot"} [separator="chevron"] — Divider style
-
  */
 export default function BreadcrumbComponent({ items = [], separator = "chevron", className, ...rest }) {
     if (items.length === 0)

@@ -79,9 +79,6 @@ function send(apiBase, projectId, path, body) {
 }
 /**
  * Create a SessionService instance for a specific project.
- *
- * @param projectId — Unique project identifier (e.g. "clock-crew-client")
- * @param options — optional configuration
  */
 export function createSessionService(projectId, options = {}) {
     const { apiBase = "/api/sessions" } = options;

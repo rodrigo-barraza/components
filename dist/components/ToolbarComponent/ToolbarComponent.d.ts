@@ -19,15 +19,6 @@
  *   • Roving tabindex: arrow keys move focus between items
  *   • Home / End jump to first / last item
  *   • Tab moves focus out of the toolbar entirely
- *
- * @param {"standard"|"dense"}  [variant="standard"]  — height variant
- * @param {"horizontal"|"vertical"} [orientation="horizontal"] — layout direction
- * @param {boolean}   [divider=false]    — renders a bottom border
- * @param {boolean}   [sticky=false]     — makes toolbar sticky at top
- * @param {boolean}   [elevated=false]   — adds subtle shadow
- * @param {string}    [ariaLabel]        — accessible label for the toolbar
-
-
  */
 declare function ToolbarComponent({ variant, orientation, divider, sticky, elevated, ariaLabel, className, style, children, ...rest }: {
     [x: string]: any;
@@ -43,7 +34,16 @@ declare function ToolbarComponent({ variant, orientation, divider, sticky, eleva
 }): import("react/jsx-runtime").JSX.Element;
 declare namespace ToolbarComponent {
     var Group: typeof ToolbarGroup;
-    var Item: import("react").ForwardRefExoticComponent<Omit<any, "ref"> & import("react").RefAttributes<any>>;
+    var Item: import("react").ForwardRefExoticComponent<import("react").ButtonHTMLAttributes<HTMLButtonElement> & {
+        icon?: React.ComponentType<{
+            size?: number;
+            strokeWidth?: number;
+            className?: string;
+        }>;
+        label?: string;
+        ariaLabel?: string;
+        active?: boolean;
+    } & import("react").RefAttributes<HTMLButtonElement>>;
     var Separator: typeof ToolbarSeparator;
     var Title: typeof ToolbarTitle;
     var Spacer: typeof ToolbarSpacer;
@@ -54,10 +54,6 @@ export default ToolbarComponent;
  *
  * M3 toolbars organize actions into leading, center, and trailing
  * groups. Use `role="group"` with an aria-label for screen readers.
- *
- * @param {string}    [ariaLabel]  — accessible group label
-
-
  */
 declare function ToolbarGroup({ ariaLabel, className, children }: {
     ariaLabel: any;
@@ -68,8 +64,6 @@ declare function ToolbarGroup({ ariaLabel, className, children }: {
  * ToolbarSeparator — visual divider between toolbar groups.
  *
  * M3 spec: 1px outline-variant line, 24px height, 4px horizontal margin.
- *
-
  */
 declare function ToolbarSeparator({ className }: {
     className: any;
@@ -78,9 +72,6 @@ declare function ToolbarSeparator({ className }: {
  * ToolbarTitle — text label displayed within the toolbar.
  *
  * M3 spec: title-medium typography (16px / 500 weight).
- *
-
-
  */
 declare function ToolbarTitle({ className, children }: {
     className: any;
