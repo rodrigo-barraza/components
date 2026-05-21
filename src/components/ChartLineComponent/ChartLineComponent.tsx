@@ -1,10 +1,10 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
-import styles from "./SparklineComponent.module.css";
+import styles from "./ChartLineComponent.module.css";
 
 /**
- * SparklineComponent — GPU-composited Canvas sparkline area chart.
+ * ChartLineComponent — GPU-composited Canvas sparkline area chart.
  *
  * Renders a smooth, filled line chart suitable for inline metrics
  * (CPU %, memory usage, etc.). Uses monotone cubic interpolation for
@@ -14,7 +14,7 @@ import styles from "./SparklineComponent.module.css";
  * On hover, a vertical crosshair and floating tooltip display the
  * Y-axis value at the nearest data point.
  */
-export default function SparklineComponent({
+export default function ChartLineComponent({
   data,
   color = "#10b981",
   maxValue = 100,

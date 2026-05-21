@@ -1,5 +1,5 @@
 /**
- * SparklineComponent — GPU-composited Canvas sparkline area chart.
+ * ChartLineComponent — GPU-composited Canvas sparkline area chart.
  *
  * Renders a smooth, filled line chart suitable for inline metrics
  * (CPU %, memory usage, etc.). Uses monotone cubic interpolation for
@@ -9,7 +9,7 @@
  * On hover, a vertical crosshair and floating tooltip display the
  * Y-axis value at the nearest data point.
  */
-export default function SparklineComponent({ data, color, maxValue, height, historyMax, showGrid, formatValue, className, }: {
+export default function ChartLineComponent({ data, color, maxValue, height, historyMax, showGrid, formatValue, className, }: {
     data: any;
     color?: string;
     maxValue?: number;
@@ -19,4 +19,4 @@ export default function SparklineComponent({ data, color, maxValue, height, hist
     formatValue: any;
     className: any;
 }): import("react/jsx-runtime").JSX.Element;
-//# sourceMappingURL=SparklineComponent.d.ts.map
+//# sourceMappingURL=ChartLineComponent.d.ts.map

@@ -1,9 +1,9 @@
 "use client";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useRef, useEffect, useState, useCallback } from "react";
-import styles from "./SparklineComponent.module.css";
+import styles from "./ChartLineComponent.module.css";
 /**
- * SparklineComponent — GPU-composited Canvas sparkline area chart.
+ * ChartLineComponent — GPU-composited Canvas sparkline area chart.
  *
  * Renders a smooth, filled line chart suitable for inline metrics
  * (CPU %, memory usage, etc.). Uses monotone cubic interpolation for
@@ -13,7 +13,7 @@ import styles from "./SparklineComponent.module.css";
  * On hover, a vertical crosshair and floating tooltip display the
  * Y-axis value at the nearest data point.
  */
-export default function SparklineComponent({ data, color = "#10b981", maxValue = 100, height = 48, historyMax = 60, showGrid = false, formatValue, className, }) {
+export default function ChartLineComponent({ data, color = "#10b981", maxValue = 100, height = 48, historyMax = 60, showGrid = false, formatValue, className, }) {
     const canvasRef = useRef(null);
     const containerRef = useRef(null);
     // Hover state — null when mouse is outside
@@ -231,4 +231,4 @@ export default function SparklineComponent({ data, color = "#10b981", maxValue =
         : {};
     return (_jsxs("div", { ref: containerRef, className: `${styles.sparklineContainer} ${className || ""}`, onMouseMove: handleMouseMove, onMouseLeave: handleMouseLeave, children: [_jsx("canvas", { ref: canvasRef, className: styles.sparklineCanvas }), hover != null && (_jsx("div", { className: styles.sparklineTooltip, style: tooltipStyle, children: formattedValue }))] }));
 }
-//# sourceMappingURL=SparklineComponent.js.map
+//# sourceMappingURL=ChartLineComponent.js.map
