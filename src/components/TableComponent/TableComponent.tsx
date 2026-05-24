@@ -305,32 +305,32 @@ export default function TableComponent<T, TSub = unknown>({
   }, []);
 
   const onPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    const d = dragRef.current;
-    if (!d.active) return;
-    const deltaX = e.clientX - d.startX;
-    const deltaY = e.clientY - d.startY;
-    if (!d.moved && Math.abs(deltaX) + Math.abs(deltaY) > 5) {
-      d.moved = true;
+    const drag = dragRef.current;
+    if (!drag.active) return;
+    const deltaX = e.clientX - drag.startX;
+    const deltaY = e.clientY - drag.startY;
+    if (!drag.moved && Math.abs(deltaX) + Math.abs(deltaY) > 5) {
+      drag.moved = true;
       const element = scrollRef.current;
-      if (element && d.pointerId !== undefined) {
-        try { element.setPointerCapture(d.pointerId); } catch { /* ignore */ }
+      if (element && drag.pointerId !== undefined) {
+        try { element.setPointerCapture(drag.pointerId); } catch { /* ignore */ }
       }
       scrollRef.current?.classList.add(styles.grabbing);
     }
-    if (d.moved) {
+    if (drag.moved) {
       const element = scrollRef.current;
       if (element) {
-        element.scrollLeft = d.scrollLeft - deltaX;
-        element.scrollTop = d.scrollTop - deltaY;
+        element.scrollLeft = drag.scrollLeft - deltaX;
+        element.scrollTop = drag.scrollTop - deltaY;
       }
     }
   }, []);
 
   const onPointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    const d = dragRef.current;
-    const wasDrag = d.moved;
-    d.active = false;
-    d.moved = false;
+    const drag = dragRef.current;
+    const wasDrag = drag.moved;
+    drag.active = false;
+    drag.moved = false;
     const element = scrollRef.current;
     if (element) {
       try { element.releasePointerCapture(e.pointerId); } catch { /* ignore */ }

@@ -56,8 +56,8 @@ export default function ChatPanelComponent({
     if (shouldSnap.current && messages.length > 0 && isOpen) {
       scrollToBottom(messages.length <= 1);
       // Catch late layout shifts from async content
-      const t = setTimeout(() => scrollToBottom(true), 150);
-      return () => clearTimeout(t);
+      const scrollTimer = setTimeout(() => scrollToBottom(true), 150);
+      return () => clearTimeout(scrollTimer);
     }
   }, [messages, isOpen, scrollToBottom]);
 
@@ -80,8 +80,8 @@ export default function ChatPanelComponent({
     if (isOpen) {
       shouldSnap.current = true;
       // Delay to let animation settle
-      const t = setTimeout(() => scrollToBottom(true), 350);
-      return () => clearTimeout(t);
+      const scrollTimer = setTimeout(() => scrollToBottom(true), 350);
+      return () => clearTimeout(scrollTimer);
     }
   }, [isOpen, scrollToBottom]);
 
