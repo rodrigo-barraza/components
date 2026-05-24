@@ -46,6 +46,7 @@ export { default as PageHeaderComponent } from "./components/PageHeaderComponent
 export { default as PageLayoutComponent } from "./components/PageLayoutComponent/PageLayoutComponent.js";
 export { default as PaginationComponent } from "./components/PaginationComponent/PaginationComponent.js";
 export { default as PortBadgeComponent } from "./components/PortBadgeComponent/PortBadgeComponent.js";
+export { default as ProgressBarComponent } from "./components/ProgressBarComponent/ProgressBarComponent.js";
 export { default as RadioComponent } from "./components/RadioComponent/RadioComponent.js";
 export { default as RepositoryBadgeComponent } from "./components/RepositoryBadgeComponent/RepositoryBadgeComponent.js";
 export { default as ResponseTimeBadgeComponent } from "./components/ResponseTimeBadgeComponent/ResponseTimeBadgeComponent.js";
