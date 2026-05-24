@@ -75,7 +75,7 @@ export default function NavigationRailComponent({
 
   // Keyboard navigation within the destination group
   const handleKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLDivElement>) => {
+    (event: KeyboardEvent<HTMLDivElement>) => {
       if (!destinationsRef.current) return;
       const buttons = destinationsRef.current.querySelectorAll<HTMLElement>(
         `[data-rail-destination]`
@@ -84,22 +84,22 @@ export default function NavigationRailComponent({
 
       let nextIndex = focusedIndex;
 
-      switch (e.key) {
+      switch (event.key) {
         case "ArrowDown":
-          e.preventDefault();
+          event.preventDefault();
           nextIndex = (focusedIndex + 1) % buttons.length;
           break;
         case "ArrowUp":
-          e.preventDefault();
+          event.preventDefault();
           nextIndex =
             focusedIndex <= 0 ? buttons.length - 1 : focusedIndex - 1;
           break;
         case "Home":
-          e.preventDefault();
+          event.preventDefault();
           nextIndex = 0;
           break;
         case "End":
-          e.preventDefault();
+          event.preventDefault();
           nextIndex = buttons.length - 1;
           break;
         default:
@@ -220,9 +220,9 @@ export default function NavigationRailComponent({
               <a
                 href={item.href}
                 {...elProps}
-                onClick={(e) => {
+                onClick={(event) => {
                   if (onNavigate) {
-                    e.preventDefault();
+                    event.preventDefault();
                     handleClick();
                   }
                 }}

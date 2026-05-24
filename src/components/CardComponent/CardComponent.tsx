@@ -39,7 +39,7 @@ interface CardFooterProps {
 }
 
 interface CardActionAreaProps extends React.HTMLAttributes<HTMLElement> {
-  onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   href?: string;
 }
 

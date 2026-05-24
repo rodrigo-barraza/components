@@ -112,9 +112,9 @@ export default function ThemePickerComponent({
   // Close on outside click (check both wrapper and popover — popover may be fixed-positioned outside wrapper)
   useEffect(() => {
     if (!open) return;
-    const handleClick = (e: MouseEvent) => {
-      const inWrapper = wrapperRef.current?.contains(e.target as Node);
-      const inPopover = popoverRef.current?.contains(e.target as Node);
+    const handleClick = (event: MouseEvent) => {
+      const inWrapper = wrapperRef.current?.contains(event.target as Node);
+      const inPopover = popoverRef.current?.contains(event.target as Node);
       if (!inWrapper && !inPopover) {
         setOpen(false);
       }
@@ -126,8 +126,8 @@ export default function ThemePickerComponent({
   // Close on Escape
   useEffect(() => {
     if (!open) return;
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
     };
     document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
@@ -164,7 +164,7 @@ export default function ThemePickerComponent({
     <button
       ref={triggerRef}
       className={styles.trigger}
-      onClick={() => setOpen((v) => !v)}
+      onClick={() => setOpen((previous) => !previous)}
       title="Change theme"
       type="button"
     >
@@ -201,16 +201,16 @@ export default function ThemePickerComponent({
         >
           <div className={styles.popoverHeader}>Theme</div>
           <div className={styles.themeList}>
-            {themes.map((t) => {
-              const meta = THEME_CATALOG[t] || { label: t, icon: "Palette", color: "#888", bg: "#222" };
+            {themes.map((themeName) => {
+              const meta = THEME_CATALOG[themeName] || { label: themeName, icon: "Palette", color: "#888", bg: "#222" };
               const ThemeIcon = (Icons as unknown as Record<string, React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>>)[meta.icon] || Icons.Palette;
-              const isActive = t === theme;
+              const isActive = themeName === theme;
 
               return (
                 <button
-                  key={t}
+                  key={themeName}
                   className={`${styles.themeOption} ${isActive ? styles.active : ""}`}
-                  onClick={() => handleSelect(t)}
+                  onClick={() => handleSelect(themeName)}
                   type="button"
                   title={`Switch to ${meta.label} theme`}
                 >

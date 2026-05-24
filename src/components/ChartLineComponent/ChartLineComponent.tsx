@@ -10,7 +10,7 @@ export interface ChartLineComponentProps {
   height?: number;
   historyMax?: number;
   showGrid?: boolean;
-  formatValue?: (v: number) => string;
+  formatValue?: (value: number) => string;
   className?: string;
 }
 
@@ -52,16 +52,16 @@ export default function ChartLineComponent({
           .trim() || "#10b981"
       : color;
 
-    const parseColor = (c: string): [number, number, number] => {
-      if (c.startsWith("#")) {
-        const hex = c.slice(1);
+    const parseColor = (colorString: string): [number, number, number] => {
+      if (colorString.startsWith("#")) {
+        const hex = colorString.slice(1);
         return [
           parseInt(hex.slice(0, 2), 16),
           parseInt(hex.slice(2, 4), 16),
           parseInt(hex.slice(4, 6), 16),
         ];
       }
-      const match = c.match(/(\d+)/);
+      const match = colorString.match(/(\d+)/);
       return match ? [+match[1], +match[1], +match[1]] : [16, 185, 129];
     };
     const [r, g, b] = parseColor(resolvedColor);
@@ -70,16 +70,16 @@ export default function ChartLineComponent({
 
   // ── Mouse handlers ──
   const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
+    (event: React.MouseEvent<HTMLDivElement>) => {
       const container = containerRef.current;
       if (!container || data.length < 2) return;
 
       const rect = container.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const w = rect.width;
+      const mouseX = event.clientX - rect.left;
+      const containerWidth = rect.width;
 
       const padding = { left: 0, right: 0 };
-      const chartW = w - padding.left - padding.right;
+      const chartW = containerWidth - padding.left - padding.right;
 
       // Find nearest data index from mouse X position
       const ratio = (mouseX - padding.left) / chartW;
@@ -91,7 +91,7 @@ export default function ChartLineComponent({
       const pointX =
         padding.left + (clampedIndex / (historyMax - 1)) * chartW;
 
-      setHover({ x: pointX, value: dataPointValue, containerWidth: w });
+      setHover({ x: pointX, value: dataPointValue, containerWidth });
     },
     [data, historyMax],
   );
@@ -108,18 +108,18 @@ export default function ChartLineComponent({
 
     const rect = container.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
-    const w = rect.width;
-    const h = height;
+    const width = rect.width;
+    const canvasHeight = height;
 
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
-    canvas.style.width = `${w}px`;
-    canvas.style.height = `${h}px`;
+    canvas.width = width * dpr;
+    canvas.height = canvasHeight * dpr;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${canvasHeight}px`;
 
     const canvasContext = canvas.getContext("2d");
     if (!canvasContext) return;
     canvasContext.scale(dpr, dpr);
-    canvasContext.clearRect(0, 0, w, h);
+    canvasContext.clearRect(0, 0, width, canvasHeight);
 
     // ── Optional grid background ──
     if (showGrid) {
@@ -130,20 +130,20 @@ export default function ChartLineComponent({
       // Horizontal grid lines (3 evenly spaced)
       const hLines = 3;
       for (let i = 1; i <= hLines; i++) {
-        const y = (h / (hLines + 1)) * i;
+        const y = (canvasHeight / (hLines + 1)) * i;
         canvasContext.beginPath();
         canvasContext.moveTo(0, y);
-        canvasContext.lineTo(w, y);
+        canvasContext.lineTo(width, y);
         canvasContext.stroke();
       }
 
       // Vertical grid lines — every ~15 sample slots
       const vStep = Math.max(15, Math.round(historyMax / 5));
       for (let i = vStep; i < historyMax; i += vStep) {
-        const x = (i / (historyMax - 1)) * w;
+        const x = (i / (historyMax - 1)) * width;
         canvasContext.beginPath();
         canvasContext.moveTo(x, 0);
-        canvasContext.lineTo(x, h);
+        canvasContext.lineTo(x, canvasHeight);
         canvasContext.stroke();
       }
 
@@ -155,8 +155,8 @@ export default function ChartLineComponent({
     const { r, g, b } = colorRef.current;
 
     const padding = { top: 2, bottom: 2, left: 0, right: 0 };
-    const chartW = w - padding.left - padding.right;
-    const chartH = h - padding.top - padding.bottom;
+    const chartW = width - padding.left - padding.right;
+    const chartH = canvasHeight - padding.top - padding.bottom;
     const clampedMax = Math.max(maxValue, 1);
 
     // Map data points to coordinates — always draw across full width
@@ -188,11 +188,11 @@ export default function ChartLineComponent({
     // ── Gradient fill ──
     canvasContext.beginPath();
     buildPath();
-    canvasContext.lineTo(points[points.length - 1].x, h);
-    canvasContext.lineTo(points[0].x, h);
+    canvasContext.lineTo(points[points.length - 1].x, canvasHeight);
+    canvasContext.lineTo(points[0].x, canvasHeight);
     canvasContext.closePath();
 
-    const gradient = canvasContext.createLinearGradient(0, padding.top, 0, h);
+    const gradient = canvasContext.createLinearGradient(0, padding.top, 0, canvasHeight);
     gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.25)`);
     gradient.addColorStop(0.6, `rgba(${r}, ${g}, ${b}, 0.08)`);
     gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0.01)`);
@@ -222,7 +222,7 @@ export default function ChartLineComponent({
       canvasContext.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.4)`;
       canvasContext.lineWidth = 1;
       canvasContext.moveTo(hx, 0);
-      canvasContext.lineTo(hx, h);
+      canvasContext.lineTo(hx, canvasHeight);
       canvasContext.stroke();
       canvasContext.setLineDash([]);
       canvasContext.restore();

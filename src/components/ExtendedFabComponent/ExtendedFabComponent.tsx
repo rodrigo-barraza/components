@@ -73,14 +73,14 @@ const ExtendedFabComponent = forwardRef<HTMLButtonElement, React.ButtonHTMLAttri
   const containerRef = useRef<HTMLButtonElement | null>(null);
 
   // ── Ripple effect (M3 pressed state) ──────────────────
-  const handleRipple = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleRipple = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     const element = containerRef.current;
     if (!element) return;
 
     const rect = element.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height);
-    const x = e.clientX - rect.left - size / 2;
-    const y = e.clientY - rect.top - size / 2;
+    const x = event.clientX - rect.left - size / 2;
+    const y = event.clientY - rect.top - size / 2;
 
     const ripple = document.createElement("span");
     ripple.className = styles.ripple;
@@ -126,14 +126,14 @@ const ExtendedFabComponent = forwardRef<HTMLButtonElement, React.ButtonHTMLAttri
       role="button"
       aria-label={ariaLabel || undefined}
       aria-disabled={disabled || undefined}
-      onMouseEnter={(e) => {
-        if (sound) SoundService.playHoverButton({ event: e });
-        onMouseEnter?.(e);
+      onMouseEnter={(event) => {
+        if (sound) SoundService.playHoverButton({ event });
+        onMouseEnter?.(event);
       }}
-      onClick={(e) => {
-        if (sound) SoundService.playClickButton({ event: e });
-        handleRipple(e);
-        onClick?.(e);
+      onClick={(event) => {
+        if (sound) SoundService.playClickButton({ event });
+        handleRipple(event);
+        onClick?.(event);
       }}
       {...rest}
     >

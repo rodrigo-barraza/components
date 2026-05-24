@@ -55,8 +55,8 @@ interface MenuItemProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElemen
   trailingText?: React.ReactNode;
   disabled?: boolean;
   selected?: boolean;
-  onClick?: (e: React.MouseEvent) => void;
-  onMouseEnter?: (e: React.MouseEvent) => void;
+  onClick?: (event: React.MouseEvent) => void;
+  onMouseEnter?: (event: React.MouseEvent) => void;
   children?: React.ReactNode;
 }
 
@@ -79,18 +79,18 @@ export const MenuItem = forwardRef<HTMLButtonElement, MenuItemProps>(function Me
   const { sound } = useComponents();
 
   const handleClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+    (event: React.MouseEvent<HTMLButtonElement>) => {
       if (disabled) return;
-      if (sound) SoundService.playClickButton({ event: e });
-      onClick?.(e);
+      if (sound) SoundService.playClickButton({ event });
+      onClick?.(event);
     },
     [disabled, sound, onClick],
   );
 
   const handleMouseEnter = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (sound) SoundService.playHoverButton({ event: e });
-      onMouseEnter?.(e);
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (sound) SoundService.playHoverButton({ event });
+      onMouseEnter?.(event);
     },
     [sound, onMouseEnter],
   );
@@ -178,11 +178,11 @@ export function SubMenu({
 
   // Keyboard within submenu
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (!isOpen) {
-        if (e.key === "ArrowRight" || e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          e.stopPropagation();
+        if (event.key === "ArrowRight" || event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          event.stopPropagation();
           setIsOpen(true);
           requestAnimationFrame(() => itemRefs.current[0]?.focus());
         }
@@ -192,21 +192,21 @@ export function SubMenu({
       const focusable = itemRefs.current.filter((item): item is HTMLButtonElement => item !== null);
       const index = focusable.indexOf(document.activeElement as HTMLButtonElement);
 
-      switch (e.key) {
+      switch (event.key) {
         case "ArrowDown":
-          e.preventDefault();
-          e.stopPropagation();
+          event.preventDefault();
+          event.stopPropagation();
           focusable[(index + 1) % focusable.length]?.focus();
           break;
         case "ArrowUp":
-          e.preventDefault();
-          e.stopPropagation();
+          event.preventDefault();
+          event.stopPropagation();
           focusable[(index - 1 + focusable.length) % focusable.length]?.focus();
           break;
         case "ArrowLeft":
         case "Escape":
-          e.preventDefault();
-          e.stopPropagation();
+          event.preventDefault();
+          event.stopPropagation();
           setIsOpen(false);
           containerRef.current
             ?.querySelector<HTMLButtonElement>(`[role="menuitem"]`)
@@ -396,8 +396,8 @@ const MenuComponent = forwardRef<HTMLDivElement, MenuComponentProps>(function Me
 
   // ── Trigger click ───────────────────────────────────────
   const handleTriggerClick = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
       toggle();
     },
     [toggle],
@@ -407,10 +407,10 @@ const MenuComponent = forwardRef<HTMLDivElement, MenuComponentProps>(function Me
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleOutside = (e: MouseEvent) => {
+    const handleOutside = (event: MouseEvent) => {
       if (
         anchorRef.current &&
-        !anchorRef.current.contains(e.target as Node)
+        !anchorRef.current.contains(event.target as Node)
       ) {
         close();
       }
@@ -441,11 +441,11 @@ const MenuComponent = forwardRef<HTMLDivElement, MenuComponentProps>(function Me
 
   // ── Keyboard navigation (M3 a11y spec) ──────────────────
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
       // Open on ArrowDown/Up/Enter/Space when menu is closed
       if (!isOpen) {
-        if (["ArrowDown", "ArrowUp", "Enter", " "].includes(e.key)) {
-          e.preventDefault();
+        if (["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)) {
+          event.preventDefault();
           setOpen(true);
         }
         return;
@@ -454,21 +454,21 @@ const MenuComponent = forwardRef<HTMLDivElement, MenuComponentProps>(function Me
       const focusable = itemRefs.current.filter((item): item is HTMLButtonElement => item !== null);
       const currentIdx = focusable.indexOf(document.activeElement as HTMLButtonElement);
 
-      switch (e.key) {
+      switch (event.key) {
         case "Escape":
-          e.preventDefault();
+          event.preventDefault();
           close();
           break;
 
         case "ArrowDown": {
-          e.preventDefault();
+          event.preventDefault();
           const next = currentIdx < focusable.length - 1 ? currentIdx + 1 : 0;
           focusable[next]?.focus();
           break;
         }
 
         case "ArrowUp": {
-          e.preventDefault();
+          event.preventDefault();
           const previousFocusIndex =
             currentIdx > 0 ? currentIdx - 1 : focusable.length - 1;
           focusable[previousFocusIndex]?.focus();
@@ -476,18 +476,18 @@ const MenuComponent = forwardRef<HTMLDivElement, MenuComponentProps>(function Me
         }
 
         case "Home":
-          e.preventDefault();
+          event.preventDefault();
           focusable[0]?.focus();
           break;
 
         case "End":
-          e.preventDefault();
+          event.preventDefault();
           focusable[focusable.length - 1]?.focus();
           break;
 
         case "Tab":
           // Close menu on Tab to allow normal tab flow
-          e.preventDefault();
+          event.preventDefault();
           close();
           break;
 
@@ -495,16 +495,16 @@ const MenuComponent = forwardRef<HTMLDivElement, MenuComponentProps>(function Me
         case " ":
           // Let the focused item handle its own click
           if (document.activeElement?.getAttribute("role") === "menuitem") {
-            e.preventDefault();
+            event.preventDefault();
             (document.activeElement as HTMLElement).click();
           }
           break;
 
         default: {
           // Type-ahead: match item labels by first character(s)
-          if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+          if (event.key.length === 1 && !event.ctrlKey && !event.metaKey) {
             if (typeAheadTimer.current) clearTimeout(typeAheadTimer.current);
-            typeAheadBuffer.current += e.key.toLowerCase();
+            typeAheadBuffer.current += event.key.toLowerCase();
 
             typeAheadTimer.current = setTimeout(() => {
               typeAheadBuffer.current = "";
@@ -535,15 +535,15 @@ const MenuComponent = forwardRef<HTMLDivElement, MenuComponentProps>(function Me
       // MenuItem or SubMenu trigger — assign roving tabindex ref
       if (child.type === MenuItem || child.type === SubMenu) {
         const currentIdx = index++;
-        const originalOnClick = (child.props as Record<string, unknown>).onClick as ((e: React.MouseEvent) => void) | undefined;
+        const originalOnClick = (child.props as Record<string, unknown>).onClick as ((event: React.MouseEvent) => void) | undefined;
 
         return cloneElement(child as React.ReactElement<Record<string, unknown>>, {
           ref: (element: HTMLButtonElement | null) => {
             itemRefs.current[currentIdx] = element;
           },
           tabIndex: isOpen ? 0 : -1,
-          onClick: (e: React.MouseEvent) => {
-            originalOnClick?.(e);
+          onClick: (event: React.MouseEvent) => {
+            originalOnClick?.(event);
             if (closeOnSelect && child.type === MenuItem) {
               close();
             }
@@ -585,9 +585,9 @@ const MenuComponent = forwardRef<HTMLDivElement, MenuComponentProps>(function Me
         },
         "aria-haspopup": "menu",
         "aria-expanded": isOpen,
-        onClick: (e: React.MouseEvent) => {
-          (trigger.props as Record<string, unknown> & { onClick?: (e: React.MouseEvent) => void }).onClick?.(e);
-          handleTriggerClick(e);
+        onClick: (event: React.MouseEvent) => {
+          (trigger.props as Record<string, unknown> & { onClick?: (event: React.MouseEvent) => void }).onClick?.(event);
+          handleTriggerClick(event);
         },
       })
     : trigger;

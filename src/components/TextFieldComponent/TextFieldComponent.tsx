@@ -9,7 +9,7 @@ export interface TextFieldComponentProps extends Omit<React.HTMLAttributes<TextF
   variant?: "filled" | "outlined";
   label?: string;
   value?: string | number;
-  onChange?: (e: ChangeEvent<TextFieldElement>) => void;
+  onChange?: (event: ChangeEvent<TextFieldElement>) => void;
   type?: string;
   placeholder?: string;
   disabled?: boolean;
@@ -22,7 +22,7 @@ export interface TextFieldComponentProps extends Omit<React.HTMLAttributes<TextF
   suffix?: ReactNode;
   leadingIcon?: ReactNode;
   trailingIcon?: ReactNode;
-  onTrailingIconClick?: (e: React.MouseEvent | React.KeyboardEvent) => void;
+  onTrailingIconClick?: (event: React.MouseEvent | React.KeyboardEvent) => void;
   multiline?: boolean;
   rows?: number;
   maxRows?: number;
@@ -143,14 +143,14 @@ const TextFieldComponent = forwardRef<TextFieldElement, TextFieldComponentProps>
   }, [value, resizeTextarea]);
 
   // ── Event handlers ─────────────────────────────────
-  const handleFocus = (e: FocusEvent<TextFieldElement>) => {
+  const handleFocus = (event: FocusEvent<TextFieldElement>) => {
     setFocused(true);
-    (rest as TextFieldComponentProps).onFocus?.(e);
+    (rest as TextFieldComponentProps).onFocus?.(event);
   };
 
-  const handleBlur = (e: FocusEvent<TextFieldElement>) => {
+  const handleBlur = (event: FocusEvent<TextFieldElement>) => {
     setFocused(false);
-    (rest as TextFieldComponentProps).onBlur?.(e);
+    (rest as TextFieldComponentProps).onBlur?.(event);
   };
 
   const handleContainerClick = () => {
@@ -255,16 +255,16 @@ const TextFieldComponent = forwardRef<TextFieldElement, TextFieldComponentProps>
           <span
             className={styles.trailingIcon}
             aria-hidden="true"
-            onClick={(e) => {
-              e.stopPropagation();
-              onTrailingIconClick?.(e);
+            onClick={(event) => {
+              event.stopPropagation();
+              onTrailingIconClick?.(event);
             }}
             role={onTrailingIconClick ? "button" : undefined}
             tabIndex={onTrailingIconClick ? 0 : undefined}
-            onKeyDown={(e) => {
-              if (onTrailingIconClick && (e.key === "Enter" || e.key === " ")) {
-                e.preventDefault();
-                onTrailingIconClick(e);
+            onKeyDown={(event) => {
+              if (onTrailingIconClick && (event.key === "Enter" || event.key === " ")) {
+                event.preventDefault();
+                onTrailingIconClick(event);
               }
             }}
           >

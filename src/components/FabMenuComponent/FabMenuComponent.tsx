@@ -17,7 +17,7 @@ interface FabMenuItemConfig {
   icon?: React.ComponentType<{ size: number }>;
   label?: string;
   ariaLabel?: string;
-  onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }
 
 export interface FabMenuComponentProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -112,14 +112,14 @@ const FabMenuComponent = forwardRef<HTMLDivElement, FabMenuComponentProps>(funct
   }, []);
 
   // ── Ripple on trigger ─────────────────────────────────
-  const handleRipple = useCallback((e: MouseEvent<HTMLButtonElement>) => {
+  const handleRipple = useCallback((event: MouseEvent<HTMLButtonElement>) => {
     const element = triggerRef.current;
     if (!element) return;
 
     const rect = element.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height);
-    const x = e.clientX - rect.left - size / 2;
-    const y = e.clientY - rect.top - size / 2;
+    const x = event.clientX - rect.left - size / 2;
+    const y = event.clientY - rect.top - size / 2;
 
     const ripple = document.createElement("span");
     ripple.className = styles.ripple;
@@ -136,9 +136,9 @@ const FabMenuComponent = forwardRef<HTMLDivElement, FabMenuComponentProps>(funct
 
   // ── Handle trigger click ──────────────────────────────
   const handleTriggerClick = useCallback(
-    (e: MouseEvent<HTMLButtonElement>) => {
-      if (sound) SoundService.playClickButton({ event: e });
-      handleRipple(e);
+    (event: MouseEvent<HTMLButtonElement>) => {
+      if (sound) SoundService.playClickButton({ event });
+      handleRipple(event);
       toggle();
     },
     [sound, handleRipple, toggle],
@@ -146,9 +146,9 @@ const FabMenuComponent = forwardRef<HTMLDivElement, FabMenuComponentProps>(funct
 
   // ── Handle item click ─────────────────────────────────
   const handleItemClick = useCallback(
-    (e: MouseEvent<HTMLButtonElement>, item: FabMenuItemConfig) => {
-      if (sound) SoundService.playClickButton({ event: e });
-      item.onClick?.(e);
+    (event: MouseEvent<HTMLButtonElement>, item: FabMenuItemConfig) => {
+      if (sound) SoundService.playClickButton({ event });
+      item.onClick?.(event);
       close();
     },
     [sound, close],
@@ -156,20 +156,20 @@ const FabMenuComponent = forwardRef<HTMLDivElement, FabMenuComponentProps>(funct
 
   // ── Keyboard navigation (M3 a11y spec) ────────────────
   const handleKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLDivElement>) => {
+    (event: KeyboardEvent<HTMLDivElement>) => {
       if (!isOpen) return;
 
       const focusableItems = itemRefs.current.filter((el): el is HTMLButtonElement => el !== null);
       const currentIndex = focusableItems.indexOf(document.activeElement as HTMLButtonElement);
 
-      switch (e.key) {
+      switch (event.key) {
         case "Escape":
-          e.preventDefault();
+          event.preventDefault();
           close();
           break;
 
         case "ArrowUp": {
-          e.preventDefault();
+          event.preventDefault();
           // Items are in column-reverse, so "up" visually is next index
           const nextIdx =
             currentIndex < focusableItems.length - 1
@@ -180,7 +180,7 @@ const FabMenuComponent = forwardRef<HTMLDivElement, FabMenuComponentProps>(funct
         }
 
         case "ArrowDown": {
-          e.preventDefault();
+          event.preventDefault();
           const prevIdx =
             currentIndex > 0
               ? currentIndex - 1
@@ -190,19 +190,19 @@ const FabMenuComponent = forwardRef<HTMLDivElement, FabMenuComponentProps>(funct
         }
 
         case "Home":
-          e.preventDefault();
+          event.preventDefault();
           focusableItems[focusableItems.length - 1]?.focus();
           break;
 
         case "End":
-          e.preventDefault();
+          event.preventDefault();
           focusableItems[0]?.focus();
           break;
 
         case "Tab":
           // Trap focus within the menu
-          e.preventDefault();
-          if (e.shiftKey) {
+          event.preventDefault();
+          if (event.shiftKey) {
             // Move to trigger
             triggerRef.current?.focus();
           } else {
@@ -225,8 +225,8 @@ const FabMenuComponent = forwardRef<HTMLDivElement, FabMenuComponentProps>(funct
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleOutsideClick = (e: globalThis.MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+    const handleOutsideClick = (event: globalThis.MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         close();
       }
     };
@@ -335,9 +335,9 @@ const FabMenuComponent = forwardRef<HTMLDivElement, FabMenuComponentProps>(funct
                   role="menuitem"
                   tabIndex={isOpen ? 0 : -1}
                   aria-label={item.ariaLabel || item.label}
-                  onClick={(e) => handleItemClick(e, item)}
-                  onMouseEnter={(e) => {
-                    if (sound) SoundService.playHoverButton({ event: e });
+                  onClick={(event) => handleItemClick(event, item)}
+                  onMouseEnter={(event) => {
+                    if (sound) SoundService.playHoverButton({ event });
                   }}
                 >
                   {ItemIcon && (
@@ -361,8 +361,8 @@ const FabMenuComponent = forwardRef<HTMLDivElement, FabMenuComponentProps>(funct
           aria-haspopup="menu"
           aria-label={isOpen ? "Close menu" : ariaLabel}
           onClick={handleTriggerClick}
-          onMouseEnter={(e) => {
-            if (sound) SoundService.playHoverButton({ event: e });
+          onMouseEnter={(event) => {
+            if (sound) SoundService.playHoverButton({ event });
           }}
         >
           <span

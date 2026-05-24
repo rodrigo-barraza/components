@@ -70,7 +70,7 @@ export default function SwitchComponent({
   return (
     <label
       className={rootClasses}
-      onMouseEnter={(e) => sound && SoundService.playHoverButton({ event: e })}
+      onMouseEnter={(event) => sound && SoundService.playHoverButton({ event })}
     >
       <input
         type="checkbox"
@@ -82,9 +82,9 @@ export default function SwitchComponent({
         disabled={disabled}
         aria-checked={checked}
         aria-label={ariaLabel || label || undefined}
-        onChange={(e) => {
-          if (sound) SoundService.playClickButton({ event: e });
-          onChange(e.target.checked);
+        onChange={(event) => {
+          if (sound) SoundService.playClickButton({ event });
+          onChange(event.target.checked);
         }}
       />
 

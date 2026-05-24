@@ -53,7 +53,7 @@ export default function ToolbarComponent({
    * Arrow keys navigate between focusable items; Home/End jump to ends.
    */
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
       const toolbar = toolbarRef.current;
       if (!toolbar) return;
 
@@ -62,7 +62,7 @@ export default function ToolbarComponent({
       const prevKey = isHorizontal ? "ArrowLeft" : "ArrowUp";
       const navigableKeys = [nextKey, prevKey, "Home", "End"];
 
-      if (!navigableKeys.includes(e.key)) return;
+      if (!navigableKeys.includes(event.key)) return;
 
       // Collect all focusable items within the toolbar
       const items = Array.from(
@@ -76,21 +76,21 @@ export default function ToolbarComponent({
       const currentIndex = items.indexOf(document.activeElement as HTMLElement);
       let nextIndex;
 
-      switch (e.key) {
+      switch (event.key) {
         case nextKey:
-          e.preventDefault();
+          event.preventDefault();
           nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
           break;
         case prevKey:
-          e.preventDefault();
+          event.preventDefault();
           nextIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
           break;
         case "Home":
-          e.preventDefault();
+          event.preventDefault();
           nextIndex = 0;
           break;
         case "End":
-          e.preventDefault();
+          event.preventDefault();
           nextIndex = items.length - 1;
           break;
         default:

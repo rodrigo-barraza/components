@@ -1,8 +1,8 @@
 import { useRef, useEffect, useState } from "react";
 
 /** Ease-out cubic — fast start, gentle landing. */
-function easeOutCubic(t: number): number {
-  return 1 - Math.pow(1 - t, 3);
+function easeOutCubic(progress: number): number {
+  return 1 - Math.pow(1 - progress, 3);
 }
 
 /**

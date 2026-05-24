@@ -49,7 +49,7 @@ export default function useCrud<T extends Record<string, unknown>>(options: UseC
     async (id: string, data: Record<string, unknown>): Promise<T> => {
       const item = await updateFn(id, data);
       setItems((prev) =>
-        prev.map((i) => (i[idField] === id ? item : i)),
+        prev.map((existingItem) => (existingItem[idField] === id ? item : existingItem)),
       );
       return item;
     },
@@ -59,7 +59,7 @@ export default function useCrud<T extends Record<string, unknown>>(options: UseC
   const remove = useCallback(
     async (id: string): Promise<void> => {
       await removeFn(id);
-      setItems((prev) => prev.filter((i) => i[idField] !== id));
+      setItems((prev) => prev.filter((existingItem) => existingItem[idField] !== id));
     },
     [removeFn, idField],
   );

@@ -28,11 +28,11 @@ export default function CopyButtonComponent({
   const [copied, setCopied] = useState(false);
 
   const handleCopy = useCallback(
-    async (e: MouseEvent<HTMLButtonElement>) => {
-      e.stopPropagation();
+    async (event: MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
       try {
         await navigator.clipboard.writeText(text);
-        if (sound) SoundService.playClickButton({ event: e });
+        if (sound) SoundService.playClickButton({ event });
         setCopied(true);
         setTimeout(() => setCopied(false), FEEDBACK_STANDARD_MS);
       } catch {
@@ -47,8 +47,8 @@ export default function CopyButtonComponent({
       type="button"
       className={`${styles.copyButton} ${copied ? styles.copied : ""} ${className}`}
       onClick={handleCopy}
-      onMouseEnter={(e) => {
-        if (sound) SoundService.playHoverButton({ event: e });
+      onMouseEnter={(event) => {
+        if (sound) SoundService.playHoverButton({ event });
       }}
       title={copied ? "Copied!" : tooltip}
     >

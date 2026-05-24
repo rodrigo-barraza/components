@@ -30,12 +30,12 @@ export default function CloseButtonComponent({
   return (
     <button
       className={classes}
-      onClick={(e) => {
-        if (sound) SoundService.playClickButton({ event: e });
-        onClick?.(e);
+      onClick={(event) => {
+        if (sound) SoundService.playClickButton({ event });
+        onClick?.(event);
       }}
-      onMouseEnter={(e) => {
-        if (sound) SoundService.playHoverButton({ event: e });
+      onMouseEnter={(event) => {
+        if (sound) SoundService.playHoverButton({ event });
       }}
       title="Close"
     >

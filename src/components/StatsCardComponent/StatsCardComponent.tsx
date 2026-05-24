@@ -18,8 +18,8 @@ export interface StatsCardComponentProps {
   loading?: boolean;
   glow?: boolean;
   className?: string;
-  onMouseEnter?: (e: React.MouseEvent<HTMLDivElement>) => void;
-  onMouseLeave?: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseEnter?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onMouseLeave?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export default function StatsCardComponent({

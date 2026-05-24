@@ -36,7 +36,7 @@ export default function AvatarComponent({
     ? name
         .split(" ")
         .filter(Boolean)
-        .map((w: string) => w[0])
+        .map((word: string) => word[0])
         .slice(0, 2)
         .join("")
         .toUpperCase()

@@ -100,30 +100,30 @@ export default function TabBarComponent({
   }, [updateIndicator]);
 
   // ── Keyboard navigation (Arrow Left/Right, Home, End) ───
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    const enabledTabs = tabs.filter((t) => !t.disabled);
-    const currentIdx = enabledTabs.findIndex((t) => t.key === activeTab);
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const enabledTabs = tabs.filter((tab) => !tab.disabled);
+    const currentIdx = enabledTabs.findIndex((tab) => tab.key === activeTab);
 
     let nextIdx = -1;
 
-    switch (e.key) {
+    switch (event.key) {
       case "ArrowRight":
       case "ArrowDown":
-        e.preventDefault();
+        event.preventDefault();
         nextIdx = (currentIdx + 1) % enabledTabs.length;
         break;
       case "ArrowLeft":
       case "ArrowUp":
-        e.preventDefault();
+        event.preventDefault();
         nextIdx =
           (currentIdx - 1 + enabledTabs.length) % enabledTabs.length;
         break;
       case "Home":
-        e.preventDefault();
+        event.preventDefault();
         nextIdx = 0;
         break;
       case "End":
-        e.preventDefault();
+        event.preventDefault();
         nextIdx = enabledTabs.length - 1;
         break;
       default:
@@ -138,12 +138,12 @@ export default function TabBarComponent({
   };
 
   // ── Ripple coordinate capture ───────────────────────────
-  const captureRipple = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    e.currentTarget.style.setProperty("--ripple-x", `${x}%`);
-    e.currentTarget.style.setProperty("--ripple-y", `${y}%`);
+  const captureRipple = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    event.currentTarget.style.setProperty("--ripple-x", `${x}%`);
+    event.currentTarget.style.setProperty("--ripple-y", `${y}%`);
   };
 
   const isStacked = layout === "stacked";
@@ -194,12 +194,12 @@ export default function TabBarComponent({
             aria-controls={`tabpanel-${tab.key}`}
             tabIndex={isActive ? 0 : -1}
             onMouseDown={captureRipple}
-            onClick={(e) => {
-              if (sound) SoundService.playClick({ event: e });
+            onClick={(event) => {
+              if (sound) SoundService.playClick({ event });
               if (!tab.disabled) onChange(tab.key);
             }}
-            onMouseEnter={(e) => {
-              if (sound) SoundService.playHover({ event: e });
+            onMouseEnter={(event) => {
+              if (sound) SoundService.playHover({ event });
               onTabHover?.(tab.key);
             }}
             onMouseLeave={() => onTabHover?.(null)}

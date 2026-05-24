@@ -3,9 +3,9 @@
  * Single source of truth for DatePickerComponent.
  */
 
-import { toLocalDateString as fmtDate, daysAgo } from "@rodrigo-barraza/utilities-library";
+import { toLocalDateString as formatDate, daysAgo } from "@rodrigo-barraza/utilities-library";
 
-export { fmtDate, daysAgo };
+export { formatDate, daysAgo };
 
 export interface DateRange {
   from: string;
@@ -31,25 +31,25 @@ export const DATE_PRESETS: DatePreset[] = [
   {
     label: "Today",
     getValue: () => {
-      const d = fmtDate(new Date());
-      return { from: d, to: d };
+      const formattedToday = formatDate(new Date());
+      return { from: formattedToday, to: formattedToday };
     },
   },
   {
     label: "Last 7 days",
-    getValue: () => ({ from: fmtDate(daysAgo(6)), to: fmtDate(new Date()) }),
+    getValue: () => ({ from: formatDate(daysAgo(6)), to: formatDate(new Date()) }),
   },
   {
     label: "Last 30 days",
-    getValue: () => ({ from: fmtDate(daysAgo(29)), to: fmtDate(new Date()) }),
+    getValue: () => ({ from: formatDate(daysAgo(29)), to: formatDate(new Date()) }),
   },
   {
     label: "This month",
     getValue: () => {
       const now = new Date();
       return {
-        from: fmtDate(new Date(now.getFullYear(), now.getMonth(), 1)),
-        to: fmtDate(now),
+        from: formatDate(new Date(now.getFullYear(), now.getMonth(), 1)),
+        to: formatDate(now),
       };
     },
   },
@@ -57,14 +57,14 @@ export const DATE_PRESETS: DatePreset[] = [
     label: "This year",
     getValue: () => {
       const now = new Date();
-      return { from: fmtDate(new Date(now.getFullYear(), 0, 1)), to: fmtDate(now) };
+      return { from: formatDate(new Date(now.getFullYear(), 0, 1)), to: formatDate(now) };
     },
   },
   { label: "All Time", getValue: () => ({ from: "", to: "" }) },
 ];
 
 /** Date-only presets — excludes sub-day time-based presets. */
-export const DATE_PRESETS_DATE_ONLY: DatePreset[] = DATE_PRESETS.filter((p) => !p.relative);
+export const DATE_PRESETS_DATE_ONLY: DatePreset[] = DATE_PRESETS.filter((preset) => !preset.relative);
 
 /**
  * Parse a date string. Handles both YYYY-MM-DD and ISO datetime formats.
@@ -72,16 +72,16 @@ export const DATE_PRESETS_DATE_ONLY: DatePreset[] = DATE_PRESETS.filter((p) => !
 export function parseDateValue(str: string | null | undefined): Date | null {
   if (!str) return null;
   if (str.includes("T")) return new Date(str);
-  const [y, m, d] = str.split("-").map(Number);
-  return new Date(y, m - 1, d);
+  const [year, month, day] = str.split("-").map(Number);
+  return new Date(year, month - 1, day);
 }
 
-function isSameDay(a: Date | null, b: Date | null): boolean {
-  if (!a || !b) return false;
+function isSameDay(dateA: Date | null, dateB: Date | null): boolean {
+  if (!dateA || !dateB) return false;
   return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
+    dateA.getFullYear() === dateB.getFullYear() &&
+    dateA.getMonth() === dateB.getMonth() &&
+    dateA.getDate() === dateB.getDate()
   );
 }
 
@@ -90,10 +90,10 @@ function isSameDay(a: Date | null, b: Date | null): boolean {
  */
 export function formatDateDisplay(from: string | null | undefined, to: string | null | undefined): string | null {
   if (!from && !to) return null;
-  const matchingPreset = DATE_PRESETS.find((p) => {
-    if (!p.relative) return false;
-    const v = p.getValue();
-    return !to && from && v.from.slice(0, 16) === from.slice(0, 16);
+  const matchingPreset = DATE_PRESETS.find((preset) => {
+    if (!preset.relative) return false;
+    const presetValue = preset.getValue();
+    return !to && from && presetValue.from.slice(0, 16) === from.slice(0, 16);
   });
   if (matchingPreset) return matchingPreset.label;
 
@@ -104,20 +104,20 @@ export function formatDateDisplay(from: string | null | undefined, to: string | 
   const fromDate = parseDateValue(from);
   const toDate = parseDateValue(to);
 
-  const fmtWithTime = (date: Date, hasTime: boolean | undefined): string => {
-    const dayStr = date.toLocaleDateString("en-US", dateOpts);
-    if (!hasTime) return dayStr;
-    const timStr = date.toLocaleTimeString("en-US", timeOpts);
-    return `${dayStr} ${timStr}`;
+  const formatWithTime = (date: Date, hasTime: boolean | undefined): string => {
+    const dayString = date.toLocaleDateString("en-US", dateOpts);
+    if (!hasTime) return dayString;
+    const timeString = date.toLocaleTimeString("en-US", timeOpts);
+    return `${dayString} ${timeString}`;
   };
 
   if (fromDate && toDate) {
     if (isSameDay(fromDate, toDate) && !hasFromTime && !hasToTime)
       return fromDate.toLocaleDateString("en-US", dateOpts);
-    return `${fmtWithTime(fromDate, hasFromTime)} – ${fmtWithTime(toDate, hasToTime)}`;
+    return `${formatWithTime(fromDate, hasFromTime)} – ${formatWithTime(toDate, hasToTime)}`;
   }
-  if (fromDate) return `From ${fmtWithTime(fromDate, hasFromTime)}`;
-  if (toDate) return `Until ${fmtWithTime(toDate, hasToTime)}`;
+  if (fromDate) return `From ${formatWithTime(fromDate, hasFromTime)}`;
+  if (toDate) return `Until ${formatWithTime(toDate, hasToTime)}`;
   return null;
 }
 
@@ -125,13 +125,13 @@ export function formatDateDisplay(from: string | null | undefined, to: string | 
  * Return the label of the currently active preset, or null if none match.
  */
 export function getActiveDatePreset(from: string | null | undefined, to: string | null | undefined): string | null {
-  for (const p of DATE_PRESETS) {
-    if (p.relative) {
-      const v = p.getValue();
-      if (!to && from && v.from.slice(0, 16) === from.slice(0, 16)) return p.label;
+  for (const preset of DATE_PRESETS) {
+    if (preset.relative) {
+      const presetValue = preset.getValue();
+      if (!to && from && presetValue.from.slice(0, 16) === from.slice(0, 16)) return preset.label;
     } else {
-      const v = p.getValue();
-      if (v.from === (from || "") && v.to === (to || "")) return p.label;
+      const presetValue = preset.getValue();
+      if (presetValue.from === (from || "") && presetValue.to === (to || "")) return preset.label;
     }
   }
   return null;

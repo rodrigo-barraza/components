@@ -69,7 +69,7 @@ export default function RadioComponent<T extends string | number | boolean = str
   return (
     <label
       className={rootClasses}
-      onMouseEnter={(e) => sound && SoundService.playHoverButton({ event: e })}
+      onMouseEnter={(event) => sound && SoundService.playHoverButton({ event })}
     >
       <span className={styles.container}>
         <input

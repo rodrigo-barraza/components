@@ -73,15 +73,15 @@ export default function NavigationDrawerComponent({
       focusable?.[0]?.focus();
     }, 50);
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.stopPropagation();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.stopPropagation();
         onClose?.();
         return;
       }
 
       // Focus trap
-      if (e.key === "Tab" && drawerRef.current) {
+      if (event.key === "Tab" && drawerRef.current) {
         const focusable = Array.from(
           drawerRef.current.querySelectorAll<HTMLElement>(
             'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
@@ -92,11 +92,11 @@ export default function NavigationDrawerComponent({
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
 
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
           (last as HTMLElement).focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
           (first as HTMLElement).focus();
         }
       }
@@ -182,7 +182,7 @@ export interface DrawerItemProps extends Record<string, unknown> {
   active?: boolean;
   disabled?: boolean;
   href?: string;
-  onClick?: (e: MouseEvent<HTMLElement>) => void;
+  onClick?: (event: MouseEvent<HTMLElement>) => void;
   LinkComponent?: ElementType;
   className?: string;
   children?: ReactNode;

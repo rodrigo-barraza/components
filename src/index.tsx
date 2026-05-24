@@ -113,7 +113,7 @@ export {
 export {
   DATE_PRESETS,
   DATE_PRESETS_DATE_ONLY,
-  fmtDate,
+  formatDate,
   daysAgo,
   parseDateValue,
   formatDateDisplay,

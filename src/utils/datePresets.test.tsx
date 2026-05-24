@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
-  fmtDate,
+  formatDate,
   daysAgo,
   DATE_PRESETS,
   parseDateValue,
@@ -9,10 +9,10 @@ import {
 } from "./datePresets.js";
 
 describe("datePresets utility", () => {
-  describe("fmtDate", () => {
+  describe("formatDate", () => {
     it("formats a Date object to YYYY-MM-DD", () => {
       const date = new Date(2023, 4, 15); // May is index 4
-      expect(fmtDate(date)).toBe("2023-05-15");
+      expect(formatDate(date)).toBe("2023-05-15");
     });
   });
 
@@ -28,7 +28,7 @@ describe("datePresets utility", () => {
 
     it("returns a date N days ago", () => {
       const result = daysAgo(5);
-      expect(fmtDate(result)).toBe("2023-05-10");
+      expect(formatDate(result)).toBe("2023-05-10");
     });
   });
 
@@ -55,13 +55,13 @@ describe("datePresets utility", () => {
 
   describe("DATE_PRESETS", () => {
     it("contains expected presets", () => {
-      expect(DATE_PRESETS.some((p) => p.label === "Today")).toBe(true);
-      expect(DATE_PRESETS.some((p) => p.label === "Last 7 days")).toBe(true);
-      expect(DATE_PRESETS.some((p) => p.label === "All Time")).toBe(true);
+      expect(DATE_PRESETS.some((preset) => preset.label === "Today")).toBe(true);
+      expect(DATE_PRESETS.some((preset) => preset.label === "Last 7 days")).toBe(true);
+      expect(DATE_PRESETS.some((preset) => preset.label === "All Time")).toBe(true);
     });
 
     it("returns expected value shape for Today", () => {
-      const todayPreset = DATE_PRESETS.find((p) => p.label === "Today");
+      const todayPreset = DATE_PRESETS.find((preset) => preset.label === "Today");
       const value = todayPreset.getValue();
       expect(value).toHaveProperty("from");
       expect(value).toHaveProperty("to");
@@ -89,7 +89,7 @@ describe("datePresets utility", () => {
     });
 
     it("returns preset label if matches", () => {
-      const todayPreset = DATE_PRESETS.find((p) => p.label === "Last 7 days");
+      const todayPreset = DATE_PRESETS.find((preset) => preset.label === "Last 7 days");
       const { from, to } = todayPreset.getValue();
       const result = formatDateDisplay(from, to);
       // Wait, getActiveDatePreset doesn't match Last 7 days by from/to exactly because formatDateDisplay tries to match relative ones first
@@ -104,7 +104,7 @@ describe("datePresets utility", () => {
     });
 
     it("returns correct preset label for a relative preset", () => {
-      const hourPreset = DATE_PRESETS.find((p) => p.label === "Last 1 hour");
+      const hourPreset = DATE_PRESETS.find((preset) => preset.label === "Last 1 hour");
       const { from, to } = hourPreset.getValue();
       expect(getActiveDatePreset(from, to)).toBe("Last 1 hour");
     });

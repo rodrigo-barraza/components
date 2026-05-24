@@ -426,9 +426,9 @@ function shouldGroup(current: DiscordMessage, previous: DiscordMessage | null) {
 }
 
 // Check if day changed
-function isDifferentDay(a: DiscordMessage | null, b: DiscordMessage | null) {
-  if (!a || !b) return true;
-  return new Date(a.createdAtISO).toDateString() !== new Date(b.createdAtISO).toDateString();
+function isDifferentDay(messageA: DiscordMessage | null, messageB: DiscordMessage | null) {
+  if (!messageA || !messageB) return true;
+  return new Date(messageA.createdAtISO).toDateString() !== new Date(messageB.createdAtISO).toDateString();
 }
 
 // ── Tenor GIF Embed ──────────────────────────────────────────────
@@ -438,7 +438,7 @@ function TenorEmbed({ url, tenorOembedUrl }: { url: string; tenorOembedUrl: stri
   useEffect(() => {
     let cancelled = false;
     fetch(`${tenorOembedUrl}?url=${encodeURIComponent(url)}`)
-      .then((res) => res.ok ? res.json() : Promise.reject())
+      .then((response) => response.ok ? response.json() : Promise.reject())
       .then((data: { gifUrl?: string }) => { if (!cancelled && data.gifUrl) setGifUrl(data.gifUrl); })
       .catch(() => { if (!cancelled) setError(true); });
     return () => { cancelled = true; };
@@ -461,19 +461,19 @@ function TenorEmbeds({ content, tenorOembedUrl }: { content?: string; tenorOembe
 // ── Image Attachments ────────────────────────────────────────────
 function ImageAttachments({ attachments }: { attachments?: DiscordAttachment[] }) {
   if (!attachments?.length) return null;
-  const images = attachments.filter((a: DiscordAttachment) => a.contentType?.startsWith("image/") && (a.url || a.proxyURL));
+  const images = attachments.filter((attachment: DiscordAttachment) => attachment.contentType?.startsWith("image/") && (attachment.url || attachment.proxyURL));
   if (!images.length) return null;
   return (
     <div className={styles.attachments}>
       {images.map((image: DiscordAttachment, i: number) => {
         const src = image.proxyURL || image.url;
         const maxW = 400, maxH = 300;
-        let w = image.width || maxW, h = image.height || maxH;
-        if (w > maxW) { h = Math.round(h * (maxW / w)); w = maxW; }
-        if (h > maxH) { w = Math.round(w * (maxH / h)); h = maxH; }
+        let imageWidth = image.width || maxW, imageHeight = image.height || maxH;
+        if (imageWidth > maxW) { imageHeight = Math.round(imageHeight * (maxW / imageWidth)); imageWidth = maxW; }
+        if (imageHeight > maxH) { imageWidth = Math.round(imageWidth * (maxH / imageHeight)); imageHeight = maxH; }
         return (
           <a key={i} href={image.url || src} target="_blank" rel="noopener noreferrer" className={styles.attachmentLink}>
-            <img src={src} alt={image.name || "attachment"} width={w} height={h}
+            <img src={src} alt={image.name || "attachment"} width={imageWidth} height={imageHeight}
               className={styles.attachmentImage} loading="lazy" />
           </a>
         );
@@ -493,8 +493,8 @@ function decodeWaveform(base64Str: string): number[] {
       bytes[i] = binaryString.charCodeAt(i);
     }
     return Array.from(bytes);
-  } catch (e) {
-    console.error("Failed to decode waveform:", e);
+  } catch (error) {
+    console.error("Failed to decode waveform:", error);
     return [];
   }
 }
@@ -530,7 +530,7 @@ function getWaveformBars(base64Str?: string, targetCount = 35): number[] {
   }
 
   const maxVal = Math.max(...resampled, 1);
-  return resampled.map((v) => Math.max(15, Math.round((v / maxVal) * 100)));
+  return resampled.map((value) => Math.max(15, Math.round((value / maxVal) * 100)));
 }
 
 function VoiceMessagePlayer({ attachment }: { attachment: DiscordAttachment }) {
@@ -588,12 +588,12 @@ function VoiceMessagePlayer({ attachment }: { attachment: DiscordAttachment }) {
     }
   };
 
-  const handleWaveformClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleWaveformClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const audio = audioRef.current;
     if (!audio || !duration) return;
 
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const clickX = event.clientX - rect.left;
     const width = rect.width;
     const percentage = Math.min(Math.max(0, clickX / width), 1);
     
@@ -619,15 +619,15 @@ function VoiceMessagePlayer({ attachment }: { attachment: DiscordAttachment }) {
 
   const formatTime = (seconds: number) => {
     if (isNaN(seconds)) return "0:00";
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = Math.floor(seconds % 60);
-    const sStr = s < 10 ? `0${s}` : `${s}`;
-    if (h > 0) {
-      const mStr = m < 10 ? `0${m}` : `${m}`;
-      return `${h}:${mStr}:${sStr}`;
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    const secondsString = remainingSeconds < 10 ? `0${remainingSeconds}` : `${remainingSeconds}`;
+    if (hours > 0) {
+      const minutesString = minutes < 10 ? `0${minutes}` : `${minutes}`;
+      return `${hours}:${minutesString}:${secondsString}`;
     }
-    return `${m}:${sStr}`;
+    return `${minutes}:${secondsString}`;
   };
 
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
@@ -695,12 +695,12 @@ function VoiceMessagePlayer({ attachment }: { attachment: DiscordAttachment }) {
 
 function AudioAttachments({ attachments }: { attachments?: DiscordAttachment[] }) {
   if (!attachments?.length) return null;
-  const audioList = attachments.filter((a: DiscordAttachment) =>
-    (a.contentType?.startsWith("audio/") ||
-     a.name?.endsWith(".ogg") ||
-     a.name?.endsWith(".mp3") ||
-     a.duration ||
-     a.waveform) && (a.url || a.proxyURL)
+  const audioList = attachments.filter((attachment: DiscordAttachment) =>
+    (attachment.contentType?.startsWith("audio/") ||
+     attachment.name?.endsWith(".ogg") ||
+     attachment.name?.endsWith(".mp3") ||
+     attachment.duration ||
+     attachment.waveform) && (attachment.url || attachment.proxyURL)
   );
   if (!audioList.length) return null;
   return (
@@ -719,11 +719,11 @@ function EmbedMedia({ embeds }: { embeds?: DiscordEmbed[] }) {
   if (!embeds?.length) return null;
   // Skip non-object embeds (legacy string data), Tenor (handled separately),
   // and embeds with nothing renderable
-  const filteredEmbeds = embeds.filter((e: DiscordEmbed) =>
-    typeof e === "object" && e !== null
-    && (e.title || e.description || e.provider || e.image || e.thumbnail || e.video)
-    && e.provider?.name !== "Tenor"
-    && !/tenor\.com/i.test(e.url || "")
+  const filteredEmbeds = embeds.filter((embed: DiscordEmbed) =>
+    typeof embed === "object" && embed !== null
+    && (embed.title || embed.description || embed.provider || embed.image || embed.thumbnail || embed.video)
+    && embed.provider?.name !== "Tenor"
+    && !/tenor\.com/i.test(embed.url || "")
   );
   if (!filteredEmbeds.length) return null;
 
@@ -745,12 +745,12 @@ function EmbedMedia({ embeds }: { embeds?: DiscordEmbed[] }) {
           const imgMeta = embed.image || embed.thumbnail;
           if (!imgMeta) return null;
           const maxW = 400, maxH = 300;
-          let w = imgMeta.width || maxW, h = imgMeta.height || maxH;
-          if (w > maxW) { h = Math.round(h * (maxW / w)); w = maxW; }
-          if (h > maxH) { w = Math.round(w * (maxH / h)); h = maxH; }
+          let imageWidth = imgMeta.width || maxW, imageHeight = imgMeta.height || maxH;
+          if (imageWidth > maxW) { imageHeight = Math.round(imageHeight * (maxW / imageWidth)); imageWidth = maxW; }
+          if (imageHeight > maxH) { imageWidth = Math.round(imageWidth * (maxH / imageHeight)); imageHeight = maxH; }
           return (
             <a key={i} href={embed.url || imgSrc} target="_blank" rel="noopener noreferrer" className={styles.attachmentLink}>
-                <img src={imgSrc} alt={embed.title || "embed"} width={w} height={h}
+                <img src={imgSrc} alt={embed.title || "embed"} width={imageWidth} height={imageHeight}
                 className={styles.attachmentImage} loading="lazy" />
           </a>
           );
@@ -802,12 +802,12 @@ function EmbedMedia({ embeds }: { embeds?: DiscordEmbed[] }) {
             {hasLargeImage && embed.image && (() => {
               const imgSrc = embed.image!.proxyURL || embed.image!.url;
               const maxW = 400, maxH = 300;
-              let w = embed.image!.width || maxW, h = embed.image!.height || maxH;
-              if (w > maxW) { h = Math.round(h * (maxW / w)); w = maxW; }
-              if (h > maxH) { w = Math.round(w * (maxH / h)); h = maxH; }
+              let imageWidth = embed.image!.width || maxW, imageHeight = embed.image!.height || maxH;
+              if (imageWidth > maxW) { imageHeight = Math.round(imageHeight * (maxW / imageWidth)); imageWidth = maxW; }
+              if (imageHeight > maxH) { imageWidth = Math.round(imageWidth * (maxH / imageHeight)); imageHeight = maxH; }
               return (
                 <a href={embed.url || imgSrc} target="_blank" rel="noopener noreferrer" className={styles.embedImageLink}>
-                        <img src={imgSrc} alt={embed.title || "embed image"} width={w} height={h}
+                        <img src={imgSrc} alt={embed.title || "embed image"} width={imageWidth} height={imageHeight}
                     className={styles.embedImage} loading="lazy" />
                 </a>
               );
@@ -1029,7 +1029,7 @@ function EmojiPicker({ anchorRef, serverEmojis, onSelect, onClose }: EmojiPicker
 
   // Filter server emojis
   const filteredCustom = serverEmojis
-    ? serverEmojis.filter((e) => !filter || e.name.toLowerCase().includes(lowerFilter))
+    ? serverEmojis.filter((emoji) => !filter || emoji.name.toLowerCase().includes(lowerFilter))
     : [];
 
   // Scroll to a category section
@@ -1053,7 +1053,7 @@ function EmojiPicker({ anchorRef, serverEmojis, onSelect, onClose }: EmojiPicker
           type="text"
           placeholder="Search emojis…"
           value={filter}
-          onChange={(e) => setFilter(e.target.value)}
+          onChange={(event) => setFilter(event.target.value)}
         />
         <div className={styles.emojiPickerMain}>
           {/* Category sidebar tabs */}
@@ -1237,13 +1237,13 @@ function Reactions({ reactions, messageId, reactedSet, onReact }: ReactionsProps
   if (!reactions?.length) return null;
   return (
     <div className={styles.reactions}>
-      {reactions.map((r: DiscordReaction, i: number) => {
-        const emoji = r.emoji;
+      {reactions.map((reaction: DiscordReaction, i: number) => {
+        const emoji = reaction.emoji;
         const emojiIdentifier = emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
         const reactKey = buildReactKey(messageId, emojiIdentifier);
         // Treat as "already reacted" if either the user clicked it this session
-        // (localStorage) OR the bot already holds this reaction (`r.me`).
-        const hasReacted = reactedSet?.has(reactKey) || r.me === true;
+        // (localStorage) OR the bot already holds this reaction (`reaction.me`).
+        const hasReacted = reactedSet?.has(reactKey) || reaction.me === true;
         const pillClass = hasReacted ? styles.reactionPillReacted : styles.reactionPill;
 
         // Custom server emoji → CDN image
@@ -1263,7 +1263,7 @@ function Reactions({ reactions, messageId, reactedSet, onReact }: ReactionsProps
                 loading="lazy"
                 draggable={false}
               />
-              <span className={styles.reactionCount}>{r.count}</span>
+              <span className={styles.reactionCount}>{reaction.count}</span>
             </button>
           );
         }
@@ -1277,7 +1277,7 @@ function Reactions({ reactions, messageId, reactedSet, onReact }: ReactionsProps
             title={hasReacted ? "You reacted" : emoji.name}
           >
             <span className={styles.reactionUnicode}>{emoji.name}</span>
-            <span className={styles.reactionCount}>{r.count}</span>
+            <span className={styles.reactionCount}>{reaction.count}</span>
           </button>
         );
       })}
@@ -1435,7 +1435,7 @@ export default function DiscordChatComponent({
         const idSet = new Set(CHANNEL_IDS);
         const filtered = (data.channels || [])
           .filter((ch: DiscordChannel) => idSet.has(ch.id))
-          .sort((a: DiscordChannel, b: DiscordChannel) => (a.position ?? 0) - (b.position ?? 0));
+          .sort((channelA: DiscordChannel, channelB: DiscordChannel) => (channelA.position ?? 0) - (channelB.position ?? 0));
         setChannels(filtered.length > 0 ? filtered : CHANNEL_IDS.map((id) => ({ id, name: id })));
       })
       .catch(() => {
@@ -1464,8 +1464,8 @@ export default function DiscordChatComponent({
       shouldSnapToBottom.current = false;
       isFirstLoad.current = false;
       // Catch late layout shifts from lazy-loaded images
-      const t = setTimeout(() => scrollToBottom(true), 200);
-      return () => clearTimeout(t);
+      const scrollTimeout = setTimeout(() => scrollToBottom(true), 200);
+      return () => clearTimeout(scrollTimeout);
     }
   }, [messages, scrollToBottom]);
 
@@ -1477,9 +1477,9 @@ export default function DiscordChatComponent({
     function connect() {
       es = new EventSource(`${streamUrl}?limit=${messageCount}&channelId=${activeChannelId}`);
 
-      es.addEventListener("init", (e: MessageEvent) => {
+      es.addEventListener("init", (event: MessageEvent) => {
         try {
-          const { messages: msgs } = JSON.parse(e.data);
+          const { messages: msgs } = JSON.parse(event.data);
           const reversed = (msgs || []).reverse() as DiscordMessage[];
           shouldSnapToBottom.current = true;
           setMessages(reversed);
@@ -1536,9 +1536,9 @@ export default function DiscordChatComponent({
         }
       });
 
-      es.addEventListener("new", (e) => {
+      es.addEventListener("new", (event) => {
         try {
-          const { messages: newMsgs } = JSON.parse(e.data);
+          const { messages: newMsgs } = JSON.parse(event.data);
           if (!newMsgs?.length) return;
           shouldSnapToBottom.current = true;
           setMessages((prev) => {
@@ -1550,9 +1550,9 @@ export default function DiscordChatComponent({
         }
       });
 
-      es.addEventListener("delete", (e) => {
+      es.addEventListener("delete", (event) => {
         try {
-          const { ids } = JSON.parse(e.data);
+          const { ids } = JSON.parse(event.data);
           if (!ids?.length) return;
           const deletedSet = new Set(ids);
           setMessages((prev) => prev.filter((message) => !deletedSet.has(message.id)));
@@ -1564,9 +1564,9 @@ export default function DiscordChatComponent({
       // Reaction (and other field) changes on existing messages.
       // The server detects when a message's reactions fingerprint
       // changes and sends the full updated message object.
-      es.addEventListener("update", (e) => {
+      es.addEventListener("update", (event) => {
         try {
-          const { messages: updatedMsgs } = JSON.parse(e.data) as { messages?: DiscordMessage[] };
+          const { messages: updatedMsgs } = JSON.parse(event.data) as { messages?: DiscordMessage[] };
           if (!updatedMsgs?.length) return;
           const updateMap = new Map((updatedMsgs || []).map((m) => [m.id, m]));
           setMessages((prev) =>
@@ -1658,9 +1658,9 @@ export default function DiscordChatComponent({
         if (message.id !== messageId) return message;
         const reactions = message.reactions ? [...message.reactions] : [];
         const isCustom = /^\w+:\d+$/.test(emojiIdentifier);
-        const index = reactions.findIndex((r) => {
-          if (isCustom) return r.emoji.id === emojiIdentifier.split(":")[1];
-          return r.emoji.name === emojiIdentifier && !r.emoji.id;
+        const index = reactions.findIndex((reaction) => {
+          if (isCustom) return reaction.emoji.id === emojiIdentifier.split(":")[1];
+          return reaction.emoji.name === emojiIdentifier && !reaction.emoji.id;
         });
         if (index >= 0) {
           reactions[index] = { ...reactions[index], count: reactions[index].count + 1 };

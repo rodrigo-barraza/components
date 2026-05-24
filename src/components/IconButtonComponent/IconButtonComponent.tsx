@@ -5,7 +5,7 @@ import SoundService from "../../services/SoundService.js";
 
 export interface IconButtonComponentProps extends ComponentPropsWithoutRef<"button"> {
   icon: ReactNode;
-  onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   tooltip?: string;
   variant?: "default" | "destructive";
   active?: boolean;
@@ -41,12 +41,12 @@ export default function IconButtonComponent({
   return (
     <button
       className={classes}
-      onClick={(e) => {
-        if (sound) SoundService.playClickButton({ event: e });
-        onClick?.(e);
+      onClick={(event) => {
+        if (sound) SoundService.playClickButton({ event });
+        onClick?.(event);
       }}
-      onMouseEnter={(e) => {
-        if (sound) SoundService.playHoverButton({ event: e });
+      onMouseEnter={(event) => {
+        if (sound) SoundService.playHoverButton({ event });
       }}
       title={tooltip}
       disabled={disabled}

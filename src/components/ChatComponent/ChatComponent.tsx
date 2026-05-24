@@ -119,8 +119,8 @@ export default function ChatComponent({ className = "" }: ChatComponentProps) {
           onToken: (_token: string, fullContent: string) => {
             streamingRef.current = fullContent;
             setMessages((prev) =>
-              prev.map((m) =>
-                m.id === agentMessageId ? { ...m, content: fullContent } : m,
+              prev.map((message) =>
+                message.id === agentMessageId ? { ...message, content: fullContent } : message,
               ),
             );
           },
@@ -128,28 +128,28 @@ export default function ChatComponent({ className = "" }: ChatComponentProps) {
             setIsTyping(false);
             streamingRef.current = "";
             setMessages((prev) =>
-              prev.map((m) =>
-                m.id === agentMessageId
-                  ? { ...m, content: finalContent, streaming: false }
-                  : m,
+              prev.map((message) =>
+                message.id === agentMessageId
+                  ? { ...message, content: finalContent, streaming: false }
+                  : message,
               ),
             );
-            if (!isOpen) setUnreadCount((c) => c + 1);
+            if (!isOpen) setUnreadCount((count) => count + 1);
           },
           onError: (error: Error) => {
             setIsTyping(false);
             console.error("[Chat] Agent error:", error.message);
             setMessages((prev) =>
-              prev.map((m) =>
-                m.id === agentMessageId
+              prev.map((message) =>
+                message.id === agentMessageId
                   ? {
-                      ...m,
+                      ...message,
                       content:
                         "Sorry, I'm having trouble responding right now. Please try again.",
                       streaming: false,
                       error: true,
                     }
-                  : m,
+                  : message,
               ),
             );
           },

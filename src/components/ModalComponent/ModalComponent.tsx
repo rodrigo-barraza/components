@@ -78,8 +78,8 @@ export default function ModalComponent({
   // ── Focus trapping ────────────────────────────────────
   // Tab cycles within modal boundaries
   useEffect(() => {
-    const handleTab = (e: KeyboardEvent) => {
-      if (e.key !== "Tab") return;
+    const handleTab = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
       const panel = panelRef.current;
       if (!panel) return;
 
@@ -94,14 +94,14 @@ export default function ModalComponent({
       const first = focusableEls[0];
       const last = focusableEls[focusableEls.length - 1];
 
-      if (e.shiftKey) {
+      if (event.shiftKey) {
         if (document.activeElement === first) {
-          e.preventDefault();
+          event.preventDefault();
           last.focus();
         }
       } else {
         if (document.activeElement === last) {
-          e.preventDefault();
+          event.preventDefault();
           first.focus();
         }
       }
@@ -113,9 +113,9 @@ export default function ModalComponent({
 
   // Dismiss on Escape
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.stopPropagation();
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.stopPropagation();
         onClose();
       }
     };
@@ -125,8 +125,8 @@ export default function ModalComponent({
 
   // Dismiss on overlay click (not panel children)
   const handleOverlayClick = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (e.target === overlayRef.current) onClose();
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      if (event.target === overlayRef.current) onClose();
     },
     [onClose],
   );

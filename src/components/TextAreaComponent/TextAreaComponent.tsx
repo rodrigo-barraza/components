@@ -8,7 +8,7 @@ import styles from "./TextAreaComponent.module.css";
  */
 export interface TextAreaComponentProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange'> {
   value: string;
-  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   minRows?: number;
   maxRows?: number;
   autoResize?: boolean;
@@ -50,8 +50,8 @@ export default function TextAreaComponent({
     resize();
   }, [resize]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onChange?.(e);
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onChange?.(event);
   };
 
   const classes = [styles.textarea, className || ""].filter(Boolean).join(" ");

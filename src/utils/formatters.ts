@@ -33,9 +33,9 @@ export function formatPercent(value: number, decimals: number | "adaptive" = "ad
  * Signature: (amount, locale?, currencyCode?) — wraps the utilities-library
  * version which uses (amount, currencyCode?) to support the locale parameter.
  */
-export function formatCurrency(n: number, locale = "en-US", currency = "USD"): string {
+export function formatCurrency(value: number, locale = "en-US", currency = "USD"): string {
   if (locale === "en-US") {
-    return _formatCurrency(n, currency);
+    return _formatCurrency(value, currency);
   }
-  return new Intl.NumberFormat(locale, { style: "currency", currency }).format(n || 0);
+  return new Intl.NumberFormat(locale, { style: "currency", currency }).format(value || 0);
 }

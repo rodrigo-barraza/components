@@ -67,7 +67,7 @@ describe("useFetch", () => {
   it("applies transform function", async () => {
     const fetcher = vi.fn().mockResolvedValue({ items: [1, 2, 3] });
     const { result } = renderHook(() =>
-      useFetch(fetcher, { transform: (d) => d.items.length }),
+      useFetch(fetcher, { transform: (data) => data.items.length }),
     );
 
     await vi.waitFor(() => {

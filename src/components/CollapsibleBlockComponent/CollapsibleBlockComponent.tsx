@@ -40,8 +40,8 @@ export default function CollapsibleBlockComponent({
   const isControlled = controlledOpen !== undefined;
   const isOpen = isControlled ? controlledOpen : !internalCollapsed;
 
-  const handleToggle = (e: MouseEvent<HTMLButtonElement>) => {
-    if (sound) SoundService.playClick({ event: e });
+  const handleToggle = (event: MouseEvent<HTMLButtonElement>) => {
+    if (sound) SoundService.playClick({ event });
     if (isControlled) {
       onToggle?.(!controlledOpen);
     } else {
@@ -59,7 +59,7 @@ export default function CollapsibleBlockComponent({
         <span className={styles.label}>{label}</span>
         {badge && <span className={styles.badge}>{badge}</span>}
         {headerActions && (
-          <div className={styles.actions} onClick={(e: MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
+          <div className={styles.actions} onClick={(event: MouseEvent<HTMLDivElement>) => event.stopPropagation()}>
             {headerActions}
           </div>
         )}

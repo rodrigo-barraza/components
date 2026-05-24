@@ -319,8 +319,8 @@ function LinearIndicator({
 /* ═══════════════════════════════════════════════════════════ */
 
 /** Clamp a number between 0 and 100 */
-function clamp(n: number): number {
-  return Math.max(0, Math.min(100, n));
+function clamp(value: number): number {
+  return Math.max(0, Math.min(100, value));
 }
 
 /** Map color prop to CSS module class */

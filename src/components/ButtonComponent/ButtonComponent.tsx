@@ -35,8 +35,8 @@ const ButtonComponent = forwardRef<HTMLElement, Omit<React.HTMLAttributes<HTMLEl
   fullWidth?: boolean;
   isGenerating?: boolean;
   href?: string;
-  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
-  onMouseEnter?: (e: React.MouseEvent<HTMLElement>) => void;
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
+  onMouseEnter?: (event: React.MouseEvent<HTMLElement>) => void;
 }>(function ButtonComponent(
   {
     variant = "primary",
@@ -75,12 +75,12 @@ const ButtonComponent = forwardRef<HTMLElement, Omit<React.HTMLAttributes<HTMLEl
     iconSize ?? (size === "small" ? 14 : size === "large" ? 20 : 18);
 
   /* ── Ripple ────────────────────────────────────────────────────── */
-  const createRipple = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    const button = e.currentTarget;
+  const createRipple = useCallback((event: React.MouseEvent<HTMLElement>) => {
+    const button = event.currentTarget;
     const rect = button.getBoundingClientRect();
     const diameter = Math.max(rect.width, rect.height);
-    const x = e.clientX - rect.left - diameter / 2;
-    const y = e.clientY - rect.top - diameter / 2;
+    const x = event.clientX - rect.left - diameter / 2;
+    const y = event.clientY - rect.top - diameter / 2;
 
     const ripple = document.createElement("span");
     ripple.className = styles.ripple;
@@ -134,15 +134,15 @@ const ButtonComponent = forwardRef<HTMLElement, Omit<React.HTMLAttributes<HTMLEl
   );
 
   /* ── Shared event handlers ─────────────────────────────────────── */
-  const handleMouseEnter = (e: React.MouseEvent<HTMLElement>) => {
-    if (sound) SoundService.playHoverButton({ event: e });
-    onMouseEnter?.(e);
+  const handleMouseEnter = (event: React.MouseEvent<HTMLElement>) => {
+    if (sound) SoundService.playHoverButton({ event });
+    onMouseEnter?.(event);
   };
 
-  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    createRipple(e);
-    if (sound) SoundService.playClickButton({ event: e });
-    onClick?.(e);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    createRipple(event);
+    if (sound) SoundService.playClickButton({ event });
+    onClick?.(event);
   };
 
   /* ── Render as <a> if href provided ────────────────────────────── */
