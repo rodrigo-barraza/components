@@ -76,13 +76,13 @@ const TextFieldComponent = forwardRef(function TextFieldComponent({ variant = "o
         resizeTextarea();
     }, [value, resizeTextarea]);
     // ── Event handlers ─────────────────────────────────
-    const handleFocus = (e) => {
+    const handleFocus = (event) => {
         setFocused(true);
-        rest.onFocus?.(e);
+        rest.onFocus?.(event);
     };
-    const handleBlur = (e) => {
+    const handleBlur = (event) => {
         setFocused(false);
-        rest.onBlur?.(e);
+        rest.onBlur?.(event);
     };
     const handleContainerClick = () => {
         const element = typeof inputRef === "object" ? inputRef.current : null;
@@ -123,13 +123,13 @@ const TextFieldComponent = forwardRef(function TextFieldComponent({ variant = "o
     };
     // Remove our consumed event handlers from rest before spreading
     const { onFocus: _, onBlur: __, ...restClean } = rest;
-    return (_jsxs("div", { className: rootClasses, children: [_jsxs("div", { className: styles.fieldContainer, onClick: handleContainerClick, role: "presentation", children: [leadingIcon && (_jsx("span", { className: styles.leadingIcon, "aria-hidden": "true", children: leadingIcon })), _jsxs("div", { className: styles.inputWrapper, children: [hasLabel && (_jsxs("label", { ref: labelRef, className: styles.label, htmlFor: fieldId, children: [label, required && _jsx("span", { "aria-hidden": "true", children: " *" })] })), _jsxs("div", { className: styles.inputRow, children: [prefix && _jsx("span", { className: styles.prefix, children: prefix }), multiline ? (_jsx("textarea", { ref: inputRef, className: styles.textarea, rows: rows, ...fieldProps, ...restClean })) : (_jsx("input", { ref: inputRef, type: type, className: styles.input, ...fieldProps, ...restClean })), suffix && _jsx("span", { className: styles.suffix, children: suffix })] })] }), trailingIcon && (_jsx("span", { className: styles.trailingIcon, "aria-hidden": "true", onClick: (e) => {
-                            e.stopPropagation();
-                            onTrailingIconClick?.(e);
-                        }, role: onTrailingIconClick ? "button" : undefined, tabIndex: onTrailingIconClick ? 0 : undefined, onKeyDown: (e) => {
-                            if (onTrailingIconClick && (e.key === "Enter" || e.key === " ")) {
-                                e.preventDefault();
-                                onTrailingIconClick(e);
+    return (_jsxs("div", { className: rootClasses, children: [_jsxs("div", { className: styles.fieldContainer, onClick: handleContainerClick, role: "presentation", children: [leadingIcon && (_jsx("span", { className: styles.leadingIcon, "aria-hidden": "true", children: leadingIcon })), _jsxs("div", { className: styles.inputWrapper, children: [hasLabel && (_jsxs("label", { ref: labelRef, className: styles.label, htmlFor: fieldId, children: [label, required && _jsx("span", { "aria-hidden": "true", children: " *" })] })), _jsxs("div", { className: styles.inputRow, children: [prefix && _jsx("span", { className: styles.prefix, children: prefix }), multiline ? (_jsx("textarea", { ref: inputRef, className: styles.textarea, rows: rows, ...fieldProps, ...restClean })) : (_jsx("input", { ref: inputRef, type: type, className: styles.input, ...fieldProps, ...restClean })), suffix && _jsx("span", { className: styles.suffix, children: suffix })] })] }), trailingIcon && (_jsx("span", { className: styles.trailingIcon, "aria-hidden": "true", onClick: (event) => {
+                            event.stopPropagation();
+                            onTrailingIconClick?.(event);
+                        }, role: onTrailingIconClick ? "button" : undefined, tabIndex: onTrailingIconClick ? 0 : undefined, onKeyDown: (event) => {
+                            if (onTrailingIconClick && (event.key === "Enter" || event.key === " ")) {
+                                event.preventDefault();
+                                onTrailingIconClick(event);
                             }
                         }, children: trailingIcon })), variant === "filled" && (_jsx("span", { className: styles.activeIndicator, "aria-hidden": "true" })), variant === "outlined" && (_jsxs(_Fragment, { children: [_jsx("span", { className: styles.outlineBorder, "aria-hidden": "true" }), hasLabel && (_jsx("span", { ref: notchRef, className: styles.outlineNotch, "aria-hidden": "true" }))] }))] }), (displaySupportingText || maxLength != null) && (_jsxs("div", { className: styles.supportingText, id: supportingId, children: [_jsx("span", { children: displaySupportingText }), maxLength != null && (_jsxs("span", { className: styles.counter, children: [charCount, "/", maxLength] }))] }))] }));
 });

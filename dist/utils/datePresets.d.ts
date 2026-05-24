@@ -2,8 +2,8 @@
  * Shared date-range presets and helpers.
  * Single source of truth for DatePickerComponent.
  */
-import { toLocalDateString as fmtDate, daysAgo } from "@rodrigo-barraza/utilities-library";
-export { fmtDate, daysAgo };
+import { toLocalDateString as formatDate, daysAgo } from "@rodrigo-barraza/utilities-library";
+export { formatDate, daysAgo };
 export interface DateRange {
     from: string;
     to: string;

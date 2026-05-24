@@ -4,7 +4,7 @@ export interface TextFieldComponentProps extends Omit<React.HTMLAttributes<TextF
     variant?: "filled" | "outlined";
     label?: string;
     value?: string | number;
-    onChange?: (e: ChangeEvent<TextFieldElement>) => void;
+    onChange?: (event: ChangeEvent<TextFieldElement>) => void;
     type?: string;
     placeholder?: string;
     disabled?: boolean;
@@ -17,7 +17,7 @@ export interface TextFieldComponentProps extends Omit<React.HTMLAttributes<TextF
     suffix?: ReactNode;
     leadingIcon?: ReactNode;
     trailingIcon?: ReactNode;
-    onTrailingIconClick?: (e: React.MouseEvent | React.KeyboardEvent) => void;
+    onTrailingIconClick?: (event: React.MouseEvent | React.KeyboardEvent) => void;
     multiline?: boolean;
     rows?: number;
     maxRows?: number;

@@ -46,10 +46,10 @@ function getHoverBuffer() {
     hoverBuffer = audio.createBuffer(1, length, sampleRate);
     const data = hoverBuffer.getChannelData(0);
     for (let i = 0; i < length; i++) {
-        const t = i / sampleRate;
+        const timePosition = i / sampleRate;
         // White noise shaped by a steep exponential decay
         const noise = Math.random() * 2 - 1;
-        const envelope = Math.exp(-t * 600);
+        const envelope = Math.exp(-timePosition * 600);
         data[i] = noise * envelope * 0.025; // ultra-quiet base amplitude
     }
     return hoverBuffer;
@@ -75,16 +75,16 @@ function getClickBuffer() {
     const freqEnd = 400;
     let phase = 0;
     for (let i = 0; i < length; i++) {
-        const t = i / sampleRate;
+        const timePosition = i / sampleRate;
         const progress = i / length;
         // Exponential frequency sweep from high → low
         const freq = freqStart * Math.pow(freqEnd / freqStart, progress);
         // Accumulate phase for smooth sine wave
         phase += (2 * Math.PI * freq) / sampleRate;
         // Sine body with steep exponential decay
-        const sine = Math.sin(phase) * Math.exp(-t * 300);
+        const sine = Math.sin(phase) * Math.exp(-timePosition * 300);
         // Noise transient layer — only the first ~5 ms
-        const noiseAmt = Math.exp(-t * 800);
+        const noiseAmt = Math.exp(-timePosition * 800);
         const noise = (Math.random() * 2 - 1) * noiseAmt * 0.3;
         // Combined — ~2× louder than hover tick
         data[i] = sine * 0.06 + noise * 0.02;
@@ -109,9 +109,9 @@ function getButtonHoverBuffer() {
     const data = buttonHoverBuffer.getChannelData(0);
     const freq = 2400;
     for (let i = 0; i < length; i++) {
-        const t = i / sampleRate;
-        const sine = Math.sin(2 * Math.PI * freq * t);
-        const envelope = Math.exp(-t * 500);
+        const timePosition = i / sampleRate;
+        const sine = Math.sin(2 * Math.PI * freq * timePosition);
+        const envelope = Math.exp(-timePosition * 500);
         data[i] = sine * envelope * 0.03;
     }
     return buttonHoverBuffer;
@@ -137,7 +137,7 @@ function getButtonClickBuffer() {
     let phaseA = 0;
     let phaseB = 0;
     for (let i = 0; i < length; i++) {
-        const t = i / sampleRate;
+        const timePosition = i / sampleRate;
         const progress = i / length;
         // Slight downward pitch bend
         const bend = 1 - progress * 0.15;
@@ -147,9 +147,9 @@ function getButtonClickBuffer() {
         phaseB += (2 * Math.PI * freqB) / sampleRate;
         const toneA = Math.sin(phaseA) * 0.5;
         const toneB = Math.sin(phaseB) * 0.3;
-        const envelope = Math.exp(-t * 200);
+        const envelope = Math.exp(-timePosition * 200);
         // Noise transient — first ~8 ms
-        const noiseAmt = Math.exp(-t * 600);
+        const noiseAmt = Math.exp(-timePosition * 600);
         const noise = (Math.random() * 2 - 1) * noiseAmt * 0.2;
         data[i] = ((toneA + toneB) * envelope + noise) * 0.05;
     }

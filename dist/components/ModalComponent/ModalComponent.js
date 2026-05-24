@@ -50,8 +50,8 @@ export default function ModalComponent({ title, onClose, footer, size = "md", va
     // ── Focus trapping ────────────────────────────────────
     // Tab cycles within modal boundaries
     useEffect(() => {
-        const handleTab = (e) => {
-            if (e.key !== "Tab")
+        const handleTab = (event) => {
+            if (event.key !== "Tab")
                 return;
             const panel = panelRef.current;
             if (!panel)
@@ -61,15 +61,15 @@ export default function ModalComponent({ title, onClose, footer, size = "md", va
                 return;
             const first = focusableEls[0];
             const last = focusableEls[focusableEls.length - 1];
-            if (e.shiftKey) {
+            if (event.shiftKey) {
                 if (document.activeElement === first) {
-                    e.preventDefault();
+                    event.preventDefault();
                     last.focus();
                 }
             }
             else {
                 if (document.activeElement === last) {
-                    e.preventDefault();
+                    event.preventDefault();
                     first.focus();
                 }
             }
@@ -79,9 +79,9 @@ export default function ModalComponent({ title, onClose, footer, size = "md", va
     }, []);
     // Dismiss on Escape
     useEffect(() => {
-        const handleKey = (e) => {
-            if (e.key === "Escape") {
-                e.stopPropagation();
+        const handleKey = (event) => {
+            if (event.key === "Escape") {
+                event.stopPropagation();
                 onClose();
             }
         };
@@ -89,8 +89,8 @@ export default function ModalComponent({ title, onClose, footer, size = "md", va
         return () => document.removeEventListener("keydown", handleKey);
     }, [onClose]);
     // Dismiss on overlay click (not panel children)
-    const handleOverlayClick = useCallback((e) => {
-        if (e.target === overlayRef.current)
+    const handleOverlayClick = useCallback((event) => {
+        if (event.target === overlayRef.current)
             onClose();
     }, [onClose]);
     const overlayClass = [

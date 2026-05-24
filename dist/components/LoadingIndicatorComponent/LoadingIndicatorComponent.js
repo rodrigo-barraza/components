@@ -111,8 +111,8 @@ function LinearIndicator({ isIndeterminate, value, buffer = null, trackSize, col
 /*  UTILITIES                                                 */
 /* ═══════════════════════════════════════════════════════════ */
 /** Clamp a number between 0 and 100 */
-function clamp(n) {
-    return Math.max(0, Math.min(100, n));
+function clamp(value) {
+    return Math.max(0, Math.min(100, value));
 }
 /** Map color prop to CSS module class */
 function getColorClass(color) {

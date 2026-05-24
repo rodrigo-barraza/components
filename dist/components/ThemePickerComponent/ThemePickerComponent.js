@@ -76,9 +76,9 @@ export default function ThemePickerComponent({ theme, themes = [], onSelectTheme
     useEffect(() => {
         if (!open)
             return;
-        const handleClick = (e) => {
-            const inWrapper = wrapperRef.current?.contains(e.target);
-            const inPopover = popoverRef.current?.contains(e.target);
+        const handleClick = (event) => {
+            const inWrapper = wrapperRef.current?.contains(event.target);
+            const inPopover = popoverRef.current?.contains(event.target);
             if (!inWrapper && !inPopover) {
                 setOpen(false);
             }
@@ -90,8 +90,8 @@ export default function ThemePickerComponent({ theme, themes = [], onSelectTheme
     useEffect(() => {
         if (!open)
             return;
-        const handleKey = (e) => {
-            if (e.key === "Escape")
+        const handleKey = (event) => {
+            if (event.key === "Escape")
                 setOpen(false);
         };
         document.addEventListener("keydown", handleKey);
@@ -118,15 +118,15 @@ export default function ThemePickerComponent({ theme, themes = [], onSelectTheme
     }, [onSelectTheme]);
     const currentMeta = THEME_CATALOG[theme] || THEME_CATALOG.dark;
     const CurrentIcon = Icons[currentMeta.icon] || Icons.Palette;
-    const triggerButton = (_jsxs("button", { ref: triggerRef, className: styles.trigger, onClick: () => setOpen((v) => !v), title: "Change theme", type: "button", children: [_jsx("span", { className: styles.triggerSwatch, style: { background: currentMeta.color } }), _jsx(CurrentIcon, { size: 18, strokeWidth: 1.8, className: styles.triggerIcon }), _jsx("span", { className: styles.triggerLabel, children: currentMeta.label }), _jsx(Icons.ChevronUp, { size: 14, className: `${styles.triggerChevron} ${open ? styles.triggerChevronOpen : ""}` })] }));
-    return (_jsxs("div", { ref: wrapperRef, className: `${styles.wrapper} ${collapsed ? styles.collapsed : ""} ${className || ""}`, children: [collapsed ? (_jsx(TooltipComponent, { label: currentMeta.label, position: "right", delay: 200, disabled: open, className: styles.tooltipFill, children: triggerButton })) : (triggerButton), open && (_jsxs("div", { ref: popoverRef, className: `${styles.popover} ${collapsed ? styles.popoverFlyout : ""}`, style: collapsed ? popoverStyle : undefined, children: [_jsx("div", { className: styles.popoverHeader, children: "Theme" }), _jsx("div", { className: styles.themeList, children: themes.map((t) => {
-                            const meta = THEME_CATALOG[t] || { label: t, icon: "Palette", color: "#888", bg: "#222" };
+    const triggerButton = (_jsxs("button", { ref: triggerRef, className: styles.trigger, onClick: () => setOpen((previous) => !previous), title: "Change theme", type: "button", children: [_jsx("span", { className: styles.triggerSwatch, style: { background: currentMeta.color } }), _jsx(CurrentIcon, { size: 18, strokeWidth: 1.8, className: styles.triggerIcon }), _jsx("span", { className: styles.triggerLabel, children: currentMeta.label }), _jsx(Icons.ChevronUp, { size: 14, className: `${styles.triggerChevron} ${open ? styles.triggerChevronOpen : ""}` })] }));
+    return (_jsxs("div", { ref: wrapperRef, className: `${styles.wrapper} ${collapsed ? styles.collapsed : ""} ${className || ""}`, children: [collapsed ? (_jsx(TooltipComponent, { label: currentMeta.label, position: "right", delay: 200, disabled: open, className: styles.tooltipFill, children: triggerButton })) : (triggerButton), open && (_jsxs("div", { ref: popoverRef, className: `${styles.popover} ${collapsed ? styles.popoverFlyout : ""}`, style: collapsed ? popoverStyle : undefined, children: [_jsx("div", { className: styles.popoverHeader, children: "Theme" }), _jsx("div", { className: styles.themeList, children: themes.map((themeName) => {
+                            const meta = THEME_CATALOG[themeName] || { label: themeName, icon: "Palette", color: "#888", bg: "#222" };
                             const ThemeIcon = Icons[meta.icon] || Icons.Palette;
-                            const isActive = t === theme;
-                            return (_jsxs("button", { className: `${styles.themeOption} ${isActive ? styles.active : ""}`, onClick: () => handleSelect(t), type: "button", title: `Switch to ${meta.label} theme`, children: [_jsx("span", { className: styles.swatch, style: {
+                            const isActive = themeName === theme;
+                            return (_jsxs("button", { className: `${styles.themeOption} ${isActive ? styles.active : ""}`, onClick: () => handleSelect(themeName), type: "button", title: `Switch to ${meta.label} theme`, children: [_jsx("span", { className: styles.swatch, style: {
                                             background: meta.color,
                                             boxShadow: isActive ? `0 0 8px ${meta.color}88` : "none",
-                                        }, children: isActive && _jsx(Icons.Check, { size: 10, strokeWidth: 3, className: styles.swatchCheck }) }), _jsx(ThemeIcon, { size: 16, strokeWidth: 1.8, className: styles.optionIcon }), _jsx("span", { className: styles.optionLabel, children: meta.label })] }, t));
+                                        }, children: isActive && _jsx(Icons.Check, { size: 10, strokeWidth: 3, className: styles.swatchCheck }) }), _jsx(ThemeIcon, { size: 16, strokeWidth: 1.8, className: styles.optionIcon }), _jsx("span", { className: styles.optionLabel, children: meta.label })] }, themeName));
                         }) })] }))] }));
 }
 //# sourceMappingURL=ThemePickerComponent.js.map

@@ -43,7 +43,7 @@ export interface DrawerItemProps extends Record<string, unknown> {
     active?: boolean;
     disabled?: boolean;
     href?: string;
-    onClick?: (e: MouseEvent<HTMLElement>) => void;
+    onClick?: (event: MouseEvent<HTMLElement>) => void;
     LinkComponent?: ElementType;
     className?: string;
     children?: ReactNode;

@@ -9,13 +9,13 @@ export default function CloseButtonComponent({ onClick, size = 18, variant = "de
     const classes = [styles.closeBtn, variant === "dark" ? styles.dark : "", className || ""]
         .filter(Boolean)
         .join(" ");
-    return (_jsx("button", { className: classes, onClick: (e) => {
+    return (_jsx("button", { className: classes, onClick: (event) => {
             if (sound)
-                SoundService.playClickButton({ event: e });
-            onClick?.(e);
-        }, onMouseEnter: (e) => {
+                SoundService.playClickButton({ event });
+            onClick?.(event);
+        }, onMouseEnter: (event) => {
             if (sound)
-                SoundService.playHoverButton({ event: e });
+                SoundService.playHoverButton({ event });
         }, title: "Close", children: _jsx(X, { size: size }) }));
 }
 //# sourceMappingURL=CloseButtonComponent.js.map

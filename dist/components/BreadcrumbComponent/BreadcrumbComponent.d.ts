@@ -3,7 +3,7 @@ export interface BreadcrumbItem {
     label: string;
     href?: string;
     icon?: ElementType;
-    onClick?: (e: MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void;
+    onClick?: (event: MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void;
 }
 export interface BreadcrumbComponentProps extends ComponentPropsWithoutRef<"nav"> {
     items?: BreadcrumbItem[];

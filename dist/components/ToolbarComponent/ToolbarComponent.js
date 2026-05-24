@@ -8,7 +8,7 @@ export default function ToolbarComponent({ variant = "standard", orientation = "
      * Roving tabindex keyboard navigation per WAI-ARIA toolbar pattern.
      * Arrow keys navigate between focusable items; Home/End jump to ends.
      */
-    const handleKeyDown = useCallback((e) => {
+    const handleKeyDown = useCallback((event) => {
         const toolbar = toolbarRef.current;
         if (!toolbar)
             return;
@@ -16,7 +16,7 @@ export default function ToolbarComponent({ variant = "standard", orientation = "
         const nextKey = isHorizontal ? "ArrowRight" : "ArrowDown";
         const prevKey = isHorizontal ? "ArrowLeft" : "ArrowUp";
         const navigableKeys = [nextKey, prevKey, "Home", "End"];
-        if (!navigableKeys.includes(e.key))
+        if (!navigableKeys.includes(event.key))
             return;
         // Collect all focusable items within the toolbar
         const items = Array.from(toolbar.querySelectorAll(`[data-toolbar-item]:not([disabled]):not([aria-disabled="true"])`));
@@ -24,21 +24,21 @@ export default function ToolbarComponent({ variant = "standard", orientation = "
             return;
         const currentIndex = items.indexOf(document.activeElement);
         let nextIndex;
-        switch (e.key) {
+        switch (event.key) {
             case nextKey:
-                e.preventDefault();
+                event.preventDefault();
                 nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
                 break;
             case prevKey:
-                e.preventDefault();
+                event.preventDefault();
                 nextIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
                 break;
             case "Home":
-                e.preventDefault();
+                event.preventDefault();
                 nextIndex = 0;
                 break;
             case "End":
-                e.preventDefault();
+                event.preventDefault();
                 nextIndex = items.length - 1;
                 break;
             default:

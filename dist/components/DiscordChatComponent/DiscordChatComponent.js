@@ -242,10 +242,10 @@ function shouldGroup(current, previous) {
     return Math.abs(diff) < 7 * 60 * 1000;
 }
 // Check if day changed
-function isDifferentDay(a, b) {
-    if (!a || !b)
+function isDifferentDay(messageA, messageB) {
+    if (!messageA || !messageB)
         return true;
-    return new Date(a.createdAtISO).toDateString() !== new Date(b.createdAtISO).toDateString();
+    return new Date(messageA.createdAtISO).toDateString() !== new Date(messageB.createdAtISO).toDateString();
 }
 // ── Tenor GIF Embed ──────────────────────────────────────────────
 function TenorEmbed({ url, tenorOembedUrl }) {
@@ -254,7 +254,7 @@ function TenorEmbed({ url, tenorOembedUrl }) {
     useEffect(() => {
         let cancelled = false;
         fetch(`${tenorOembedUrl}?url=${encodeURIComponent(url)}`)
-            .then((res) => res.ok ? res.json() : Promise.reject())
+            .then((response) => response.ok ? response.json() : Promise.reject())
             .then((data) => { if (!cancelled && data.gifUrl)
             setGifUrl(data.gifUrl); })
             .catch(() => { if (!cancelled)
@@ -277,22 +277,22 @@ function TenorEmbeds({ content, tenorOembedUrl }) {
 function ImageAttachments({ attachments }) {
     if (!attachments?.length)
         return null;
-    const images = attachments.filter((a) => a.contentType?.startsWith("image/") && (a.url || a.proxyURL));
+    const images = attachments.filter((attachment) => attachment.contentType?.startsWith("image/") && (attachment.url || attachment.proxyURL));
     if (!images.length)
         return null;
     return (_jsx("div", { className: styles.attachments, children: images.map((image, i) => {
             const src = image.proxyURL || image.url;
             const maxW = 400, maxH = 300;
-            let w = image.width || maxW, h = image.height || maxH;
-            if (w > maxW) {
-                h = Math.round(h * (maxW / w));
-                w = maxW;
+            let imageWidth = image.width || maxW, imageHeight = image.height || maxH;
+            if (imageWidth > maxW) {
+                imageHeight = Math.round(imageHeight * (maxW / imageWidth));
+                imageWidth = maxW;
             }
-            if (h > maxH) {
-                w = Math.round(w * (maxH / h));
-                h = maxH;
+            if (imageHeight > maxH) {
+                imageWidth = Math.round(imageWidth * (maxH / imageHeight));
+                imageHeight = maxH;
             }
-            return (_jsx("a", { href: image.url || src, target: "_blank", rel: "noopener noreferrer", className: styles.attachmentLink, children: _jsx("img", { src: src, alt: image.name || "attachment", width: w, height: h, className: styles.attachmentImage, loading: "lazy" }) }, i));
+            return (_jsx("a", { href: image.url || src, target: "_blank", rel: "noopener noreferrer", className: styles.attachmentLink, children: _jsx("img", { src: src, alt: image.name || "attachment", width: imageWidth, height: imageHeight, className: styles.attachmentImage, loading: "lazy" }) }, i));
         }) }));
 }
 // ── Voice Message Player ─────────────────────────────────────────
@@ -308,8 +308,8 @@ function decodeWaveform(base64Str) {
         }
         return Array.from(bytes);
     }
-    catch (e) {
-        console.error("Failed to decode waveform:", e);
+    catch (error) {
+        console.error("Failed to decode waveform:", error);
         return [];
     }
 }
@@ -341,7 +341,7 @@ function getWaveformBars(base64Str, targetCount = 35) {
         resampled.push(count > 0 ? sum / count : 0);
     }
     const maxVal = Math.max(...resampled, 1);
-    return resampled.map((v) => Math.max(15, Math.round((v / maxVal) * 100)));
+    return resampled.map((value) => Math.max(15, Math.round((value / maxVal) * 100)));
 }
 function VoiceMessagePlayer({ attachment }) {
     const audioRef = useRef(null);
@@ -393,12 +393,12 @@ function VoiceMessagePlayer({ attachment }) {
             audioRef.current.muted = nextMuted;
         }
     };
-    const handleWaveformClick = (e) => {
+    const handleWaveformClick = (event) => {
         const audio = audioRef.current;
         if (!audio || !duration)
             return;
-        const rect = e.currentTarget.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
+        const rect = event.currentTarget.getBoundingClientRect();
+        const clickX = event.clientX - rect.left;
         const width = rect.width;
         const percentage = Math.min(Math.max(0, clickX / width), 1);
         audio.currentTime = percentage * duration;
@@ -420,15 +420,15 @@ function VoiceMessagePlayer({ attachment }) {
     const formatTime = (seconds) => {
         if (isNaN(seconds))
             return "0:00";
-        const h = Math.floor(seconds / 3600);
-        const m = Math.floor((seconds % 3600) / 60);
-        const s = Math.floor(seconds % 60);
-        const sStr = s < 10 ? `0${s}` : `${s}`;
-        if (h > 0) {
-            const mStr = m < 10 ? `0${m}` : `${m}`;
-            return `${h}:${mStr}:${sStr}`;
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const remainingSeconds = Math.floor(seconds % 60);
+        const secondsString = remainingSeconds < 10 ? `0${remainingSeconds}` : `${remainingSeconds}`;
+        if (hours > 0) {
+            const minutesString = minutes < 10 ? `0${minutes}` : `${minutes}`;
+            return `${hours}:${minutesString}:${secondsString}`;
         }
-        return `${m}:${sStr}`;
+        return `${minutes}:${secondsString}`;
     };
     const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
     const activeBarIndex = Math.floor((progressPercent / 100) * bars.length);
@@ -440,11 +440,11 @@ function VoiceMessagePlayer({ attachment }) {
 function AudioAttachments({ attachments }) {
     if (!attachments?.length)
         return null;
-    const audioList = attachments.filter((a) => (a.contentType?.startsWith("audio/") ||
-        a.name?.endsWith(".ogg") ||
-        a.name?.endsWith(".mp3") ||
-        a.duration ||
-        a.waveform) && (a.url || a.proxyURL));
+    const audioList = attachments.filter((attachment) => (attachment.contentType?.startsWith("audio/") ||
+        attachment.name?.endsWith(".ogg") ||
+        attachment.name?.endsWith(".mp3") ||
+        attachment.duration ||
+        attachment.waveform) && (attachment.url || attachment.proxyURL));
     if (!audioList.length)
         return null;
     return (_jsx("div", { className: styles.attachments, children: audioList.map((audio, i) => (_jsx(VoiceMessagePlayer, { attachment: audio }, i))) }));
@@ -457,10 +457,10 @@ function EmbedMedia({ embeds }) {
         return null;
     // Skip non-object embeds (legacy string data), Tenor (handled separately),
     // and embeds with nothing renderable
-    const filteredEmbeds = embeds.filter((e) => typeof e === "object" && e !== null
-        && (e.title || e.description || e.provider || e.image || e.thumbnail || e.video)
-        && e.provider?.name !== "Tenor"
-        && !/tenor\.com/i.test(e.url || ""));
+    const filteredEmbeds = embeds.filter((embed) => typeof embed === "object" && embed !== null
+        && (embed.title || embed.description || embed.provider || embed.image || embed.thumbnail || embed.video)
+        && embed.provider?.name !== "Tenor"
+        && !/tenor\.com/i.test(embed.url || ""));
     if (!filteredEmbeds.length)
         return null;
     return (_jsx("div", { className: styles.embedList, children: filteredEmbeds.map((embed, i) => {
@@ -480,16 +480,16 @@ function EmbedMedia({ embeds }) {
                 if (!imgMeta)
                     return null;
                 const maxW = 400, maxH = 300;
-                let w = imgMeta.width || maxW, h = imgMeta.height || maxH;
-                if (w > maxW) {
-                    h = Math.round(h * (maxW / w));
-                    w = maxW;
+                let imageWidth = imgMeta.width || maxW, imageHeight = imgMeta.height || maxH;
+                if (imageWidth > maxW) {
+                    imageHeight = Math.round(imageHeight * (maxW / imageWidth));
+                    imageWidth = maxW;
                 }
-                if (h > maxH) {
-                    w = Math.round(w * (maxH / h));
-                    h = maxH;
+                if (imageHeight > maxH) {
+                    imageWidth = Math.round(imageWidth * (maxH / imageHeight));
+                    imageHeight = maxH;
                 }
-                return (_jsx("a", { href: embed.url || imgSrc, target: "_blank", rel: "noopener noreferrer", className: styles.attachmentLink, children: _jsx("img", { src: imgSrc, alt: embed.title || "embed", width: w, height: h, className: styles.attachmentImage, loading: "lazy" }) }, i));
+                return (_jsx("a", { href: embed.url || imgSrc, target: "_blank", rel: "noopener noreferrer", className: styles.attachmentLink, children: _jsx("img", { src: imgSrc, alt: embed.title || "embed", width: imageWidth, height: imageHeight, className: styles.attachmentImage, loading: "lazy" }) }, i));
             }
             // Pure video embeds with NO metadata → render inline or thumbnail
             if (!hasMetadata && embed.video) {
@@ -499,16 +499,16 @@ function EmbedMedia({ embeds }) {
             return (_jsxs("div", { className: styles.embedCard, style: accentColor ? { borderLeftColor: accentColor } : undefined, children: [_jsxs("div", { className: hasThumbnailOnly ? styles.embedCardBodyInline : styles.embedCardBody, children: [_jsxs("div", { className: styles.embedCardText, children: [embed.provider?.name && (_jsx("span", { className: styles.embedProvider, children: embed.provider.name })), embed.title && (embed.url ? (_jsx("a", { href: embed.url, target: "_blank", rel: "noopener noreferrer", className: styles.embedTitle, children: embed.title })) : (_jsx("span", { className: styles.embedTitlePlain, children: embed.title }))), embed.description && (_jsx("p", { className: styles.embedDescription, children: embed.description }))] }), hasThumbnailOnly && embed.thumbnail?.url && (_jsx("a", { href: embed.url || embed.thumbnail.url, target: "_blank", rel: "noopener noreferrer", className: styles.embedThumbLink, children: _jsx("img", { src: embed.thumbnail.proxyURL || embed.thumbnail.url, alt: embed.title || "thumbnail", className: styles.embedThumb, loading: "lazy" }) }))] }), hasLargeImage && embed.image && (() => {
                         const imgSrc = embed.image.proxyURL || embed.image.url;
                         const maxW = 400, maxH = 300;
-                        let w = embed.image.width || maxW, h = embed.image.height || maxH;
-                        if (w > maxW) {
-                            h = Math.round(h * (maxW / w));
-                            w = maxW;
+                        let imageWidth = embed.image.width || maxW, imageHeight = embed.image.height || maxH;
+                        if (imageWidth > maxW) {
+                            imageHeight = Math.round(imageHeight * (maxW / imageWidth));
+                            imageWidth = maxW;
                         }
-                        if (h > maxH) {
-                            w = Math.round(w * (maxH / h));
-                            h = maxH;
+                        if (imageHeight > maxH) {
+                            imageWidth = Math.round(imageWidth * (maxH / imageHeight));
+                            imageHeight = maxH;
                         }
-                        return (_jsx("a", { href: embed.url || imgSrc, target: "_blank", rel: "noopener noreferrer", className: styles.embedImageLink, children: _jsx("img", { src: imgSrc, alt: embed.title || "embed image", width: w, height: h, className: styles.embedImage, loading: "lazy" }) }));
+                        return (_jsx("a", { href: embed.url || imgSrc, target: "_blank", rel: "noopener noreferrer", className: styles.embedImageLink, children: _jsx("img", { src: imgSrc, alt: embed.title || "embed image", width: imageWidth, height: imageHeight, className: styles.embedImage, loading: "lazy" }) }));
                     })(), embed.video && _jsx(EmbedVideo, { embed: embed })] }, i));
         }) }));
 }
@@ -644,7 +644,7 @@ function EmojiPicker({ anchorRef, serverEmojis, onSelect, onClose }) {
     }
     // Filter server emojis
     const filteredCustom = serverEmojis
-        ? serverEmojis.filter((e) => !filter || e.name.toLowerCase().includes(lowerFilter))
+        ? serverEmojis.filter((emoji) => !filter || emoji.name.toLowerCase().includes(lowerFilter))
         : [];
     // Scroll to a category section
     const scrollToCategory = (catId) => {
@@ -657,7 +657,7 @@ function EmojiPicker({ anchorRef, serverEmojis, onSelect, onClose }) {
     };
     // When searching, show filtered results from all categories
     const isSearching = filter.length > 0;
-    return (_jsxs(_Fragment, { children: [_jsx("div", { className: styles.emojiPickerOverlay, onClick: onClose }), _jsxs("div", { className: styles.emojiPicker, ref: pickerRef, children: [_jsx("input", { ref: searchRef, className: styles.emojiPickerSearch, type: "text", placeholder: "Search emojis\u2026", value: filter, onChange: (e) => setFilter(e.target.value) }), _jsxs("div", { className: styles.emojiPickerMain, children: [_jsx("div", { className: styles.emojiCategorySidebar, children: allCategories.map((cat) => (_jsx("button", { className: `${styles.emojiCategoryTab} ${activeCategory === cat.id ? styles.emojiCategoryTabActive : ""}`, type: "button", onClick: () => scrollToCategory(cat.id), title: cat.name, children: cat.id === "server" && serverEmojis && serverEmojis[0] ? (_jsx("img", { src: emojiUrl(serverEmojis[0].id, serverEmojis[0].animated), alt: "", className: styles.emojiCategoryTabImg, draggable: false })) : (_jsx("span", { children: cat.icon })) }, cat.id))) }), _jsx("div", { className: styles.emojiPickerBody, ref: bodyRef, children: isSearching ? (
+    return (_jsxs(_Fragment, { children: [_jsx("div", { className: styles.emojiPickerOverlay, onClick: onClose }), _jsxs("div", { className: styles.emojiPicker, ref: pickerRef, children: [_jsx("input", { ref: searchRef, className: styles.emojiPickerSearch, type: "text", placeholder: "Search emojis\u2026", value: filter, onChange: (event) => setFilter(event.target.value) }), _jsxs("div", { className: styles.emojiPickerMain, children: [_jsx("div", { className: styles.emojiCategorySidebar, children: allCategories.map((cat) => (_jsx("button", { className: `${styles.emojiCategoryTab} ${activeCategory === cat.id ? styles.emojiCategoryTabActive : ""}`, type: "button", onClick: () => scrollToCategory(cat.id), title: cat.name, children: cat.id === "server" && serverEmojis && serverEmojis[0] ? (_jsx("img", { src: emojiUrl(serverEmojis[0].id, serverEmojis[0].animated), alt: "", className: styles.emojiCategoryTabImg, draggable: false })) : (_jsx("span", { children: cat.icon })) }, cat.id))) }), _jsx("div", { className: styles.emojiPickerBody, ref: bodyRef, children: isSearching ? (
                                 /* ── Search results view ────────────────────────── */
                                 _jsxs(_Fragment, { children: [filteredCustom.length > 0 && (_jsxs(_Fragment, { children: [_jsx("div", { className: styles.emojiPickerSection, children: "Server Emojis" }), _jsx("div", { className: styles.emojiPickerGrid, children: filteredCustom.map((emoji) => (_jsx("button", { className: styles.emojiPickerItem, type: "button", onClick: () => onSelect(`${emoji.name}:${emoji.id}`), title: `:${emoji.name}:`, children: _jsx("img", { src: emojiUrl(emoji.id, emoji.animated), alt: `:${emoji.name}:`, className: styles.emojiPickerCustomImg, draggable: false, loading: "lazy" }) }, emoji.id))) })] })), EMOJI_CATEGORIES.map((cat) => (_jsxs("div", { children: [_jsx("div", { className: styles.emojiPickerSection, children: cat.name }), _jsx("div", { className: styles.emojiPickerGrid, children: cat.emojis.map((emoji) => (_jsx("button", { className: styles.emojiPickerItem, type: "button", onClick: () => onSelect(emoji), title: emoji, children: emoji }, emoji))) })] }, cat.id))), filteredCustom.length === 0 && (_jsx("div", { className: styles.emojiPickerEmpty, children: "No matching emojis found" }))] })) : (
                                 /* ── Category browsing view ─────────────────────── */
@@ -672,20 +672,20 @@ function Reactions({ reactions, messageId, reactedSet, onReact }) {
     // Show nothing if no existing reactions
     if (!reactions?.length)
         return null;
-    return (_jsx("div", { className: styles.reactions, children: reactions.map((r, i) => {
-            const emoji = r.emoji;
+    return (_jsx("div", { className: styles.reactions, children: reactions.map((reaction, i) => {
+            const emoji = reaction.emoji;
             const emojiIdentifier = emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
             const reactKey = buildReactKey(messageId, emojiIdentifier);
             // Treat as "already reacted" if either the user clicked it this session
-            // (localStorage) OR the bot already holds this reaction (`r.me`).
-            const hasReacted = reactedSet?.has(reactKey) || r.me === true;
+            // (localStorage) OR the bot already holds this reaction (`reaction.me`).
+            const hasReacted = reactedSet?.has(reactKey) || reaction.me === true;
             const pillClass = hasReacted ? styles.reactionPillReacted : styles.reactionPill;
             // Custom server emoji → CDN image
             if (emoji.id) {
-                return (_jsxs("button", { className: pillClass, type: "button", onClick: () => !hasReacted && onReact?.(messageId, emojiIdentifier), title: hasReacted ? "You reacted" : `:${emoji.name}:`, children: [_jsx("img", { src: emojiUrl(emoji.id, emoji.animated), alt: `:${emoji.name}:`, className: styles.reactionEmoji, loading: "lazy", draggable: false }), _jsx("span", { className: styles.reactionCount, children: r.count })] }, `${emoji.id}-${i}`));
+                return (_jsxs("button", { className: pillClass, type: "button", onClick: () => !hasReacted && onReact?.(messageId, emojiIdentifier), title: hasReacted ? "You reacted" : `:${emoji.name}:`, children: [_jsx("img", { src: emojiUrl(emoji.id, emoji.animated), alt: `:${emoji.name}:`, className: styles.reactionEmoji, loading: "lazy", draggable: false }), _jsx("span", { className: styles.reactionCount, children: reaction.count })] }, `${emoji.id}-${i}`));
             }
             // Unicode emoji
-            return (_jsxs("button", { className: pillClass, type: "button", onClick: () => !hasReacted && onReact?.(messageId, emojiIdentifier), title: hasReacted ? "You reacted" : emoji.name, children: [_jsx("span", { className: styles.reactionUnicode, children: emoji.name }), _jsx("span", { className: styles.reactionCount, children: r.count })] }, `${emoji.name}-${i}`));
+            return (_jsxs("button", { className: pillClass, type: "button", onClick: () => !hasReacted && onReact?.(messageId, emojiIdentifier), title: hasReacted ? "You reacted" : emoji.name, children: [_jsx("span", { className: styles.reactionUnicode, children: emoji.name }), _jsx("span", { className: styles.reactionCount, children: reaction.count })] }, `${emoji.name}-${i}`));
         }) }));
 }
 // ── Status Indicator ─────────────────────────────────────────────
@@ -743,7 +743,7 @@ export default function DiscordChatComponent({ messageCount = 500, joinMode = fa
             const idSet = new Set(CHANNEL_IDS);
             const filtered = (data.channels || [])
                 .filter((ch) => idSet.has(ch.id))
-                .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+                .sort((channelA, channelB) => (channelA.position ?? 0) - (channelB.position ?? 0));
             setChannels(filtered.length > 0 ? filtered : CHANNEL_IDS.map((id) => ({ id, name: id })));
         })
             .catch(() => {
@@ -772,8 +772,8 @@ export default function DiscordChatComponent({ messageCount = 500, joinMode = fa
             shouldSnapToBottom.current = false;
             isFirstLoad.current = false;
             // Catch late layout shifts from lazy-loaded images
-            const t = setTimeout(() => scrollToBottom(true), 200);
-            return () => clearTimeout(t);
+            const scrollTimeout = setTimeout(() => scrollToBottom(true), 200);
+            return () => clearTimeout(scrollTimeout);
         }
     }, [messages, scrollToBottom]);
     // ── SSE stream for messages ─────────────────────────────────────
@@ -782,9 +782,9 @@ export default function DiscordChatComponent({ messageCount = 500, joinMode = fa
         let retryTimeout;
         function connect() {
             es = new EventSource(`${streamUrl}?limit=${messageCount}&channelId=${activeChannelId}`);
-            es.addEventListener("init", (e) => {
+            es.addEventListener("init", (event) => {
                 try {
-                    const { messages: msgs } = JSON.parse(e.data);
+                    const { messages: msgs } = JSON.parse(event.data);
                     const reversed = (msgs || []).reverse();
                     shouldSnapToBottom.current = true;
                     setMessages(reversed);
@@ -841,9 +841,9 @@ export default function DiscordChatComponent({ messageCount = 500, joinMode = fa
                     setLoading(false);
                 }
             });
-            es.addEventListener("new", (e) => {
+            es.addEventListener("new", (event) => {
                 try {
-                    const { messages: newMsgs } = JSON.parse(e.data);
+                    const { messages: newMsgs } = JSON.parse(event.data);
                     if (!newMsgs?.length)
                         return;
                     shouldSnapToBottom.current = true;
@@ -856,9 +856,9 @@ export default function DiscordChatComponent({ messageCount = 500, joinMode = fa
                     console.error("[DiscordChat] New message parse error:", error);
                 }
             });
-            es.addEventListener("delete", (e) => {
+            es.addEventListener("delete", (event) => {
                 try {
-                    const { ids } = JSON.parse(e.data);
+                    const { ids } = JSON.parse(event.data);
                     if (!ids?.length)
                         return;
                     const deletedSet = new Set(ids);
@@ -871,9 +871,9 @@ export default function DiscordChatComponent({ messageCount = 500, joinMode = fa
             // Reaction (and other field) changes on existing messages.
             // The server detects when a message's reactions fingerprint
             // changes and sends the full updated message object.
-            es.addEventListener("update", (e) => {
+            es.addEventListener("update", (event) => {
                 try {
-                    const { messages: updatedMsgs } = JSON.parse(e.data);
+                    const { messages: updatedMsgs } = JSON.parse(event.data);
                     if (!updatedMsgs?.length)
                         return;
                     const updateMap = new Map((updatedMsgs || []).map((m) => [m.id, m]));
@@ -962,10 +962,10 @@ export default function DiscordChatComponent({ messageCount = 500, joinMode = fa
                 return message;
             const reactions = message.reactions ? [...message.reactions] : [];
             const isCustom = /^\w+:\d+$/.test(emojiIdentifier);
-            const index = reactions.findIndex((r) => {
+            const index = reactions.findIndex((reaction) => {
                 if (isCustom)
-                    return r.emoji.id === emojiIdentifier.split(":")[1];
-                return r.emoji.name === emojiIdentifier && !r.emoji.id;
+                    return reaction.emoji.id === emojiIdentifier.split(":")[1];
+                return reaction.emoji.name === emojiIdentifier && !reaction.emoji.id;
             });
             if (index >= 0) {
                 reactions[index] = { ...reactions[index], count: reactions[index].count + 1 };

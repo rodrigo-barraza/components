@@ -70,33 +70,33 @@ export default function BottomAppBarComponent({ fab, position = "fixed", hideOnS
      * Roving tabindex keyboard navigation (WAI-ARIA toolbar pattern).
      * ArrowLeft / ArrowRight navigates between action buttons.
      */
-    const handleKeyDown = useCallback((e) => {
+    const handleKeyDown = useCallback((event) => {
         const toolbar = toolbarRef.current;
         if (!toolbar)
             return;
         const navigableKeys = ["ArrowLeft", "ArrowRight", "Home", "End"];
-        if (!navigableKeys.includes(e.key))
+        if (!navigableKeys.includes(event.key))
             return;
         const items = Array.from(toolbar.querySelectorAll(`[data-bottom-bar-action]:not([disabled]):not([aria-disabled="true"])`));
         if (items.length === 0)
             return;
         const currentIndex = document.activeElement ? items.indexOf(document.activeElement) : -1;
         let nextIndex;
-        switch (e.key) {
+        switch (event.key) {
             case "ArrowRight":
-                e.preventDefault();
+                event.preventDefault();
                 nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
                 break;
             case "ArrowLeft":
-                e.preventDefault();
+                event.preventDefault();
                 nextIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
                 break;
             case "Home":
-                e.preventDefault();
+                event.preventDefault();
                 nextIndex = 0;
                 break;
             case "End":
-                e.preventDefault();
+                event.preventDefault();
                 nextIndex = items.length - 1;
                 break;
             default:

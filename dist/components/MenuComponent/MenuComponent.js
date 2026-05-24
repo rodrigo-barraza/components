@@ -18,17 +18,17 @@ export function MenuGroupLabel({ children }) {
 }
 export const MenuItem = forwardRef(function MenuItem({ leadingIcon, trailingIcon, trailingText, disabled = false, selected = false, onClick, onMouseEnter, onFocus, children, className = "", ...rest }, ref) {
     const { sound } = useComponents();
-    const handleClick = useCallback((e) => {
+    const handleClick = useCallback((event) => {
         if (disabled)
             return;
         if (sound)
-            SoundService.playClickButton({ event: e });
-        onClick?.(e);
+            SoundService.playClickButton({ event });
+        onClick?.(event);
     }, [disabled, sound, onClick]);
-    const handleMouseEnter = useCallback((e) => {
+    const handleMouseEnter = useCallback((event) => {
         if (sound)
-            SoundService.playHoverButton({ event: e });
-        onMouseEnter?.(e);
+            SoundService.playHoverButton({ event });
+        onMouseEnter?.(event);
     }, [sound, onMouseEnter]);
     const itemClasses = [
         styles.menuItem,
@@ -61,11 +61,11 @@ export function SubMenu({ label, leadingIcon, disabled = false, children, }) {
             clearTimeout(timeoutRef.current);
     }, []);
     // Keyboard within submenu
-    const handleKeyDown = useCallback((e) => {
+    const handleKeyDown = useCallback((event) => {
         if (!isOpen) {
-            if (e.key === "ArrowRight" || e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                e.stopPropagation();
+            if (event.key === "ArrowRight" || event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                event.stopPropagation();
                 setIsOpen(true);
                 requestAnimationFrame(() => itemRefs.current[0]?.focus());
             }
@@ -73,21 +73,21 @@ export function SubMenu({ label, leadingIcon, disabled = false, children, }) {
         }
         const focusable = itemRefs.current.filter((item) => item !== null);
         const index = focusable.indexOf(document.activeElement);
-        switch (e.key) {
+        switch (event.key) {
             case "ArrowDown":
-                e.preventDefault();
-                e.stopPropagation();
+                event.preventDefault();
+                event.stopPropagation();
                 focusable[(index + 1) % focusable.length]?.focus();
                 break;
             case "ArrowUp":
-                e.preventDefault();
-                e.stopPropagation();
+                event.preventDefault();
+                event.stopPropagation();
                 focusable[(index - 1 + focusable.length) % focusable.length]?.focus();
                 break;
             case "ArrowLeft":
             case "Escape":
-                e.preventDefault();
-                e.stopPropagation();
+                event.preventDefault();
+                event.stopPropagation();
                 setIsOpen(false);
                 containerRef.current
                     ?.querySelector(`[role="menuitem"]`)
@@ -147,17 +147,17 @@ const MenuComponent = forwardRef(function MenuComponent({ trigger, open: control
         triggerElRef.current?.focus();
     }, [setOpen]);
     // ── Trigger click ───────────────────────────────────────
-    const handleTriggerClick = useCallback((e) => {
-        e.stopPropagation();
+    const handleTriggerClick = useCallback((event) => {
+        event.stopPropagation();
         toggle();
     }, [toggle]);
     // ── Outside click ───────────────────────────────────────
     useEffect(() => {
         if (!isOpen)
             return;
-        const handleOutside = (e) => {
+        const handleOutside = (event) => {
             if (anchorRef.current &&
-                !anchorRef.current.contains(e.target)) {
+                !anchorRef.current.contains(event.target)) {
                 close();
             }
         };
@@ -181,61 +181,61 @@ const MenuComponent = forwardRef(function MenuComponent({ trigger, open: control
         return () => cancelAnimationFrame(timer);
     }, [isOpen]);
     // ── Keyboard navigation (M3 a11y spec) ──────────────────
-    const handleKeyDown = useCallback((e) => {
+    const handleKeyDown = useCallback((event) => {
         // Open on ArrowDown/Up/Enter/Space when menu is closed
         if (!isOpen) {
-            if (["ArrowDown", "ArrowUp", "Enter", " "].includes(e.key)) {
-                e.preventDefault();
+            if (["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)) {
+                event.preventDefault();
                 setOpen(true);
             }
             return;
         }
         const focusable = itemRefs.current.filter((item) => item !== null);
         const currentIdx = focusable.indexOf(document.activeElement);
-        switch (e.key) {
+        switch (event.key) {
             case "Escape":
-                e.preventDefault();
+                event.preventDefault();
                 close();
                 break;
             case "ArrowDown": {
-                e.preventDefault();
+                event.preventDefault();
                 const next = currentIdx < focusable.length - 1 ? currentIdx + 1 : 0;
                 focusable[next]?.focus();
                 break;
             }
             case "ArrowUp": {
-                e.preventDefault();
+                event.preventDefault();
                 const previousFocusIndex = currentIdx > 0 ? currentIdx - 1 : focusable.length - 1;
                 focusable[previousFocusIndex]?.focus();
                 break;
             }
             case "Home":
-                e.preventDefault();
+                event.preventDefault();
                 focusable[0]?.focus();
                 break;
             case "End":
-                e.preventDefault();
+                event.preventDefault();
                 focusable[focusable.length - 1]?.focus();
                 break;
             case "Tab":
                 // Close menu on Tab to allow normal tab flow
-                e.preventDefault();
+                event.preventDefault();
                 close();
                 break;
             case "Enter":
             case " ":
                 // Let the focused item handle its own click
                 if (document.activeElement?.getAttribute("role") === "menuitem") {
-                    e.preventDefault();
+                    event.preventDefault();
                     document.activeElement.click();
                 }
                 break;
             default: {
                 // Type-ahead: match item labels by first character(s)
-                if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+                if (event.key.length === 1 && !event.ctrlKey && !event.metaKey) {
                     if (typeAheadTimer.current)
                         clearTimeout(typeAheadTimer.current);
-                    typeAheadBuffer.current += e.key.toLowerCase();
+                    typeAheadBuffer.current += event.key.toLowerCase();
                     typeAheadTimer.current = setTimeout(() => {
                         typeAheadBuffer.current = "";
                     }, 500);
@@ -266,8 +266,8 @@ const MenuComponent = forwardRef(function MenuComponent({ trigger, open: control
                         itemRefs.current[currentIdx] = element;
                     },
                     tabIndex: isOpen ? 0 : -1,
-                    onClick: (e) => {
-                        originalOnClick?.(e);
+                    onClick: (event) => {
+                        originalOnClick?.(event);
                         if (closeOnSelect && child.type === MenuItem) {
                             close();
                         }
@@ -307,9 +307,9 @@ const MenuComponent = forwardRef(function MenuComponent({ trigger, open: control
             },
             "aria-haspopup": "menu",
             "aria-expanded": isOpen,
-            onClick: (e) => {
-                trigger.props.onClick?.(e);
-                handleTriggerClick(e);
+            onClick: (event) => {
+                trigger.props.onClick?.(event);
+                handleTriggerClick(event);
             },
         })
         : trigger;

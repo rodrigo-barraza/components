@@ -9,5 +9,5 @@ export declare function formatPercent(value: number, decimals?: number | "adapti
  * Signature: (amount, locale?, currencyCode?) — wraps the utilities-library
  * version which uses (amount, currencyCode?) to support the locale parameter.
  */
-export declare function formatCurrency(n: number, locale?: string, currency?: string): string;
+export declare function formatCurrency(value: number, locale?: string, currency?: string): string;
 //# sourceMappingURL=formatters.d.ts.map

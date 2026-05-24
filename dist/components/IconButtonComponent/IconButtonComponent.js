@@ -16,13 +16,13 @@ export default function IconButtonComponent({ icon, onClick, tooltip, variant = 
     ]
         .filter(Boolean)
         .join(" ");
-    return (_jsx("button", { className: classes, onClick: (e) => {
+    return (_jsx("button", { className: classes, onClick: (event) => {
             if (sound)
-                SoundService.playClickButton({ event: e });
-            onClick?.(e);
-        }, onMouseEnter: (e) => {
+                SoundService.playClickButton({ event });
+            onClick?.(event);
+        }, onMouseEnter: (event) => {
             if (sound)
-                SoundService.playHoverButton({ event: e });
+                SoundService.playHoverButton({ event });
         }, title: tooltip, disabled: disabled, ...rest, children: icon }));
 }
 //# sourceMappingURL=IconButtonComponent.js.map

@@ -84,7 +84,7 @@ export { default as SoundService } from "./services/SoundService.js";
 export { createApiClient } from "./services/ApiClient.js";
 export { createSessionService } from "./services/SessionService.js";
 export { CHAT_STATES, CHAT_EVENTS, CHAT_DEFAULTS, MESSAGE_ROLES, } from "./constants/chat.js";
-export { DATE_PRESETS, DATE_PRESETS_DATE_ONLY, fmtDate, daysAgo, parseDateValue, formatDateDisplay, getActiveDatePreset, } from "./utils/datePresets.js";
+export { DATE_PRESETS, DATE_PRESETS_DATE_ONLY, formatDate, daysAgo, parseDateValue, formatDateDisplay, getActiveDatePreset, } from "./utils/datePresets.js";
 export type { DatePreset, DateRange } from "./utils/datePresets.js";
 export { formatBytes, formatPercent, formatDuration, formatCurrency, formatCompact, } from "./utils/formatters.js";
 export { generateThemeInitScript } from "./utils/themeInit.js";

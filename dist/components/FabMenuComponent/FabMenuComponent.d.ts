@@ -5,7 +5,7 @@ interface FabMenuItemConfig {
     }>;
     label?: string;
     ariaLabel?: string;
-    onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
+    onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }
 export interface FabMenuComponentProps extends React.HTMLAttributes<HTMLDivElement> {
     items?: FabMenuItemConfig[];

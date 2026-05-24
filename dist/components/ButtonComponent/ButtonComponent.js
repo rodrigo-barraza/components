@@ -40,12 +40,12 @@ const ButtonComponent = forwardRef(function ButtonComponent({ variant = "primary
     /* ── Icon size by button size ──────────────────────────────────── */
     const resolvedIconSize = iconSize ?? (size === "small" ? 14 : size === "large" ? 20 : 18);
     /* ── Ripple ────────────────────────────────────────────────────── */
-    const createRipple = useCallback((e) => {
-        const button = e.currentTarget;
+    const createRipple = useCallback((event) => {
+        const button = event.currentTarget;
         const rect = button.getBoundingClientRect();
         const diameter = Math.max(rect.width, rect.height);
-        const x = e.clientX - rect.left - diameter / 2;
-        const y = e.clientY - rect.top - diameter / 2;
+        const x = event.clientX - rect.left - diameter / 2;
+        const y = event.clientY - rect.top - diameter / 2;
         const ripple = document.createElement("span");
         ripple.className = styles.ripple;
         ripple.style.width = ripple.style.height = `${diameter}px`;
@@ -73,16 +73,16 @@ const ButtonComponent = forwardRef(function ButtonComponent({ variant = "primary
     /* ── Render content ────────────────────────────────────────────── */
     const content = (_jsxs(_Fragment, { children: [_jsx("span", { className: styles.stateLayer }), loading ? (_jsx("span", { className: styles.spinner, "aria-hidden": "true" })) : Icon ? (_jsx("span", { className: styles.icon, "aria-hidden": "true", children: _jsx(Icon, { size: resolvedIconSize, ...(isSubmit && isGenerating ? { fill: "currentColor" } : {}) }) })) : null, hasLabel && _jsx("span", { className: styles.label, children: children })] }));
     /* ── Shared event handlers ─────────────────────────────────────── */
-    const handleMouseEnter = (e) => {
+    const handleMouseEnter = (event) => {
         if (sound)
-            SoundService.playHoverButton({ event: e });
-        onMouseEnter?.(e);
+            SoundService.playHoverButton({ event });
+        onMouseEnter?.(event);
     };
-    const handleClick = (e) => {
-        createRipple(e);
+    const handleClick = (event) => {
+        createRipple(event);
         if (sound)
-            SoundService.playClickButton({ event: e });
-        onClick?.(e);
+            SoundService.playClickButton({ event });
+        onClick?.(event);
     };
     /* ── Render as <a> if href provided ────────────────────────────── */
     if (href && !disabled && !loading) {

@@ -26,10 +26,10 @@ export function formatPercent(value, decimals = "adaptive") {
  * Signature: (amount, locale?, currencyCode?) — wraps the utilities-library
  * version which uses (amount, currencyCode?) to support the locale parameter.
  */
-export function formatCurrency(n, locale = "en-US", currency = "USD") {
+export function formatCurrency(value, locale = "en-US", currency = "USD") {
     if (locale === "en-US") {
-        return _formatCurrency(n, currency);
+        return _formatCurrency(value, currency);
     }
-    return new Intl.NumberFormat(locale, { style: "currency", currency }).format(n || 0);
+    return new Intl.NumberFormat(locale, { style: "currency", currency }).format(value || 0);
 }
 //# sourceMappingURL=formatters.js.map

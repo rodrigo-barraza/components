@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 /** Ease-out cubic — fast start, gentle landing. */
-function easeOutCubic(t) {
-    return 1 - Math.pow(1 - t, 3);
+function easeOutCubic(progress) {
+    return 1 - Math.pow(1 - progress, 3);
 }
 export default function useTweenValue(target, options = {}) {
     const { duration = 600, round = false, enabled = true } = options;

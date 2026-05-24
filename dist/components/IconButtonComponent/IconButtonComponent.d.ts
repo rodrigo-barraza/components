@@ -1,7 +1,7 @@
 import { ReactNode, ComponentPropsWithoutRef, MouseEvent } from "react";
 export interface IconButtonComponentProps extends ComponentPropsWithoutRef<"button"> {
     icon: ReactNode;
-    onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
+    onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
     tooltip?: string;
     variant?: "default" | "destructive";
     active?: boolean;

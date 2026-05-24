@@ -7,7 +7,7 @@ import styles from "./SelectComponent.module.css";
 export default function SelectComponent({ value, options = [], onChange, placeholder = "Select...", icon = null, disabled = false, triggerTooltip = null, label = null, }) {
     const [open, setOpen] = useState(false);
     const containerRef = useRef(null);
-    const selected = options.find((o) => o.value === value);
+    const selected = options.find((option) => option.value === value);
     const handleSelect = useCallback((opt) => {
         if (opt.disabled)
             return;
@@ -17,8 +17,8 @@ export default function SelectComponent({ value, options = [], onChange, placeho
     useEffect(() => {
         if (!open)
             return;
-        const handleClick = (e) => {
-            if (containerRef.current && !containerRef.current.contains(e.target)) {
+        const handleClick = (event) => {
+            if (containerRef.current && !containerRef.current.contains(event.target)) {
                 setOpen(false);
             }
         };
@@ -28,8 +28,8 @@ export default function SelectComponent({ value, options = [], onChange, placeho
     useEffect(() => {
         if (!open)
             return;
-        const handleKey = (e) => {
-            if (e.key === "Escape")
+        const handleKey = (event) => {
+            if (event.key === "Escape")
                 setOpen(false);
         };
         document.addEventListener("keydown", handleKey);

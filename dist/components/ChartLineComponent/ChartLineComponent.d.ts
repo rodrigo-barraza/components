@@ -5,7 +5,7 @@ export interface ChartLineComponentProps {
     height?: number;
     historyMax?: number;
     showGrid?: boolean;
-    formatValue?: (v: number) => string;
+    formatValue?: (value: number) => string;
     className?: string;
 }
 /**

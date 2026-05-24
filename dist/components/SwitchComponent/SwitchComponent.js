@@ -39,10 +39,10 @@ export default function SwitchComponent({ checked = false, onChange, label = "",
     ]
         .filter(Boolean)
         .join(" ");
-    return (_jsxs("label", { className: rootClasses, onMouseEnter: (e) => sound && SoundService.playHoverButton({ event: e }), children: [_jsx("input", { type: "checkbox", role: "switch", id: id, name: name, className: styles.hiddenInput, checked: checked, disabled: disabled, "aria-checked": checked, "aria-label": ariaLabel || label || undefined, onChange: (e) => {
+    return (_jsxs("label", { className: rootClasses, onMouseEnter: (event) => sound && SoundService.playHoverButton({ event }), children: [_jsx("input", { type: "checkbox", role: "switch", id: id, name: name, className: styles.hiddenInput, checked: checked, disabled: disabled, "aria-checked": checked, "aria-label": ariaLabel || label || undefined, onChange: (event) => {
                     if (sound)
-                        SoundService.playClickButton({ event: e });
-                    onChange(e.target.checked);
+                        SoundService.playClickButton({ event });
+                    onChange(event.target.checked);
                 } }), _jsx("span", { className: trackClasses, "aria-hidden": "true", children: _jsxs("span", { className: styles.handleContainer, children: [_jsx("span", { className: styles.stateLayer }), _jsxs("span", { className: styles.handle, children: [showIcons && (_jsx("svg", { className: styles.icon, viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg", children: _jsx("path", { d: "M9.55 18L3.85 12.3L5.275 10.875L9.55 15.15L18.725 5.975L20.15 7.4L9.55 18Z", fill: "currentColor" }) })), showIcons && (_jsx("svg", { className: styles.iconUnselected, viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg", children: _jsx("path", { d: "M6.4 19L5 17.6L10.6 12L5 6.4L6.4 5L12 10.6L17.6 5L19 6.4L13.4 12L19 17.6L17.6 19L12 13.4L6.4 19Z", fill: "currentColor" }) }))] })] }) }), label && _jsx("span", { className: styles.label, children: label })] }));
 }
 //# sourceMappingURL=SwitchComponent.js.map

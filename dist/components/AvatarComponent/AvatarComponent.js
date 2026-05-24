@@ -15,7 +15,7 @@ export default function AvatarComponent({ src, alt = "", name, icon: Icon, size 
         ? name
             .split(" ")
             .filter(Boolean)
-            .map((w) => w[0])
+            .map((word) => word[0])
             .slice(0, 2)
             .join("")
             .toUpperCase()

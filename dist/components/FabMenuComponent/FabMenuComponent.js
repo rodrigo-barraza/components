@@ -66,14 +66,14 @@ const FabMenuComponent = forwardRef(function FabMenuComponent({ items = [], icon
         triggerRef.current?.focus();
     }, []);
     // ── Ripple on trigger ─────────────────────────────────
-    const handleRipple = useCallback((e) => {
+    const handleRipple = useCallback((event) => {
         const element = triggerRef.current;
         if (!element)
             return;
         const rect = element.getBoundingClientRect();
         const size = Math.max(rect.width, rect.height);
-        const x = e.clientX - rect.left - size / 2;
-        const y = e.clientY - rect.top - size / 2;
+        const x = event.clientX - rect.left - size / 2;
+        const y = event.clientY - rect.top - size / 2;
         const ripple = document.createElement("span");
         ripple.className = styles.ripple;
         ripple.style.width = `${size}px`;
@@ -86,32 +86,32 @@ const FabMenuComponent = forwardRef(function FabMenuComponent({ items = [], icon
         });
     }, []);
     // ── Handle trigger click ──────────────────────────────
-    const handleTriggerClick = useCallback((e) => {
+    const handleTriggerClick = useCallback((event) => {
         if (sound)
-            SoundService.playClickButton({ event: e });
-        handleRipple(e);
+            SoundService.playClickButton({ event });
+        handleRipple(event);
         toggle();
     }, [sound, handleRipple, toggle]);
     // ── Handle item click ─────────────────────────────────
-    const handleItemClick = useCallback((e, item) => {
+    const handleItemClick = useCallback((event, item) => {
         if (sound)
-            SoundService.playClickButton({ event: e });
-        item.onClick?.(e);
+            SoundService.playClickButton({ event });
+        item.onClick?.(event);
         close();
     }, [sound, close]);
     // ── Keyboard navigation (M3 a11y spec) ────────────────
-    const handleKeyDown = useCallback((e) => {
+    const handleKeyDown = useCallback((event) => {
         if (!isOpen)
             return;
         const focusableItems = itemRefs.current.filter((el) => el !== null);
         const currentIndex = focusableItems.indexOf(document.activeElement);
-        switch (e.key) {
+        switch (event.key) {
             case "Escape":
-                e.preventDefault();
+                event.preventDefault();
                 close();
                 break;
             case "ArrowUp": {
-                e.preventDefault();
+                event.preventDefault();
                 // Items are in column-reverse, so "up" visually is next index
                 const nextIdx = currentIndex < focusableItems.length - 1
                     ? currentIndex + 1
@@ -120,7 +120,7 @@ const FabMenuComponent = forwardRef(function FabMenuComponent({ items = [], icon
                 break;
             }
             case "ArrowDown": {
-                e.preventDefault();
+                event.preventDefault();
                 const prevIdx = currentIndex > 0
                     ? currentIndex - 1
                     : focusableItems.length - 1;
@@ -128,17 +128,17 @@ const FabMenuComponent = forwardRef(function FabMenuComponent({ items = [], icon
                 break;
             }
             case "Home":
-                e.preventDefault();
+                event.preventDefault();
                 focusableItems[focusableItems.length - 1]?.focus();
                 break;
             case "End":
-                e.preventDefault();
+                event.preventDefault();
                 focusableItems[0]?.focus();
                 break;
             case "Tab":
                 // Trap focus within the menu
-                e.preventDefault();
-                if (e.shiftKey) {
+                event.preventDefault();
+                if (event.shiftKey) {
                     // Move to trigger
                     triggerRef.current?.focus();
                 }
@@ -157,8 +157,8 @@ const FabMenuComponent = forwardRef(function FabMenuComponent({ items = [], icon
     useEffect(() => {
         if (!isOpen)
             return;
-        const handleOutsideClick = (e) => {
-            if (containerRef.current && !containerRef.current.contains(e.target)) {
+        const handleOutsideClick = (event) => {
+            if (containerRef.current && !containerRef.current.contains(event.target)) {
                 close();
             }
         };
@@ -214,13 +214,13 @@ const FabMenuComponent = forwardRef(function FabMenuComponent({ items = [], icon
                                     .filter(Boolean)
                                     .join(" "), children: [item.label && (_jsx("span", { className: styles.itemLabel, "aria-hidden": "true", children: item.label })), _jsx("button", { ref: (element) => {
                                             itemRefs.current[index] = element;
-                                        }, className: styles.itemFab, role: "menuitem", tabIndex: isOpen ? 0 : -1, "aria-label": item.ariaLabel || item.label, onClick: (e) => handleItemClick(e, item), onMouseEnter: (e) => {
+                                        }, className: styles.itemFab, role: "menuitem", tabIndex: isOpen ? 0 : -1, "aria-label": item.ariaLabel || item.label, onClick: (event) => handleItemClick(event, item), onMouseEnter: (event) => {
                                             if (sound)
-                                                SoundService.playHoverButton({ event: e });
+                                                SoundService.playHoverButton({ event });
                                         }, children: ItemIcon && (_jsx("span", { className: styles.itemIcon, "aria-hidden": "true", children: _jsx(ItemIcon, { size: 24 }) })) })] }, index));
-                        }) }), _jsx("button", { ref: triggerRef, className: triggerClasses, type: "button", disabled: disabled, "aria-expanded": isOpen, "aria-haspopup": "menu", "aria-label": isOpen ? "Close menu" : ariaLabel, onClick: handleTriggerClick, onMouseEnter: (e) => {
+                        }) }), _jsx("button", { ref: triggerRef, className: triggerClasses, type: "button", disabled: disabled, "aria-expanded": isOpen, "aria-haspopup": "menu", "aria-label": isOpen ? "Close menu" : ariaLabel, onClick: handleTriggerClick, onMouseEnter: (event) => {
                             if (sound)
-                                SoundService.playHoverButton({ event: e });
+                                SoundService.playHoverButton({ event });
                         }, children: _jsx("span", { className: styles.triggerIcon, style: shouldRotate
                                 ? { transform: "rotate(45deg)" }
                                 : { transform: "rotate(0deg)" }, children: ActiveIcon ? (_jsx(ActiveIcon, { size: 24 })) : (

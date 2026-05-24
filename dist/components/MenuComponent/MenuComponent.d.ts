@@ -9,8 +9,8 @@ interface MenuItemProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElemen
     trailingText?: React.ReactNode;
     disabled?: boolean;
     selected?: boolean;
-    onClick?: (e: React.MouseEvent) => void;
-    onMouseEnter?: (e: React.MouseEvent) => void;
+    onClick?: (event: React.MouseEvent) => void;
+    onMouseEnter?: (event: React.MouseEvent) => void;
     children?: React.ReactNode;
 }
 export declare const MenuItem: import("react").ForwardRefExoticComponent<MenuItemProps & import("react").RefAttributes<HTMLButtonElement>>;

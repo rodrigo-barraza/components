@@ -21,8 +21,8 @@ export default function TextAreaComponent({ value, onChange, placeholder, minRow
     useEffect(() => {
         resize();
     }, [resize]);
-    const handleChange = (e) => {
-        onChange?.(e);
+    const handleChange = (event) => {
+        onChange?.(event);
     };
     const classes = [styles.textarea, className || ""].filter(Boolean).join(" ");
     return (_jsx("textarea", { ref: ref, id: id, className: classes, value: value, onChange: handleChange, placeholder: placeholder, disabled: disabled, readOnly: readOnly, rows: minRows, ...rest }));

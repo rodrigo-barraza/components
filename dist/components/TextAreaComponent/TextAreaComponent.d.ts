@@ -3,7 +3,7 @@
  */
 export interface TextAreaComponentProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange'> {
     value: string;
-    onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
     minRows?: number;
     maxRows?: number;
     autoResize?: boolean;

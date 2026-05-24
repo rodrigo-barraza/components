@@ -48,14 +48,14 @@ const ExtendedFabComponent = forwardRef(function ExtendedFabComponent({ variant 
     const { sound } = useComponents();
     const containerRef = useRef(null);
     // ── Ripple effect (M3 pressed state) ──────────────────
-    const handleRipple = useCallback((e) => {
+    const handleRipple = useCallback((event) => {
         const element = containerRef.current;
         if (!element)
             return;
         const rect = element.getBoundingClientRect();
         const size = Math.max(rect.width, rect.height);
-        const x = e.clientX - rect.left - size / 2;
-        const y = e.clientY - rect.top - size / 2;
+        const x = event.clientX - rect.left - size / 2;
+        const y = event.clientY - rect.top - size / 2;
         const ripple = document.createElement("span");
         ripple.className = styles.ripple;
         ripple.style.width = `${size}px`;
@@ -86,15 +86,15 @@ const ExtendedFabComponent = forwardRef(function ExtendedFabComponent({ variant 
         else if (ref)
             ref.current = node;
     }, [ref]);
-    return (_jsxs("button", { ref: setRef, className: classes, disabled: disabled, type: "button", role: "button", "aria-label": ariaLabel || undefined, "aria-disabled": disabled || undefined, onMouseEnter: (e) => {
+    return (_jsxs("button", { ref: setRef, className: classes, disabled: disabled, type: "button", role: "button", "aria-label": ariaLabel || undefined, "aria-disabled": disabled || undefined, onMouseEnter: (event) => {
             if (sound)
-                SoundService.playHoverButton({ event: e });
-            onMouseEnter?.(e);
-        }, onClick: (e) => {
+                SoundService.playHoverButton({ event });
+            onMouseEnter?.(event);
+        }, onClick: (event) => {
             if (sound)
-                SoundService.playClickButton({ event: e });
-            handleRipple(e);
-            onClick?.(e);
+                SoundService.playClickButton({ event });
+            handleRipple(event);
+            onClick?.(event);
         }, ...rest, children: [Icon && (_jsx("span", { className: styles.icon, "aria-hidden": "true", children: _jsx(Icon, { size: 24 }) })), children && _jsx("span", { className: styles.label, children: children })] }));
 });
 export default ExtendedFabComponent;

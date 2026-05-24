@@ -40,28 +40,28 @@ export default function TabBarComponent({ tabs = [], activeTab, onChange, varian
         return () => observer.disconnect();
     }, [updateIndicator]);
     // ── Keyboard navigation (Arrow Left/Right, Home, End) ───
-    const handleKeyDown = (e) => {
-        const enabledTabs = tabs.filter((t) => !t.disabled);
-        const currentIdx = enabledTabs.findIndex((t) => t.key === activeTab);
+    const handleKeyDown = (event) => {
+        const enabledTabs = tabs.filter((tab) => !tab.disabled);
+        const currentIdx = enabledTabs.findIndex((tab) => tab.key === activeTab);
         let nextIdx = -1;
-        switch (e.key) {
+        switch (event.key) {
             case "ArrowRight":
             case "ArrowDown":
-                e.preventDefault();
+                event.preventDefault();
                 nextIdx = (currentIdx + 1) % enabledTabs.length;
                 break;
             case "ArrowLeft":
             case "ArrowUp":
-                e.preventDefault();
+                event.preventDefault();
                 nextIdx =
                     (currentIdx - 1 + enabledTabs.length) % enabledTabs.length;
                 break;
             case "Home":
-                e.preventDefault();
+                event.preventDefault();
                 nextIdx = 0;
                 break;
             case "End":
-                e.preventDefault();
+                event.preventDefault();
                 nextIdx = enabledTabs.length - 1;
                 break;
             default:
@@ -74,12 +74,12 @@ export default function TabBarComponent({ tabs = [], activeTab, onChange, varian
         }
     };
     // ── Ripple coordinate capture ───────────────────────────
-    const captureRipple = (e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        e.currentTarget.style.setProperty("--ripple-x", `${x}%`);
-        e.currentTarget.style.setProperty("--ripple-y", `${y}%`);
+    const captureRipple = (event) => {
+        const rect = event.currentTarget.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width) * 100;
+        const y = ((event.clientY - rect.top) / rect.height) * 100;
+        event.currentTarget.style.setProperty("--ripple-x", `${x}%`);
+        event.currentTarget.style.setProperty("--ripple-y", `${y}%`);
     };
     const isStacked = layout === "stacked";
     const isSecondary = variant === "secondary";
@@ -105,14 +105,14 @@ export default function TabBarComponent({ tabs = [], activeTab, onChange, varian
                     .join(" ");
                 const button = (_jsxs("button", { ref: (element) => {
                         tabRefs.current[tab.key] = element;
-                    }, className: tabClasses, role: "tab", id: `tab-${tab.key}`, "aria-selected": isActive, "aria-disabled": tab.disabled || undefined, "aria-controls": `tabpanel-${tab.key}`, tabIndex: isActive ? 0 : -1, onMouseDown: captureRipple, onClick: (e) => {
+                    }, className: tabClasses, role: "tab", id: `tab-${tab.key}`, "aria-selected": isActive, "aria-disabled": tab.disabled || undefined, "aria-controls": `tabpanel-${tab.key}`, tabIndex: isActive ? 0 : -1, onMouseDown: captureRipple, onClick: (event) => {
                         if (sound)
-                            SoundService.playClick({ event: e });
+                            SoundService.playClick({ event });
                         if (!tab.disabled)
                             onChange(tab.key);
-                    }, onMouseEnter: (e) => {
+                    }, onMouseEnter: (event) => {
                         if (sound)
-                            SoundService.playHover({ event: e });
+                            SoundService.playHover({ event });
                         onTabHover?.(tab.key);
                     }, onMouseLeave: () => onTabHover?.(null), children: [tab.icon, tab.label && _jsx("span", { children: tab.label }), tab.badge != null && (_jsx(CountBadgeComponent, { count: tab.badge, state: tab.badgeState || "default", disabled: tab.badgeDisabled, rainbow: tab.badgeRainbow, className: styles.tabBadge }))] }, tab.key));
                 if (tab.tooltip) {

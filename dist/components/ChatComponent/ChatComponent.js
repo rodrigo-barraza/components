@@ -93,28 +93,28 @@ export default function ChatComponent({ className = "" }) {
             const abort = service.sendAgentMessage(content.trim(), {
                 onToken: (_token, fullContent) => {
                     streamingRef.current = fullContent;
-                    setMessages((prev) => prev.map((m) => m.id === agentMessageId ? { ...m, content: fullContent } : m));
+                    setMessages((prev) => prev.map((message) => message.id === agentMessageId ? { ...message, content: fullContent } : message));
                 },
                 onComplete: (finalContent) => {
                     setIsTyping(false);
                     streamingRef.current = "";
-                    setMessages((prev) => prev.map((m) => m.id === agentMessageId
-                        ? { ...m, content: finalContent, streaming: false }
-                        : m));
+                    setMessages((prev) => prev.map((message) => message.id === agentMessageId
+                        ? { ...message, content: finalContent, streaming: false }
+                        : message));
                     if (!isOpen)
-                        setUnreadCount((c) => c + 1);
+                        setUnreadCount((count) => count + 1);
                 },
                 onError: (error) => {
                     setIsTyping(false);
                     console.error("[Chat] Agent error:", error.message);
-                    setMessages((prev) => prev.map((m) => m.id === agentMessageId
+                    setMessages((prev) => prev.map((message) => message.id === agentMessageId
                         ? {
-                            ...m,
+                            ...message,
                             content: "Sorry, I'm having trouble responding right now. Please try again.",
                             streaming: false,
                             error: true,
                         }
-                        : m));
+                        : message));
                 },
                 onThinking: () => {
                     // Could display a "thinking" indicator — future enhancement

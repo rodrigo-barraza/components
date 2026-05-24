@@ -36,29 +36,29 @@ export default function NavigationRailComponent({ items = [], activeItem, onNavi
         return { Component: icon };
     }, []);
     // Keyboard navigation within the destination group
-    const handleKeyDown = useCallback((e) => {
+    const handleKeyDown = useCallback((event) => {
         if (!destinationsRef.current)
             return;
         const buttons = destinationsRef.current.querySelectorAll(`[data-rail-destination]`);
         if (!buttons.length)
             return;
         let nextIndex = focusedIndex;
-        switch (e.key) {
+        switch (event.key) {
             case "ArrowDown":
-                e.preventDefault();
+                event.preventDefault();
                 nextIndex = (focusedIndex + 1) % buttons.length;
                 break;
             case "ArrowUp":
-                e.preventDefault();
+                event.preventDefault();
                 nextIndex =
                     focusedIndex <= 0 ? buttons.length - 1 : focusedIndex - 1;
                 break;
             case "Home":
-                e.preventDefault();
+                event.preventDefault();
                 nextIndex = 0;
                 break;
             case "End":
-                e.preventDefault();
+                event.preventDefault();
                 nextIndex = buttons.length - 1;
                 break;
             default:
@@ -101,9 +101,9 @@ export default function NavigationRailComponent({ items = [], activeItem, onNavi
                         element = (_jsx(LinkComponent, { href: item.href, ...elProps, children: destinationContent }));
                     }
                     else if (item.href) {
-                        element = (_jsx("a", { href: item.href, ...elProps, onClick: (e) => {
+                        element = (_jsx("a", { href: item.href, ...elProps, onClick: (event) => {
                                 if (onNavigate) {
-                                    e.preventDefault();
+                                    event.preventDefault();
                                     handleClick();
                                 }
                             }, children: destinationContent }));
