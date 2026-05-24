@@ -81,11 +81,12 @@ export default function TabBarComponent({
     const tabRect = activeEl.getBoundingClientRect();
 
     const left = tabRect.left - listRect.left + list.scrollLeft;
+    const top = tabRect.top - listRect.top + list.scrollTop + tabRect.height - 3;
     const width = tabRect.width;
 
     indicator.style.opacity = "1";
     indicator.style.width = `${width}px`;
-    indicator.style.transform = `translateX(${left}px)`;
+    indicator.style.transform = `translate(${left}px, ${top}px)`;
   }, [activeTab]);
 
   useEffect(() => {
