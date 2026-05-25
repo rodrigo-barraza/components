@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useCallback, useEffect, Fragment } from "react";
 import { createPortal } from "react-dom";
-import { ChevronDown, ChevronUp, Columns3, Check } from "lucide-react";
+import { ChevronDown, ChevronUp, Columns3, Check, ListChecks } from "lucide-react";
 import { useComponents } from "../ComponentsProvider.js";
 import SoundService from "../../services/SoundService.js";
 import tooltipStyles from "../TooltipComponent/TooltipComponent.module.css";
@@ -130,10 +130,11 @@ interface ColumnFilterProps<T, TSub = unknown> {
   columns: TableColumn<T, TSub>[];
   hiddenColumns: Set<string>;
   onToggle: (key: string) => void;
+  onToggleAll: (showAll: boolean) => void;
   storageKey: string;
 }
 
-function ColumnFilter<T, TSub>({ columns, hiddenColumns, onToggle, storageKey }: ColumnFilterProps<T, TSub>) {
+function ColumnFilter<T, TSub>({ columns, hiddenColumns, onToggle, onToggleAll, storageKey }: ColumnFilterProps<T, TSub>) {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const [open, setOpen] = useState(false);
   const [coords, setCoords] = useState({ top: 0, left: 0 });
@@ -159,6 +160,8 @@ function ColumnFilter<T, TSub>({ columns, hiddenColumns, onToggle, storageKey }:
   }, [open, storageKey]);
 
   const hiddenCount = hiddenColumns.size;
+  const hideableColumns = columns.filter((col) => col.hideable !== false);
+  const isAllVisible = hideableColumns.every((col) => !hiddenColumns.has(col.key));
 
   return (
     <>
@@ -183,7 +186,18 @@ function ColumnFilter<T, TSub>({ columns, hiddenColumns, onToggle, storageKey }:
           >
             <div className={styles.columnFilterHeader}>Toggle Columns</div>
             <div className={styles.columnFilterList}>
-              {columns.filter((col) => col.hideable !== false).map((col) => {
+              <button
+                className={`${styles.columnFilterItem} ${styles.columnFilterToggleAll} ${isAllVisible ? styles.columnFilterItemVisible : ""}`}
+                onClick={() => onToggleAll(!isAllVisible)}
+              >
+                <span className={styles.columnFilterCheck}>
+                  {isAllVisible && <Check size={10} />}
+                </span>
+                <ListChecks size={11} className={styles.columnFilterToggleAllIcon} />
+                <span className={styles.columnFilterLabel}>{isAllVisible ? "Deselect All" : "Select All"}</span>
+              </button>
+              <div className={styles.columnFilterDivider} />
+              {hideableColumns.map((col) => {
                 const visible = !hiddenColumns.has(col.key);
                 return (
                   <button
@@ -273,6 +287,15 @@ export default function TableComponent<T, TSub = unknown>({
       return next;
     });
   }, [storageKey]);
+
+  const toggleAllColumns = useCallback((showAll: boolean) => {
+    setHiddenColumns(() => {
+      const hideableKeys = columns.filter((c) => c.hideable !== false).map((c) => c.key);
+      const next = showAll ? new Set<string>() : new Set<string>(hideableKeys);
+      saveHiddenColumns(storageKey, next);
+      return next;
+    });
+  }, [storageKey, columns]);
 
   const visibleColumns = storageKey
     ? columns.filter((c) => !hiddenColumns.has(c.key))
@@ -417,6 +440,7 @@ export default function TableComponent<T, TSub = unknown>({
               columns={columns}
               hiddenColumns={hiddenColumns}
               onToggle={toggleColumn}
+              onToggleAll={toggleAllColumns}
               storageKey={storageKey}
             />
           )}
