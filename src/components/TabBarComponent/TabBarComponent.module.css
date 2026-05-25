@@ -133,7 +133,7 @@
     opacity: 0.7;
     transition: filter 0.25s ease, opacity 0.25s ease;
     will-change: filter, opacity;
-    font-family: "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+    font-family: var(--font-emoji), "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
