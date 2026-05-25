@@ -34,20 +34,20 @@ function hexToRgb(hex) {
     if (!hex || typeof hex !== "string") {
         return [0, 0, 0];
     }
-    const h = hex.replace("#", "");
-    const full = h.length === 3
-        ? h.split("").map((c) => c + c).join("")
-        : h;
+    const hexWithoutHash = hex.replace("#", "");
+    const fullHex = hexWithoutHash.length === 3
+        ? hexWithoutHash.split("").map((hexChar) => hexChar + hexChar).join("")
+        : hexWithoutHash;
     return [
-        parseInt(full.slice(0, 2), 16) || 0,
-        parseInt(full.slice(2, 4), 16) || 0,
-        parseInt(full.slice(4, 6), 16) || 0,
+        parseInt(fullHex.slice(0, 2), 16) || 0,
+        parseInt(fullHex.slice(2, 4), 16) || 0,
+        parseInt(fullHex.slice(4, 6), 16) || 0,
     ];
 }
 /** Convert [r,g,b] to hex string */
 function rgbToHex(r, g, b) {
-    const clamp = (n) => Math.max(0, Math.min(255, Math.round(n)));
-    return `#${[clamp(r), clamp(g), clamp(b)].map((c) => c.toString(16).padStart(2, "0")).join("")}`;
+    const clamp = (channelValue) => Math.max(0, Math.min(255, Math.round(channelValue)));
+    return `#${[clamp(r), clamp(g), clamp(b)].map((channelValue) => channelValue.toString(16).padStart(2, "0")).join("")}`;
 }
 /** Darken a hex color by a percentage (0–100) */
 function darken(hex, percent) {
@@ -82,23 +82,23 @@ function isLight(hex) {
  * are computed from user input, not directly specified.
  */
 function deriveFullCSS(tokens) {
-    const t = tokens || {};
-    const primary = t.primary || "#6366f1";
-    const secondary = t.secondary || "#a78bfa";
-    const tertiary = t.tertiary || "#38bdf8";
-    const background = t.background || "#0a0a0f";
-    const surface = t.surface || "#13141c";
-    const elevated = t.elevated || "#1a1b26";
-    const textPrimary = t.textPrimary || "#f8f8f8";
-    const textSecondary = t.textSecondary || "#8e95ae";
-    const textMuted = t.textMuted || "#565c74";
-    const borderCol = t.borderColor || "#ffffff";
-    const success = t.success || "#10b981";
-    const danger = t.danger || "#ef4444";
-    const warning = t.warning || "#f59e0b";
-    const info = t.info || "#3b82f6";
+    const themeTokens = tokens || {};
+    const primary = themeTokens.primary || "#6366f1";
+    const secondary = themeTokens.secondary || "#a78bfa";
+    const tertiary = themeTokens.tertiary || "#38bdf8";
+    const background = themeTokens.background || "#0a0a0f";
+    const surface = themeTokens.surface || "#13141c";
+    const elevated = themeTokens.elevated || "#1a1b26";
+    const textPrimary = themeTokens.textPrimary || "#f8f8f8";
+    const textSecondary = themeTokens.textSecondary || "#8e95ae";
+    const textMuted = themeTokens.textMuted || "#565c74";
+    const borderColor = themeTokens.borderColor || "#ffffff";
+    const success = themeTokens.success || "#10b981";
+    const danger = themeTokens.danger || "#ef4444";
+    const warning = themeTokens.warning || "#f59e0b";
+    const info = themeTokens.info || "#3b82f6";
     const lightMode = isLight(background);
-    const borderRgb = hexToRgb(borderCol);
+    const borderRgb = hexToRgb(borderColor);
     // Derive text inverse (opposite of primary bg)
     const textInverse = lightMode ? background : textPrimary;
     // Opacity scales depend on light/dark
@@ -189,22 +189,22 @@ function injectThemeStyle(theme) {
     if (typeof document === "undefined")
         return;
     const styleId = STYLE_ID_PREFIX + theme.id;
-    let el = document.getElementById(styleId);
-    if (!el) {
-        el = document.createElement("style");
-        el.id = styleId;
-        el.setAttribute("data-custom-theme", theme.id);
-        document.head.appendChild(el);
+    let styleElement = document.getElementById(styleId);
+    if (!styleElement) {
+        styleElement = document.createElement("style");
+        styleElement.id = styleId;
+        styleElement.setAttribute("data-custom-theme", theme.id);
+        document.head.appendChild(styleElement);
     }
-    el.textContent = buildStyleContent(theme);
+    styleElement.textContent = buildStyleContent(theme);
 }
 /** Remove the <style> element for a custom theme */
 function removeThemeStyle(id) {
     if (typeof document === "undefined")
         return;
-    const el = document.getElementById(STYLE_ID_PREFIX + id);
-    if (el)
-        el.remove();
+    const styleElement = document.getElementById(STYLE_ID_PREFIX + id);
+    if (styleElement)
+        styleElement.remove();
 }
 // ── CRUD Operations ────────────────────────────────────────────────────
 /** Read all custom themes from localStorage */
@@ -236,7 +236,7 @@ function persistAll(themes) {
 /** Save (upsert) a custom theme */
 function save(theme) {
     const all = getAll();
-    const index = all.findIndex((t) => t.id === theme.id);
+    const index = all.findIndex((themeItem) => themeItem.id === theme.id);
     const updated = { ...theme, updatedAt: new Date().toISOString() };
     if (index >= 0) {
         all[index] = updated;
@@ -250,7 +250,7 @@ function save(theme) {
 }
 /** Remove a custom theme by id */
 function remove(id) {
-    const all = getAll().filter((t) => t.id !== id);
+    const all = getAll().filter((themeItem) => themeItem.id !== id);
     persistAll(all);
     removeThemeStyle(id);
     return all;
@@ -258,7 +258,7 @@ function remove(id) {
 /** Duplicate a custom theme with a new id */
 function duplicate(id) {
     const all = getAll();
-    const source = all.find((t) => t.id === id);
+    const source = all.find((themeItem) => themeItem.id === id);
     if (!source)
         return null;
     const newId = crypto.randomUUID().slice(0, 8);
@@ -285,35 +285,35 @@ function injectAllCustomThemes() {
 }
 /** Get custom theme names for the ThemeProvider themes array */
 function getCustomThemeNames() {
-    return getAll().map((t) => getCustomThemeAttr(t.id));
+    return getAll().map((themeItem) => getCustomThemeAttr(themeItem.id));
 }
 /** Build a metadata map for the ThemePickerComponent */
 function getCustomThemeMetaMap() {
-    const map = {};
+    const themeMetaMap = {};
     for (const theme of getAll()) {
         if (!theme)
             continue;
-        const t = theme.tokens || {};
-        map[getCustomThemeAttr(theme.id)] = {
+        const themeTokens = theme.tokens || {};
+        themeMetaMap[getCustomThemeAttr(theme.id)] = {
             label: theme.name || "Unnamed Theme",
             icon: theme.icon || "palette",
-            background: t.background || "#0a0a0f",
-            surface: t.surface || "#13141c",
-            elevated: t.elevated || "#1a1b26",
-            primary: t.primary || "#6366f1",
-            secondary: t.secondary || "#a78bfa",
-            tertiary: t.tertiary || "#38bdf8",
-            textPrimary: t.textPrimary || "#f8f8f8",
-            textSecondary: t.textSecondary || "#8e95ae",
-            textMuted: t.textMuted || "#565c74",
-            borderColor: t.borderColor || "#ffffff",
-            success: t.success || "#10b981",
-            danger: t.danger || "#ef4444",
-            warning: t.warning || "#f59e0b",
-            info: t.info || "#3b82f6",
+            background: themeTokens.background || "#0a0a0f",
+            surface: themeTokens.surface || "#13141c",
+            elevated: themeTokens.elevated || "#1a1b26",
+            primary: themeTokens.primary || "#6366f1",
+            secondary: themeTokens.secondary || "#a78bfa",
+            tertiary: themeTokens.tertiary || "#38bdf8",
+            textPrimary: themeTokens.textPrimary || "#f8f8f8",
+            textSecondary: themeTokens.textSecondary || "#8e95ae",
+            textMuted: themeTokens.textMuted || "#565c74",
+            borderColor: themeTokens.borderColor || "#ffffff",
+            success: themeTokens.success || "#10b981",
+            danger: themeTokens.danger || "#ef4444",
+            warning: themeTokens.warning || "#f59e0b",
+            info: themeTokens.info || "#3b82f6",
         };
     }
-    return map;
+    return themeMetaMap;
 }
 /**
  * Generate a raw CSS string for all custom themes (used by themeInit
