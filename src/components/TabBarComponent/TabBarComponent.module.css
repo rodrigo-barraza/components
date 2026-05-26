@@ -150,6 +150,7 @@
     transition: opacity 0.25s ease;
     will-change: opacity;
     -webkit-font-smoothing: antialiased;
+    font-weight: 700;
   }
 
   /* ── Hover state ─────────── */
