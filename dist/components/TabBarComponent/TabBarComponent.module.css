@@ -92,12 +92,14 @@
   border: none;
   cursor: pointer;
   transition: color 0.2s ease,
-    background-color 0.2s ease;
+    background-color 0.2s ease,
+    font-family 0.2s ease;
   text-transform: none;
   white-space: nowrap;
   outline: none;
   -webkit-tap-highlight-color: transparent;
   overflow: hidden;
+  font-family: var(--font-emoji-mono), "Noto Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
 
   /* M3 state layer overlay */
   &::before {
@@ -139,7 +141,7 @@
     height: 20px;
   }
 
-  /* ── Emoji icon (Noto Emoji mono → Noto Color Emoji active) ── */
+  /* ── Emoji icon (inherits Noto Emoji from .tab, color swap via .tab-active) ── */
   &>.tab-emoji-icon {
     font-size: 16px;
     line-height: 1;
@@ -147,7 +149,6 @@
     opacity: 0.7;
     transition: opacity 0.25s ease;
     will-change: opacity;
-    font-family: var(--font-emoji-mono), "Noto Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -201,9 +202,9 @@
 
 .tab-active {
   color: var(--accent-primary);
+  font-family: var(--font-emoji), "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
 
   &>.tab-emoji-icon {
-    font-family: var(--font-emoji), "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
     opacity: 1;
   }
 }
