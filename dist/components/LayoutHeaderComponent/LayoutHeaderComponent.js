@@ -1,8 +1,60 @@
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
-import { forwardRef } from "react";
+import { forwardRef, useEffect, useRef } from "react";
 import styles from "./LayoutHeaderComponent.module.css";
 const LayoutHeaderComponent = forwardRef(function LayoutHeaderComponent({ leadingToggle, trailingToggle, centerContent, metaContent, controls, isMobile = false, className, children, }, ref) {
-    return (_jsxs(_Fragment, { children: [_jsxs("header", { ref: ref, className: `${styles["layout-header-container"]}${className ? ` ${className}` : ""}`, children: [leadingToggle && (_jsx("button", { className: `${styles["header-toggle-button"]} ${!leadingToggle.isVisible ? styles["is-panel-hidden"] : ""}`, onClick: leadingToggle.onToggle, title: leadingToggle.isVisible
+    const headerReference = useRef(null);
+    // Programmatic contrast color for header content based on --accent-primary luminance
+    useEffect(() => {
+        const headerElement = headerReference.current;
+        if (!headerElement)
+            return;
+        const computeAndApplyContrastColor = () => {
+            const computedStyle = getComputedStyle(headerElement);
+            const backgroundColorValue = computedStyle.backgroundColor;
+            const rgbMatch = backgroundColorValue.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+            if (!rgbMatch)
+                return;
+            const redChannel = parseInt(rgbMatch[1], 10);
+            const greenChannel = parseInt(rgbMatch[2], 10);
+            const blueChannel = parseInt(rgbMatch[3], 10);
+            const toLinearComponent = (channelValue) => {
+                const normalizedValue = channelValue / 255;
+                return normalizedValue <= 0.03928
+                    ? normalizedValue / 12.92
+                    : Math.pow((normalizedValue + 0.055) / 1.055, 2.4);
+            };
+            const relativeLuminance = 0.2126 * toLinearComponent(redChannel) +
+                0.7152 * toLinearComponent(greenChannel) +
+                0.0722 * toLinearComponent(blueChannel);
+            const isLightBackground = relativeLuminance > 0.179;
+            headerElement.style.setProperty("--header-contrast-color", isLightBackground ? "rgba(0, 0, 0, 0.87)" : "rgba(255, 255, 255, 0.92)");
+            headerElement.style.setProperty("--header-contrast-color-muted", isLightBackground ? "rgba(0, 0, 0, 0.5)" : "rgba(255, 255, 255, 0.55)");
+            headerElement.style.setProperty("--header-contrast-border", isLightBackground ? "rgba(0, 0, 0, 0.15)" : "rgba(255, 255, 255, 0.15)");
+            headerElement.style.setProperty("--header-contrast-hover-background", isLightBackground ? "rgba(0, 0, 0, 0.08)" : "rgba(255, 255, 255, 0.08)");
+        };
+        computeAndApplyContrastColor();
+        const mutationObserver = new MutationObserver(computeAndApplyContrastColor);
+        mutationObserver.observe(headerElement, {
+            attributes: true,
+            attributeFilter: ["style", "class"],
+        });
+        const documentObserver = new MutationObserver(computeAndApplyContrastColor);
+        documentObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["class", "data-theme"],
+        });
+        return () => {
+            mutationObserver.disconnect();
+            documentObserver.disconnect();
+        };
+    }, []);
+    return (_jsxs(_Fragment, { children: [_jsxs("header", { ref: (node) => {
+                    headerReference.current = node;
+                    if (typeof ref === "function")
+                        ref(node);
+                    else if (ref)
+                        ref.current = node;
+                }, className: `${styles["layout-header-container"]}${className ? ` ${className}` : ""}`, children: [leadingToggle && (_jsx("button", { className: `${styles["header-toggle-button"]} ${!leadingToggle.isVisible ? styles["is-panel-hidden"] : ""}`, onClick: leadingToggle.onToggle, title: leadingToggle.isVisible
                             ? `Hide ${leadingToggle.label || "panel"}`
                             : `Show ${leadingToggle.label || "panel"}`, children: leadingToggle.isVisible
                             ? leadingToggle.visibleIcon

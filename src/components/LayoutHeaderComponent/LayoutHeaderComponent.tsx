@@ -1,4 +1,4 @@
-import { ReactNode, forwardRef } from "react";
+import { ReactNode, forwardRef, useEffect, useRef } from "react";
 import styles from "./LayoutHeaderComponent.module.css";
 
 export interface LayoutHeaderToggleButtonProps {
@@ -34,10 +34,85 @@ const LayoutHeaderComponent = forwardRef<HTMLElement, LayoutHeaderComponentProps
     },
     ref,
   ) {
+    const headerReference = useRef<HTMLElement>(null);
+
+    // Programmatic contrast color for header content based on --accent-primary luminance
+    useEffect(() => {
+      const headerElement = headerReference.current;
+      if (!headerElement) return;
+
+      const computeAndApplyContrastColor = () => {
+        const computedStyle = getComputedStyle(headerElement);
+        const backgroundColorValue = computedStyle.backgroundColor;
+
+        const rgbMatch = backgroundColorValue.match(
+          /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/
+        );
+        if (!rgbMatch) return;
+
+        const redChannel = parseInt(rgbMatch[1], 10);
+        const greenChannel = parseInt(rgbMatch[2], 10);
+        const blueChannel = parseInt(rgbMatch[3], 10);
+
+        const toLinearComponent = (channelValue: number): number => {
+          const normalizedValue = channelValue / 255;
+          return normalizedValue <= 0.03928
+            ? normalizedValue / 12.92
+            : Math.pow((normalizedValue + 0.055) / 1.055, 2.4);
+        };
+
+        const relativeLuminance =
+          0.2126 * toLinearComponent(redChannel) +
+          0.7152 * toLinearComponent(greenChannel) +
+          0.0722 * toLinearComponent(blueChannel);
+
+        const isLightBackground = relativeLuminance > 0.179;
+
+        headerElement.style.setProperty(
+          "--header-contrast-color",
+          isLightBackground ? "rgba(0, 0, 0, 0.87)" : "rgba(255, 255, 255, 0.92)"
+        );
+        headerElement.style.setProperty(
+          "--header-contrast-color-muted",
+          isLightBackground ? "rgba(0, 0, 0, 0.5)" : "rgba(255, 255, 255, 0.55)"
+        );
+        headerElement.style.setProperty(
+          "--header-contrast-border",
+          isLightBackground ? "rgba(0, 0, 0, 0.15)" : "rgba(255, 255, 255, 0.15)"
+        );
+        headerElement.style.setProperty(
+          "--header-contrast-hover-background",
+          isLightBackground ? "rgba(0, 0, 0, 0.08)" : "rgba(255, 255, 255, 0.08)"
+        );
+      };
+
+      computeAndApplyContrastColor();
+
+      const mutationObserver = new MutationObserver(computeAndApplyContrastColor);
+      mutationObserver.observe(headerElement, {
+        attributes: true,
+        attributeFilter: ["style", "class"],
+      });
+
+      const documentObserver = new MutationObserver(computeAndApplyContrastColor);
+      documentObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["class", "data-theme"],
+      });
+
+      return () => {
+        mutationObserver.disconnect();
+        documentObserver.disconnect();
+      };
+    }, []);
     return (
       <>
         <header
-          ref={ref}
+          ref={(node) => {
+            (headerReference as React.MutableRefObject<HTMLElement | null>).current = node;
+            if (typeof ref === "function") ref(node);
+            else if (ref) (ref as React.MutableRefObject<HTMLElement | null>).current = node;
+          }}
           className={`${styles["layout-header-container"]}${className ? ` ${className}` : ""}`}
         >
           {leadingToggle && (
