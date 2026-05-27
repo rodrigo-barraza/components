@@ -27,9 +27,9 @@ import { type ReactNode } from "react";
 export interface ThemeCatalogEntry {
     label: string;
     icon: string;
-    background: string;
-    surface: string;
-    elevated: string;
+    backgroundBase: string;
+    backgroundSurface: string;
+    backgroundElevated: string;
     primary: string;
     secondary: string;
     tertiary: string;

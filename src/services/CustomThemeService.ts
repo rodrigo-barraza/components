@@ -19,9 +19,9 @@ import type { ThemeCatalogEntry } from "../components/ThemeProvider/ThemeProvide
 
 export interface CustomThemeTokens {
   // Surfaces
-  background: string;
-  surface: string;
-  elevated: string;
+  backgroundBase: string;
+  backgroundSurface: string;
+  backgroundElevated: string;
   // Accent
   primary: string;
   secondary: string;
@@ -134,9 +134,9 @@ function deriveFullCSS(tokens: CustomThemeTokens): string {
   const primary = themeTokens.primary || "#6366f1";
   const secondary = themeTokens.secondary || "#a78bfa";
   const tertiary = themeTokens.tertiary || "#38bdf8";
-  const background = themeTokens.background || "#0a0a0f";
-  const surface = themeTokens.surface || "#13141c";
-  const elevated = themeTokens.elevated || "#1a1b26";
+  const background = themeTokens.backgroundBase || "#0a0a0f";
+  const surface = themeTokens.backgroundSurface || "#13141c";
+  const elevated = themeTokens.backgroundElevated || "#1a1b26";
   const textPrimary = themeTokens.textPrimary || "#f8f8f8";
   const textSecondary = themeTokens.textSecondary || "#8e95ae";
   const textMuted = themeTokens.textMuted || "#565c74";
@@ -152,10 +152,10 @@ function deriveFullCSS(tokens: CustomThemeTokens): string {
   // Derive text inverse (opposite of primary bg)
   const textInverse = lightMode ? background : textPrimary;
 
-  const baseContrastColor = lightMode ? "rgba(0, 0, 0, 0.87)" : "rgba(255, 255, 255, 0.92)";
-  const surfaceContrastColor = isLight(surface) ? "rgba(0, 0, 0, 0.87)" : "rgba(255, 255, 255, 0.92)";
-  const elevatedContrastColor = isLight(elevated) ? "rgba(0, 0, 0, 0.87)" : "rgba(255, 255, 255, 0.92)";
-  const primaryContrastColor = isLight(primary) ? "rgba(0, 0, 0, 0.87)" : "rgba(255, 255, 255, 0.92)";
+  const baseContrastColor = lightMode ? "rgba(0, 0, 0, 0.95)" : "rgba(255, 255, 255, 0.98)";
+  const surfaceContrastColor = isLight(surface) ? "rgba(0, 0, 0, 0.95)" : "rgba(255, 255, 255, 0.98)";
+  const elevatedContrastColor = isLight(elevated) ? "rgba(0, 0, 0, 0.95)" : "rgba(255, 255, 255, 0.98)";
+  const primaryContrastColor = isLight(primary) ? "rgba(0, 0, 0, 0.95)" : "rgba(255, 255, 255, 0.98)";
 
   // Opacity scales depend on light/dark
   const borderOpacity = lightMode ? 0.1 : 0.06;
@@ -362,9 +362,9 @@ function getCustomThemeMetaMap(): Record<string, ThemeCatalogEntry> {
     themeMetaMap[getCustomThemeAttr(theme.id)] = {
       label: theme.name || "Unnamed Theme",
       icon: theme.icon || "palette",
-      background: themeTokens.background || "#0a0a0f",
-      surface: themeTokens.surface || "#13141c",
-      elevated: themeTokens.elevated || "#1a1b26",
+      backgroundBase: themeTokens.backgroundBase || "#0a0a0f",
+      backgroundSurface: themeTokens.backgroundSurface || "#13141c",
+      backgroundElevated: themeTokens.backgroundElevated || "#1a1b26",
       primary: themeTokens.primary || "#6366f1",
       secondary: themeTokens.secondary || "#a78bfa",
       tertiary: themeTokens.tertiary || "#38bdf8",

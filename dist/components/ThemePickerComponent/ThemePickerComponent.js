@@ -57,7 +57,7 @@ export default function ThemePickerComponent({ theme, themes = [], onSelectTheme
     }, [onSelectTheme]);
     const DEFAULT_META = {
         label: "Theme", icon: "Palette",
-        background: "#222", surface: "#333", elevated: "#444",
+        backgroundBase: "#222", backgroundSurface: "#333", backgroundElevated: "#444",
         primary: "#888", secondary: "#aaa", tertiary: "#666",
         textPrimary: "#eee", textSecondary: "#aaa", textMuted: "#666",
         borderColor: "#888",

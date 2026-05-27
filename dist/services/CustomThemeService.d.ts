@@ -13,9 +13,9 @@
  */
 import type { ThemeCatalogEntry } from "../components/ThemeProvider/ThemeProvider.js";
 export interface CustomThemeTokens {
-    background: string;
-    surface: string;
-    elevated: string;
+    backgroundBase: string;
+    backgroundSurface: string;
+    backgroundElevated: string;
     primary: string;
     secondary: string;
     tertiary: string;
