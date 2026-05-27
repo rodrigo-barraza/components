@@ -223,7 +223,7 @@ function SingleTrack({
 
   const percentage = max === min ? 0 : ((value - min) / (max - min)) * 100;
   const midPercentage = ((0 - min) / (max - min)) * 100; // Center point for centered mode
-  const fmt = formatValue || defaultFormat;
+  const formatFunction = formatValue || defaultFormat;
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (disabled || !trackRef.current) return;
@@ -316,7 +316,7 @@ function SingleTrack({
           aria-valuemin={min}
           aria-valuemax={max}
           aria-valuenow={value}
-          aria-valuetext={fmt(value)}
+          aria-valuetext={formatFunction(value)}
           aria-disabled={disabled}
           onKeyDown={(e) =>
             !disabled && handleSliderKeyDown(e, value, min, max, step, onChange)
@@ -331,7 +331,7 @@ function SingleTrack({
           {/* M3 value indicator — teardrop label */}
           {showValue && (pressed || dragging) && (
             <div className={styles.valueIndicator}>
-              <span className={styles.valueLabel}>{fmt(value)}</span>
+              <span className={styles.valueLabel}>{formatFunction(value)}</span>
             </div>
           )}
         </div>
@@ -378,7 +378,7 @@ function RangeTrack({
   const [lo, hi] = value;
   const lowPercentage = max === min ? 0 : ((lo - min) / (max - min)) * 100;
   const highPercentage = max === min ? 100 : ((hi - min) / (max - min)) * 100;
-  const fmt = formatValue || defaultFormat;
+  const formatFunction = formatValue || defaultFormat;
 
   const resolveThumb = useCallback(
     (clientX: number) => {
@@ -498,7 +498,7 @@ function RangeTrack({
           aria-valuemin={min}
           aria-valuemax={hi}
           aria-valuenow={lo}
-          aria-valuetext={fmt(lo)}
+          aria-valuetext={formatFunction(lo)}
           aria-disabled={disabled}
           onKeyDown={makeThumbKeyHandler("start")}
         >
@@ -508,7 +508,7 @@ function RangeTrack({
             (pressedThumb === "start" ||
               (dragging && activeThumb.current === "start")) && (
               <div className={styles.valueIndicator}>
-                <span className={styles.valueLabel}>{fmt(lo)}</span>
+                <span className={styles.valueLabel}>{formatFunction(lo)}</span>
               </div>
             )}
         </div>
@@ -529,7 +529,7 @@ function RangeTrack({
           aria-valuemin={lo}
           aria-valuemax={max}
           aria-valuenow={hi}
-          aria-valuetext={fmt(hi)}
+          aria-valuetext={formatFunction(hi)}
           aria-disabled={disabled}
           onKeyDown={makeThumbKeyHandler("end")}
         >
@@ -539,7 +539,7 @@ function RangeTrack({
             (pressedThumb === "end" ||
               (dragging && activeThumb.current === "end")) && (
               <div className={styles.valueIndicator}>
-                <span className={styles.valueLabel}>{fmt(hi)}</span>
+                <span className={styles.valueLabel}>{formatFunction(hi)}</span>
               </div>
             )}
         </div>

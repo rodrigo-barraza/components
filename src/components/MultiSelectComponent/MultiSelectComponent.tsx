@@ -56,12 +56,12 @@ export default function MultiSelectComponent({
 
   // ── Toggle a single option ──────────────────────────────
   const handleToggle = useCallback(
-    (optValue: string) => {
-      if (selectedSet.has(optValue)) {
-        const next = value.filter((v) => v !== optValue);
+    (optionValue: string) => {
+      if (selectedSet.has(optionValue)) {
+        const next = value.filter((item) => item !== optionValue);
         onChange(next);
       } else {
-        onChange([...value, optValue]);
+        onChange([...value, optionValue]);
       }
     },
     [value, selectedSet, onChange],
@@ -69,9 +69,9 @@ export default function MultiSelectComponent({
 
   // ── Remove a chip (stops propagation so trigger doesn't toggle)
   const handleRemove = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>, optValue: string) => {
+    (e: React.MouseEvent<HTMLButtonElement>, optionValue: string) => {
       e.stopPropagation();
-      onChange(value.filter((v) => v !== optValue));
+      onChange(value.filter((item) => item !== optionValue));
     },
     [value, onChange],
   );
@@ -100,7 +100,7 @@ export default function MultiSelectComponent({
 
   // ── Resolve selected option objects for display ─────────
   const selectedOptions = useMemo(
-    () => options.filter((o) => selectedSet.has(o.value)),
+    () => options.filter((option) => selectedSet.has(option.value)),
     [options, selectedSet],
   );
 

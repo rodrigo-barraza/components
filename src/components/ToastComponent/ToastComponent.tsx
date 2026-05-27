@@ -34,7 +34,7 @@ export function useToast(defaultDuration = 3500) {
 
       if (duration > 0) {
         setTimeout(() => {
-          setToasts((prev) => prev.filter((t) => t.id !== id));
+          setToasts((prev) => prev.filter((toast) => toast.id !== id));
         }, duration);
       }
 
@@ -44,7 +44,7 @@ export function useToast(defaultDuration = 3500) {
   );
 
   const removeToast = useCallback((id: number) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
   return { toasts, addToast, removeToast };

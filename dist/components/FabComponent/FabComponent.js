@@ -44,7 +44,7 @@ const FabComponent = forwardRef(function FabComponent({ size = "standard", color
         const id = Date.now();
         setRipples((prev) => [...prev, { id, x, y, diameter }]);
         setTimeout(() => {
-            setRipples((prev) => prev.filter((r) => r.id !== id));
+            setRipples((prev) => prev.filter((ripple) => ripple.id !== id));
         }, 500);
     }, []);
     /* ── Position mapping ───────────────────────────────────────────── */
@@ -87,12 +87,12 @@ const FabComponent = forwardRef(function FabComponent({ size = "standard", color
             if (sound)
                 SoundService.playClickButton({ event: e });
             onClick?.(e);
-        }, ...rest, children: [ripples.map((r) => (_jsx("span", { className: styles.ripple, style: {
-                    width: r.diameter,
-                    height: r.diameter,
-                    left: r.x,
-                    top: r.y,
-                } }, r.id))), Icon && (_jsx("span", { className: styles.icon, children: _jsx(Icon, { size: computedIconSize }) })), isExtended && _jsx("span", { className: styles.label, children: label })] }));
+        }, ...rest, children: [ripples.map((ripple) => (_jsx("span", { className: styles.ripple, style: {
+                    width: ripple.diameter,
+                    height: ripple.diameter,
+                    left: ripple.x,
+                    top: ripple.y,
+                } }, ripple.id))), Icon && (_jsx("span", { className: styles.icon, children: _jsx(Icon, { size: computedIconSize }) })), isExtended && _jsx("span", { className: styles.label, children: label })] }));
 });
 export default FabComponent;
 //# sourceMappingURL=FabComponent.js.map

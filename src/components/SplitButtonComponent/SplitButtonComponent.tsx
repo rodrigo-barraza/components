@@ -108,7 +108,7 @@ const SplitButtonComponent = forwardRef<HTMLDivElement, SplitButtonComponentProp
 
     setRipples((prev) => [...prev, { id, x, y, diameter }]);
     setTimeout(() => {
-      setRipples((prev) => prev.filter((r) => r.id !== id));
+      setRipples((prev) => prev.filter((ripple) => ripple.id !== id));
     }, 500);
   }, []);
 
@@ -214,15 +214,15 @@ const SplitButtonComponent = forwardRef<HTMLDivElement, SplitButtonComponentProp
         <span className={styles.stateLayer} />
 
         {/* Ripples */}
-        {leadingRipples.map((r) => (
+        {leadingRipples.map((ripple) => (
           <span
-            key={r.id}
+            key={ripple.id}
             className={styles.ripple}
             style={{
-              width: r.diameter,
-              height: r.diameter,
-              left: r.x,
-              top: r.y,
+              width: ripple.diameter,
+              height: ripple.diameter,
+              left: ripple.x,
+              top: ripple.y,
             }}
           />
         ))}
@@ -260,15 +260,15 @@ const SplitButtonComponent = forwardRef<HTMLDivElement, SplitButtonComponentProp
         <span className={styles.stateLayer} />
 
         {/* Ripples */}
-        {trailingRipples.map((r) => (
+        {trailingRipples.map((ripple) => (
           <span
-            key={r.id}
+            key={ripple.id}
             className={styles.ripple}
             style={{
-              width: r.diameter,
-              height: r.diameter,
-              left: r.x,
-              top: r.y,
+              width: ripple.diameter,
+              height: ripple.diameter,
+              left: ripple.x,
+              top: ripple.y,
             }}
           />
         ))}

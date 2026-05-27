@@ -110,7 +110,7 @@ function SingleTrack({ value, min, max, step, onChange, disabled, centered, show
     const [pressed, setPressed] = useState(false);
     const percentage = max === min ? 0 : ((value - min) / (max - min)) * 100;
     const midPercentage = ((0 - min) / (max - min)) * 100; // Center point for centered mode
-    const fmt = formatValue || defaultFormat;
+    const formatFunction = formatValue || defaultFormat;
     const handlePointerDown = (e) => {
         if (disabled || !trackRef.current)
             return;
@@ -160,7 +160,7 @@ function SingleTrack({ value, min, max, step, onChange, disabled, centered, show
                         pressed && styles.thumbPressed,
                     ]
                         .filter(Boolean)
-                        .join(" "), style: { left: `${percentage}%` }, role: "slider", tabIndex: disabled ? -1 : 0, "aria-label": label, "aria-valuemin": min, "aria-valuemax": max, "aria-valuenow": value, "aria-valuetext": fmt(value), "aria-disabled": disabled, onKeyDown: (e) => !disabled && handleSliderKeyDown(e, value, min, max, step, onChange), children: [_jsx("div", { className: styles.stateLayer }), _jsx("div", { className: styles.thumb }), showValue && (pressed || dragging) && (_jsx("div", { className: styles.valueIndicator, children: _jsx("span", { className: styles.valueLabel, children: fmt(value) }) }))] })] }) }));
+                        .join(" "), style: { left: `${percentage}%` }, role: "slider", tabIndex: disabled ? -1 : 0, "aria-label": label, "aria-valuemin": min, "aria-valuemax": max, "aria-valuenow": value, "aria-valuetext": formatFunction(value), "aria-disabled": disabled, onKeyDown: (e) => !disabled && handleSliderKeyDown(e, value, min, max, step, onChange), children: [_jsx("div", { className: styles.stateLayer }), _jsx("div", { className: styles.thumb }), showValue && (pressed || dragging) && (_jsx("div", { className: styles.valueIndicator, children: _jsx("span", { className: styles.valueLabel, children: formatFunction(value) }) }))] })] }) }));
 }
 function RangeTrack({ value, min, max, step, onChange, disabled, showValue, ticks, label, formatValue, sound, }) {
     const trackRef = useRef(null);
@@ -170,7 +170,7 @@ function RangeTrack({ value, min, max, step, onChange, disabled, showValue, tick
     const [lo, hi] = value;
     const lowPercentage = max === min ? 0 : ((lo - min) / (max - min)) * 100;
     const highPercentage = max === min ? 100 : ((hi - min) / (max - min)) * 100;
-    const fmt = formatValue || defaultFormat;
+    const formatFunction = formatValue || defaultFormat;
     const resolveThumb = useCallback((clientX) => {
         if (!trackRef.current)
             return "start";
@@ -248,16 +248,16 @@ function RangeTrack({ value, min, max, step, onChange, disabled, showValue, tick
                         pressedThumb === "start" && styles.thumbPressed,
                     ]
                         .filter(Boolean)
-                        .join(" "), style: { left: `${lowPercentage}%` }, role: "slider", tabIndex: disabled ? -1 : 0, "aria-label": label ? `${label} minimum` : "Range minimum", "aria-valuemin": min, "aria-valuemax": hi, "aria-valuenow": lo, "aria-valuetext": fmt(lo), "aria-disabled": disabled, onKeyDown: makeThumbKeyHandler("start"), children: [_jsx("div", { className: styles.stateLayer }), _jsx("div", { className: styles.thumb }), showValue &&
+                        .join(" "), style: { left: `${lowPercentage}%` }, role: "slider", tabIndex: disabled ? -1 : 0, "aria-label": label ? `${label} minimum` : "Range minimum", "aria-valuemin": min, "aria-valuemax": hi, "aria-valuenow": lo, "aria-valuetext": formatFunction(lo), "aria-disabled": disabled, onKeyDown: makeThumbKeyHandler("start"), children: [_jsx("div", { className: styles.stateLayer }), _jsx("div", { className: styles.thumb }), showValue &&
                             (pressedThumb === "start" ||
-                                (dragging && activeThumb.current === "start")) && (_jsx("div", { className: styles.valueIndicator, children: _jsx("span", { className: styles.valueLabel, children: fmt(lo) }) }))] }), _jsxs("div", { className: [
+                                (dragging && activeThumb.current === "start")) && (_jsx("div", { className: styles.valueIndicator, children: _jsx("span", { className: styles.valueLabel, children: formatFunction(lo) }) }))] }), _jsxs("div", { className: [
                         styles.thumbContainer,
                         dragging && activeThumb.current === "end" && styles.thumbDragging,
                         pressedThumb === "end" && styles.thumbPressed,
                     ]
                         .filter(Boolean)
-                        .join(" "), style: { left: `${highPercentage}%` }, role: "slider", tabIndex: disabled ? -1 : 0, "aria-label": label ? `${label} maximum` : "Range maximum", "aria-valuemin": lo, "aria-valuemax": max, "aria-valuenow": hi, "aria-valuetext": fmt(hi), "aria-disabled": disabled, onKeyDown: makeThumbKeyHandler("end"), children: [_jsx("div", { className: styles.stateLayer }), _jsx("div", { className: styles.thumb }), showValue &&
+                        .join(" "), style: { left: `${highPercentage}%` }, role: "slider", tabIndex: disabled ? -1 : 0, "aria-label": label ? `${label} maximum` : "Range maximum", "aria-valuemin": lo, "aria-valuemax": max, "aria-valuenow": hi, "aria-valuetext": formatFunction(hi), "aria-disabled": disabled, onKeyDown: makeThumbKeyHandler("end"), children: [_jsx("div", { className: styles.stateLayer }), _jsx("div", { className: styles.thumb }), showValue &&
                             (pressedThumb === "end" ||
-                                (dragging && activeThumb.current === "end")) && (_jsx("div", { className: styles.valueIndicator, children: _jsx("span", { className: styles.valueLabel, children: fmt(hi) }) }))] })] }) }));
+                                (dragging && activeThumb.current === "end")) && (_jsx("div", { className: styles.valueIndicator, children: _jsx("span", { className: styles.valueLabel, children: formatFunction(hi) }) }))] })] }) }));
 }
 //# sourceMappingURL=SliderComponent.js.map

@@ -78,9 +78,9 @@ function getClickBuffer() {
         const timePosition = i / sampleRate;
         const progress = i / length;
         // Exponential frequency sweep from high → low
-        const freq = freqStart * Math.pow(freqEnd / freqStart, progress);
+        const frequency = freqStart * Math.pow(freqEnd / freqStart, progress);
         // Accumulate phase for smooth sine wave
-        phase += (2 * Math.PI * freq) / sampleRate;
+        phase += (2 * Math.PI * frequency) / sampleRate;
         // Sine body with steep exponential decay
         const sine = Math.sin(phase) * Math.exp(-timePosition * 300);
         // Noise transient layer — only the first ~5 ms
@@ -107,10 +107,10 @@ function getButtonHoverBuffer() {
     const length = Math.ceil(sampleRate * duration);
     buttonHoverBuffer = audio.createBuffer(1, length, sampleRate);
     const data = buttonHoverBuffer.getChannelData(0);
-    const freq = 2400;
+    const frequency = 2400;
     for (let i = 0; i < length; i++) {
         const timePosition = i / sampleRate;
-        const sine = Math.sin(2 * Math.PI * freq * timePosition);
+        const sine = Math.sin(2 * Math.PI * frequency * timePosition);
         const envelope = Math.exp(-timePosition * 500);
         data[i] = sine * envelope * 0.03;
     }

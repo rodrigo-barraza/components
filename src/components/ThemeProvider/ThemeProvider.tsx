@@ -285,7 +285,7 @@ export function ThemeProvider({
 
   // Merged theme list: built-in + dynamically registered custom themes
   const themes = useMemo(
-    () => [...initialThemes, ...extraThemes.filter((t) => !initialThemes.includes(t))],
+    () => [...initialThemes, ...extraThemes.filter((theme) => !initialThemes.includes(theme))],
     [initialThemes, extraThemes],
   );
 

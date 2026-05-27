@@ -110,7 +110,7 @@ function loadHiddenColumns<T, TSub>(storageKey: string | undefined, columns: Tab
     if (raw) return new Set<string>(JSON.parse(raw) as string[]);
   } catch { /* ignore */ }
   if (columns) {
-    const defaults = columns.filter((c) => c.defaultHidden).map((c) => c.key);
+    const defaults = columns.filter((column) => column.defaultHidden).map((column) => column.key);
     if (defaults.length > 0) return new Set<string>(defaults);
   }
   return new Set<string>();
@@ -144,7 +144,7 @@ function ColumnFilter<T, TSub>({ columns, hiddenColumns, onToggle, onToggleAll, 
       const rect = btnRef.current.getBoundingClientRect();
       setCoords({ top: rect.bottom + 4, left: rect.right });
     }
-    setOpen((v) => !v);
+    setOpen((previous) => !previous);
   }, [open]);
 
   useEffect(() => {
@@ -290,7 +290,7 @@ export default function TableComponent<T, TSub = unknown>({
 
   const toggleAllColumns = useCallback((showAll: boolean) => {
     setHiddenColumns(() => {
-      const hideableKeys = columns.filter((c) => c.hideable !== false).map((c) => c.key);
+      const hideableKeys = columns.filter((column) => column.hideable !== false).map((column) => column.key);
       const next = showAll ? new Set<string>() : new Set<string>(hideableKeys);
       saveHiddenColumns(storageKey, next);
       return next;
@@ -298,7 +298,7 @@ export default function TableComponent<T, TSub = unknown>({
   }, [storageKey, columns]);
 
   const visibleColumns = storageKey
-    ? columns.filter((c) => !hiddenColumns.has(c.key))
+    ? columns.filter((column) => !hiddenColumns.has(column.key))
     : columns;
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -391,7 +391,7 @@ export default function TableComponent<T, TSub = unknown>({
     });
   }
 
-  const sortCol = sort.key ? columns.find((c) => c.key === sort.key) : null;
+  const sortCol = sort.key ? columns.find((column) => column.key === sort.key) : null;
   const sorted =
     sort.key && !onSort
       ? [...data].sort((a, b) => {

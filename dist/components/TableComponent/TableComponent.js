@@ -62,7 +62,7 @@ function loadHiddenColumns(storageKey, columns) {
     }
     catch { /* ignore */ }
     if (columns) {
-        const defaults = columns.filter((c) => c.defaultHidden).map((c) => c.key);
+        const defaults = columns.filter((column) => column.defaultHidden).map((column) => column.key);
         if (defaults.length > 0)
             return new Set(defaults);
     }
@@ -85,7 +85,7 @@ function ColumnFilter({ columns, hiddenColumns, onToggle, onToggleAll, storageKe
             const rect = btnRef.current.getBoundingClientRect();
             setCoords({ top: rect.bottom + 4, left: rect.right });
         }
-        setOpen((v) => !v);
+        setOpen((previous) => !previous);
     }, [open]);
     useEffect(() => {
         if (!open)
@@ -131,14 +131,14 @@ export default function TableComponent({ title, subtitle, columns, data = [], ge
     }, [storageKey]);
     const toggleAllColumns = useCallback((showAll) => {
         setHiddenColumns(() => {
-            const hideableKeys = columns.filter((c) => c.hideable !== false).map((c) => c.key);
+            const hideableKeys = columns.filter((column) => column.hideable !== false).map((column) => column.key);
             const next = showAll ? new Set() : new Set(hideableKeys);
             saveHiddenColumns(storageKey, next);
             return next;
         });
     }, [storageKey, columns]);
     const visibleColumns = storageKey
-        ? columns.filter((c) => !hiddenColumns.has(c.key))
+        ? columns.filter((column) => !hiddenColumns.has(column.key))
         : columns;
     const scrollRef = useRef(null);
     const dragRef = useRef({
@@ -237,7 +237,7 @@ export default function TableComponent({ title, subtitle, columns, data = [], ge
             return next;
         });
     }
-    const sortCol = sort.key ? columns.find((c) => c.key === sort.key) : null;
+    const sortCol = sort.key ? columns.find((column) => column.key === sort.key) : null;
     const sorted = sort.key && !onSort
         ? [...data].sort((a, b) => {
             const va = sortCol?.sortValue ? sortCol.sortValue(a) : (a[sort.key] ?? 0);

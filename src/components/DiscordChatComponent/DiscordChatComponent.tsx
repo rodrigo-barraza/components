@@ -343,7 +343,7 @@ function formatContent(content: string | undefined, cleanContent: string | undef
 
   const emojiRawPattern = "<a?:[\\w]+:\\d+>";
   const emojiCleanPattern = emojiMap.size > 0
-    ? `:(?:${[...emojiMap.keys()].map(n => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")}):`
+    ? `:(?:${[...emojiMap.keys()].map(emojiName => emojiName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")}):`
     : null;
 
   const splitParts = [
@@ -529,8 +529,8 @@ function getWaveformBars(base64Str?: string, targetCount = 35): number[] {
     resampled.push(count > 0 ? sum / count : 0);
   }
 
-  const maxVal = Math.max(...resampled, 1);
-  return resampled.map((value) => Math.max(15, Math.round((value / maxVal) * 100)));
+  const maximumValue = Math.max(...resampled, 1);
+  return resampled.map((value) => Math.max(15, Math.round((value / maximumValue) * 100)));
 }
 
 function VoiceMessagePlayer({ attachment }: { attachment: DiscordAttachment }) {
@@ -548,7 +548,7 @@ function VoiceMessagePlayer({ attachment }: { attachment: DiscordAttachment }) {
     if (playing) {
       audio.pause();
     } else {
-      audio.play().catch((err) => console.error("Playback error:", err));
+      audio.play().catch((error) => console.error("Playback error:", error));
     }
   };
 
@@ -739,9 +739,9 @@ function EmbedMedia({ embeds }: { embeds?: DiscordEmbed[] }) {
 
         // Pure image/gif embeds with NO metadata → render as simple attachment
         if (!hasMetadata && (embed.image || embed.thumbnail)) {
-          const imgSrc = embed.image?.url || embed.image?.proxyURL
+           const imageSource = embed.image?.url || embed.image?.proxyURL
             || embed.thumbnail?.url || embed.thumbnail?.proxyURL;
-          if (!imgSrc) return null;
+          if (!imageSource) return null;
           const imgMeta = embed.image || embed.thumbnail;
           if (!imgMeta) return null;
           const maxW = 400, maxH = 300;
@@ -749,8 +749,8 @@ function EmbedMedia({ embeds }: { embeds?: DiscordEmbed[] }) {
           if (imageWidth > maxW) { imageHeight = Math.round(imageHeight * (maxW / imageWidth)); imageWidth = maxW; }
           if (imageHeight > maxH) { imageWidth = Math.round(imageWidth * (maxH / imageHeight)); imageHeight = maxH; }
           return (
-            <a key={i} href={embed.url || imgSrc} target="_blank" rel="noopener noreferrer" className={styles.attachmentLink}>
-                <img src={imgSrc} alt={embed.title || "embed"} width={imageWidth} height={imageHeight}
+            <a key={i} href={embed.url || imageSource} target="_blank" rel="noopener noreferrer" className={styles.attachmentLink}>
+                <img src={imageSource} alt={embed.title || "embed"} width={imageWidth} height={imageHeight}
                 className={styles.attachmentImage} loading="lazy" />
           </a>
           );
@@ -800,14 +800,14 @@ function EmbedMedia({ embeds }: { embeds?: DiscordEmbed[] }) {
             </div>
             {/* Large image below text (e.g. Newgrounds portal submissions) */}
             {hasLargeImage && embed.image && (() => {
-              const imgSrc = embed.image!.proxyURL || embed.image!.url;
+              const imageSource = embed.image!.proxyURL || embed.image!.url;
               const maxW = 400, maxH = 300;
               let imageWidth = embed.image!.width || maxW, imageHeight = embed.image!.height || maxH;
               if (imageWidth > maxW) { imageHeight = Math.round(imageHeight * (maxW / imageWidth)); imageWidth = maxW; }
               if (imageHeight > maxH) { imageWidth = Math.round(imageWidth * (maxH / imageHeight)); imageHeight = maxH; }
               return (
-                <a href={embed.url || imgSrc} target="_blank" rel="noopener noreferrer" className={styles.embedImageLink}>
-                        <img src={imgSrc} alt={embed.title || "embed image"} width={imageWidth} height={imageHeight}
+                <a href={embed.url || imageSource} target="_blank" rel="noopener noreferrer" className={styles.embedImageLink}>
+                        <img src={imageSource} alt={embed.title || "embed image"} width={imageWidth} height={imageHeight}
                     className={styles.embedImage} loading="lazy" />
                 </a>
               );
@@ -859,8 +859,8 @@ function EmbedVideo({ embed }: { embed: DiscordEmbed }) {
 // replied to, their avatar, and a truncated snippet of the
 // referenced message — matching Discord's native reply UI.
 function ReplyContext({ replyTo, messageMap }: { replyTo: string; messageMap: Map<string, DiscordMessage> }) {
-  const ref = messageMap?.get(replyTo);
-  if (!ref) {
+  const messageReference = messageMap?.get(replyTo);
+  if (!messageReference) {
     // Referenced message is outside the loaded window — show fallback
     return (
       <>
@@ -873,22 +873,22 @@ function ReplyContext({ replyTo, messageMap }: { replyTo: string; messageMap: Ma
       </>
     );
   }
-  const nameStyle = resolveRoleColorStyle(ref.author);
-  const snippet = ref.content || ref.cleanContent || "";
+  const nameStyle = resolveRoleColorStyle(messageReference.author);
+  const snippet = messageReference.content || messageReference.cleanContent || "";
   const truncated = snippet.length > 80 ? snippet.slice(0, 77) + "…" : snippet;
-  const hasAttachment = (ref.attachments && ref.attachments.length > 0) || (ref.embeds && ref.embeds.length > 0);
+  const hasAttachment = (messageReference.attachments && messageReference.attachments.length > 0) || (messageReference.embeds && messageReference.embeds.length > 0);
   return (
     <>
       <div className={styles.replySpine} />
       <div className={styles.replyBar}>
-        {ref.author.avatarUrl ? (
-          <img src={ref.author.avatarUrl} alt="" className={styles.replyAvatar} loading="lazy" />
+        {messageReference.author.avatarUrl ? (
+          <img src={messageReference.author.avatarUrl} alt="" className={styles.replyAvatar} loading="lazy" />
         ) : (
-          <div className={styles.replyAvatarFallback} style={{ background: getAvatarColor(ref.author.id) }}>
-            {(ref.author.displayName || "?")[0].toUpperCase()}
+          <div className={styles.replyAvatarFallback} style={{ background: getAvatarColor(messageReference.author.id) }}>
+            {(messageReference.author.displayName || "?")[0].toUpperCase()}
           </div>
         )}
-        {ref.author.isBot && (
+        {messageReference.author.isBot && (
           <span className={styles.replyBotBadge}>
             <svg className={styles.botBadgeIcon} viewBox="0 0 16 16" fill="currentColor">
               <path d="M7.4,11.17,4,8.62,5,7.26l2,1.53L10.64,4l1.36,1Z" />
@@ -897,7 +897,7 @@ function ReplyContext({ replyTo, messageMap }: { replyTo: string; messageMap: Ma
           </span>
         )}
         <span className={styles.replyAuthor} style={nameStyle}>
-          @{ref.author.displayName}
+          @{messageReference.author.displayName}
         </span>
         <span className={styles.replyContent}>
           {truncated || (hasAttachment ? <>Click to see attachment <span aria-hidden="true">🖼️</span></> : "…")}
@@ -1568,7 +1568,7 @@ export default function DiscordChatComponent({
         try {
           const { messages: updatedMsgs } = JSON.parse(event.data) as { messages?: DiscordMessage[] };
           if (!updatedMsgs?.length) return;
-          const updateMap = new Map((updatedMsgs || []).map((m) => [m.id, m]));
+          const updateMap = new Map((updatedMsgs || []).map((message) => [message.id, message]));
           setMessages((prev) =>
             prev.map((message) => {
               const updated = updateMap.get(message.id);
@@ -1868,7 +1868,7 @@ export default function DiscordChatComponent({
             )}
             {!loading && !error && (() => {
               // Build a lookup map for reply references
-              const messageMap = new Map(messages.map((m) => [m.id, m]));
+              const messageMap = new Map(messages.map((message) => [message.id, message]));
               return messages.map((message, i) => {
                 const previousMessage = i > 0 ? messages[i - 1] : null;
                 const grouped = shouldGroup(message, previousMessage);
@@ -1990,8 +1990,8 @@ export default function DiscordChatComponent({
                   <div className={styles.memberRoleHeader}>
                     {role.name} — {role.members.length}
                   </div>
-                  {role.members.map((m) => (
-                    <MemberItem key={m.id} member={m} />
+                  {role.members.map((member) => (
+                    <MemberItem key={member.id} member={member} />
                   ))}
                 </div>
               ))}
@@ -2000,8 +2000,8 @@ export default function DiscordChatComponent({
                   <div className={styles.memberRoleHeader}>
                     Bots — {members.bots.length}
                   </div>
-                  {members.bots.map((m) => (
-                    <MemberItem key={m.id} member={m} />
+                  {members.bots.map((member) => (
+                    <MemberItem key={member.id} member={member} />
                   ))}
                 </div>
               )}

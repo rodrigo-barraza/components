@@ -45,7 +45,7 @@ export default function CollapsibleBlockComponent({
     if (isControlled) {
       onToggle?.(!controlledOpen);
     } else {
-      setInternalCollapsed((v) => !v);
+      setInternalCollapsed((previous) => !previous);
     }
   };
 

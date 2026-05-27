@@ -90,7 +90,7 @@ const FabComponent = forwardRef<HTMLButtonElement, FabComponentProps>(function F
 
     setRipples((prev) => [...prev, { id, x, y, diameter }]);
     setTimeout(() => {
-      setRipples((prev) => prev.filter((r) => r.id !== id));
+      setRipples((prev) => prev.filter((ripple) => ripple.id !== id));
     }, 500);
   }, []);
 
@@ -148,15 +148,15 @@ const FabComponent = forwardRef<HTMLButtonElement, FabComponentProps>(function F
       {...rest}
     >
       {/* Ripple indicators */}
-      {ripples.map((r) => (
+      {ripples.map((ripple) => (
         <span
-          key={r.id}
+          key={ripple.id}
           className={styles.ripple}
           style={{
-            width: r.diameter,
-            height: r.diameter,
-            left: r.x,
-            top: r.y,
+            width: ripple.diameter,
+            height: ripple.diameter,
+            left: ripple.x,
+            top: ripple.y,
           }}
         />
       ))}

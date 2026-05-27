@@ -55,7 +55,7 @@ const SplitButtonComponent = forwardRef(function SplitButtonComponent({ variant 
         const id = Date.now() + Math.random();
         setRipples((prev) => [...prev, { id, x, y, diameter }]);
         setTimeout(() => {
-            setRipples((prev) => prev.filter((r) => r.id !== id));
+            setRipples((prev) => prev.filter((ripple) => ripple.id !== id));
         }, 500);
     }, []);
     /* ── Event handlers: Leading ────────────────────────────────────── */
@@ -122,17 +122,17 @@ const SplitButtonComponent = forwardRef(function SplitButtonComponent({ variant 
     ]
         .filter(Boolean)
         .join(" ");
-    return (_jsxs("div", { ref: setGroupRef, className: groupClasses, role: "group", "aria-label": ariaLabel || undefined, onKeyDown: handleKeyDown, ...rest, children: [_jsxs("button", { ref: leadingRef, type: "button", className: leadingClasses, disabled: disabled || loading, "aria-busy": loading || undefined, onClick: handleLeadingClick, onMouseEnter: handleLeadingMouseEnter, tabIndex: 0, children: [_jsx("span", { className: styles.stateLayer }), leadingRipples.map((r) => (_jsx("span", { className: styles.ripple, style: {
-                            width: r.diameter,
-                            height: r.diameter,
-                            left: r.x,
-                            top: r.y,
-                        } }, r.id))), loading ? (_jsx("span", { className: styles.spinner, "aria-hidden": "true" })) : Icon ? (_jsx("span", { className: styles.icon, "aria-hidden": "true", children: _jsx(Icon, { size: resolvedIconSize }) })) : null, children && _jsx("span", { className: styles.label, children: children })] }), _jsx("span", { className: styles.divider, "aria-hidden": "true" }), _jsxs("button", { ref: trailingRef, type: "button", className: trailingClasses, disabled: disabled || loading, "aria-label": trailingAriaLabel, "aria-expanded": trailingToggled || undefined, "aria-haspopup": "true", onClick: handleTrailingClick, onMouseEnter: handleTrailingMouseEnter, tabIndex: 0, children: [_jsx("span", { className: styles.stateLayer }), trailingRipples.map((r) => (_jsx("span", { className: styles.ripple, style: {
-                            width: r.diameter,
-                            height: r.diameter,
-                            left: r.x,
-                            top: r.y,
-                        } }, r.id))), _jsx("span", { className: `${styles.trailingIconWrap} ${trailingToggled ? styles.trailingIconRotated : ""}`, "aria-hidden": "true", children: _jsx(ResolvedTrailingIcon, { size: trailingIconSize }) })] })] }));
+    return (_jsxs("div", { ref: setGroupRef, className: groupClasses, role: "group", "aria-label": ariaLabel || undefined, onKeyDown: handleKeyDown, ...rest, children: [_jsxs("button", { ref: leadingRef, type: "button", className: leadingClasses, disabled: disabled || loading, "aria-busy": loading || undefined, onClick: handleLeadingClick, onMouseEnter: handleLeadingMouseEnter, tabIndex: 0, children: [_jsx("span", { className: styles.stateLayer }), leadingRipples.map((ripple) => (_jsx("span", { className: styles.ripple, style: {
+                            width: ripple.diameter,
+                            height: ripple.diameter,
+                            left: ripple.x,
+                            top: ripple.y,
+                        } }, ripple.id))), loading ? (_jsx("span", { className: styles.spinner, "aria-hidden": "true" })) : Icon ? (_jsx("span", { className: styles.icon, "aria-hidden": "true", children: _jsx(Icon, { size: resolvedIconSize }) })) : null, children && _jsx("span", { className: styles.label, children: children })] }), _jsx("span", { className: styles.divider, "aria-hidden": "true" }), _jsxs("button", { ref: trailingRef, type: "button", className: trailingClasses, disabled: disabled || loading, "aria-label": trailingAriaLabel, "aria-expanded": trailingToggled || undefined, "aria-haspopup": "true", onClick: handleTrailingClick, onMouseEnter: handleTrailingMouseEnter, tabIndex: 0, children: [_jsx("span", { className: styles.stateLayer }), trailingRipples.map((ripple) => (_jsx("span", { className: styles.ripple, style: {
+                            width: ripple.diameter,
+                            height: ripple.diameter,
+                            left: ripple.x,
+                            top: ripple.y,
+                        } }, ripple.id))), _jsx("span", { className: `${styles.trailingIconWrap} ${trailingToggled ? styles.trailingIconRotated : ""}`, "aria-hidden": "true", children: _jsx(ResolvedTrailingIcon, { size: trailingIconSize }) })] })] }));
 });
 export default SplitButtonComponent;
 //# sourceMappingURL=SplitButtonComponent.js.map

@@ -9,19 +9,19 @@ export default function MultiSelectComponent({ value = [], options = [], onChang
     const selectedSet = useMemo(() => new Set(value), [value]);
     const allSelected = value.length === 0 || value.length === options.length;
     // ── Toggle a single option ──────────────────────────────
-    const handleToggle = useCallback((optValue) => {
-        if (selectedSet.has(optValue)) {
-            const next = value.filter((v) => v !== optValue);
+    const handleToggle = useCallback((optionValue) => {
+        if (selectedSet.has(optionValue)) {
+            const next = value.filter((item) => item !== optionValue);
             onChange(next);
         }
         else {
-            onChange([...value, optValue]);
+            onChange([...value, optionValue]);
         }
     }, [value, selectedSet, onChange]);
     // ── Remove a chip (stops propagation so trigger doesn't toggle)
-    const handleRemove = useCallback((e, optValue) => {
+    const handleRemove = useCallback((e, optionValue) => {
         e.stopPropagation();
-        onChange(value.filter((v) => v !== optValue));
+        onChange(value.filter((item) => item !== optionValue));
     }, [value, onChange]);
     // ── Click-outside close ─────────────────────────────────
     useEffect(() => {
@@ -47,7 +47,7 @@ export default function MultiSelectComponent({ value = [], options = [], onChang
         return () => document.removeEventListener("keydown", onKey);
     }, [open]);
     // ── Resolve selected option objects for display ─────────
-    const selectedOptions = useMemo(() => options.filter((o) => selectedSet.has(o.value)), [options, selectedSet]);
+    const selectedOptions = useMemo(() => options.filter((option) => selectedSet.has(option.value)), [options, selectedSet]);
     return (_jsxs("div", { className: `${styles.dropdown} ${label ? styles.hasLabel : ""}`, ref: containerRef, children: [label && _jsx("span", { className: styles.label, children: label }), _jsxs("button", { type: "button", className: `${styles.trigger} ${open ? styles.triggerOpen : ""} ${disabled ? styles.triggerDisabled : ""}`, onClick: () => !disabled && setOpen((prev) => !prev), disabled: disabled, children: [_jsxs("span", { className: styles.triggerContent, children: [icon && _jsx("span", { className: styles.triggerIcon, children: icon }), allSelected ? (_jsx("span", { className: styles.triggerLabel, children: allLabel })) : compact ? (_jsxs("span", { className: styles.triggerLabel, children: [selectedOptions.length, " selected"] })) : selectedOptions.length === 0 ? (_jsx("span", { className: styles.triggerLabel, children: placeholder })) : (selectedOptions.map((opt) => (_jsxs("span", { className: styles.chip, children: [opt.label, _jsx("button", { type: "button", className: styles.chipRemove, onClick: (e) => handleRemove(e, opt.value), tabIndex: -1, children: _jsx(X, { size: 10 }) })] }, opt.value))))] }), _jsx(ChevronDown, { size: 14, className: `${styles.chevron} ${open ? styles.chevronOpen : ""}` })] }), open && (_jsx("div", { className: styles.menu, children: options.map((opt) => {
                     const checked = selectedSet.has(opt.value);
                     return (_jsxs("button", { type: "button", className: `${styles.option} ${checked ? styles.optionSelected : ""} ${opt.disabled ? styles.optionDisabled : ""}`, onClick: () => !opt.disabled && handleToggle(opt.value), disabled: opt.disabled, children: [_jsx("span", { className: `${styles.optionCheck} ${checked ? styles.optionCheckSelected : ""}`, children: checked && (_jsx("svg", { className: styles.optionCheckIcon, viewBox: "0 0 18 18", fill: "none", xmlns: "http://www.w3.org/2000/svg", children: _jsx("path", { className: styles.optionCheckPath, d: "M4 9.5L7.5 13L14 5", stroke: "currentColor", strokeWidth: "2.5", strokeLinecap: "round", strokeLinejoin: "round" }) })) }), opt.icon && (_jsx("span", { className: styles.optionIcon, children: opt.icon })), _jsx("span", { className: styles.optionLabel, children: opt.label })] }, opt.value));

@@ -27,10 +27,10 @@ export default function TextAreaComponent({
   id,
   ...rest
 }: TextAreaComponentProps) {
-  const ref = useRef<HTMLTextAreaElement | null>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const resize = useCallback(() => {
-    const element = ref.current;
+    const element = textAreaRef.current;
     if (!element || !autoResize) return;
 
     element.style.height = "auto";
@@ -58,7 +58,7 @@ export default function TextAreaComponent({
 
   return (
     <textarea
-      ref={ref}
+      ref={textAreaRef}
       id={id}
       className={classes}
       value={value}

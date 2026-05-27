@@ -23,13 +23,13 @@ export function useToast(defaultDuration = 3500) {
         setToasts((prev) => [...prev, { id, message, type }]);
         if (duration > 0) {
             setTimeout(() => {
-                setToasts((prev) => prev.filter((t) => t.id !== id));
+                setToasts((prev) => prev.filter((toast) => toast.id !== id));
             }, duration);
         }
         return id;
     }, [defaultDuration]);
     const removeToast = useCallback((id) => {
-        setToasts((prev) => prev.filter((t) => t.id !== id));
+        setToasts((prev) => prev.filter((toast) => toast.id !== id));
     }, []);
     return { toasts, addToast, removeToast };
 }

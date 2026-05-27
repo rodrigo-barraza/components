@@ -200,7 +200,7 @@ export function ThemeProvider({ storageKey = "app:theme", defaultTheme = "dark",
     const [mounted, setMounted] = useState(false);
     const [extraThemes, setExtraThemes] = useState([]);
     // Merged theme list: built-in + dynamically registered custom themes
-    const themes = useMemo(() => [...initialThemes, ...extraThemes.filter((t) => !initialThemes.includes(t))], [initialThemes, extraThemes]);
+    const themes = useMemo(() => [...initialThemes, ...extraThemes.filter((theme) => !initialThemes.includes(theme))], [initialThemes, extraThemes]);
     /** Check if a theme name is valid (in the list OR a custom theme) */
     const isValidTheme = useCallback((name) => themes.includes(name) || isCustomTheme(name), [themes]);
     // Hydrate from localStorage after first client render

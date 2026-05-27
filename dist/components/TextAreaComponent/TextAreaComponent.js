@@ -3,9 +3,9 @@ import { jsx as _jsx } from "react/jsx-runtime";
 import { useRef, useEffect, useCallback } from "react";
 import styles from "./TextAreaComponent.module.css";
 export default function TextAreaComponent({ value, onChange, placeholder, minRows = 3, maxRows = 12, autoResize = true, disabled = false, readOnly = false, className, id, ...rest }) {
-    const ref = useRef(null);
+    const textAreaRef = useRef(null);
     const resize = useCallback(() => {
-        const element = ref.current;
+        const element = textAreaRef.current;
         if (!element || !autoResize)
             return;
         element.style.height = "auto";
@@ -25,6 +25,6 @@ export default function TextAreaComponent({ value, onChange, placeholder, minRow
         onChange?.(event);
     };
     const classes = [styles.textarea, className || ""].filter(Boolean).join(" ");
-    return (_jsx("textarea", { ref: ref, id: id, className: classes, value: value, onChange: handleChange, placeholder: placeholder, disabled: disabled, readOnly: readOnly, rows: minRows, ...rest }));
+    return (_jsx("textarea", { ref: textAreaRef, id: id, className: classes, value: value, onChange: handleChange, placeholder: placeholder, disabled: disabled, readOnly: readOnly, rows: minRows, ...rest }));
 }
 //# sourceMappingURL=TextAreaComponent.js.map
