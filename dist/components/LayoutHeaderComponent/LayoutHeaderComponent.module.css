@@ -1,8 +1,8 @@
 /* ── LayoutHeaderComponent ─────────────────────────── */
 
 .layout-header-container {
-  block-size: 50px;
-  min-block-size: 50px;
+  block-size: 40px;
+  min-block-size: 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -183,7 +183,7 @@
     position: relative;
     z-index: 201;
     block-size: auto;
-    min-block-size: 50px;
+    min-block-size: 40px;
     flex-wrap: wrap;
   }
 
@@ -199,5 +199,11 @@
     gap: 6px;
     padding-block: 6px;
     padding-inline: 0;
+  }
+
+  /* Compact SelectComponent triggers inside the header */
+  .header-center-area button[type="button"],
+  .header-center-group button[type="button"] {
+    padding: 0 8px;
   }
 }

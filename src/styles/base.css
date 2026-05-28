@@ -71,6 +71,7 @@
 
   /* Sizing */
   --input-height: 40px;
+  --input-height-compact: 30px;
   --button-height: 44px;
   --header-height: 64px;
   --sidebar-width: 320px;
@@ -854,5 +855,13 @@ select option {
   100% {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+/* ── Mobile Compact Sizing ──────────────────────────────────── */
+
+@media (max-width: 768px) {
+  :root {
+    --input-height: var(--input-height-compact);
   }
 }
