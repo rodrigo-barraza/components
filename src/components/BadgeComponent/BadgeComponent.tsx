@@ -81,6 +81,167 @@ function getTier(milliseconds: number): Tier {
   return TIERS.find((currentTier) => milliseconds <= currentTier.max) || TIERS[TIERS.length - 1];
 }
 
+interface MetricBadgeProps {
+  value: number;
+  label?: string;
+  icon?: ReactNode;
+  tooltip?: string;
+  formatFn?: (value: number) => string | number;
+  color?: string;
+  tween?: boolean;
+  tweenDuration?: number;
+  round?: boolean;
+  mini?: boolean;
+  hideWhenZero?: boolean;
+  className?: string;
+}
+
+function MetricBadge({
+  value,
+  label,
+  icon,
+  tooltip,
+  formatFn,
+  color,
+  tween = false,
+  tweenDuration = 600,
+  round = true,
+  mini = false,
+  hideWhenZero = true,
+  className = "",
+}: MetricBadgeProps) {
+  const [displayValue, isTweening] = useTweenValue(value, {
+    duration: tweenDuration,
+    round,
+    enabled: tween,
+  });
+
+  if (hideWhenZero && (!value || value <= 0)) return null;
+
+  const formattedDisplayValue = formatFn
+    ? formatFn(displayValue)
+    : round
+      ? Math.round(displayValue).toLocaleString()
+      : displayValue.toLocaleString();
+
+  const tooltipText = tooltip || `${Math.round(value).toLocaleString()}${label ? ` ${label}` : ""}`;
+
+  const colorClass = color && styles[color] ? styles[color] : "";
+  const customColorStyle = color && !styles[color]
+    ? ({ "--metric-color": color } as React.CSSProperties)
+    : undefined;
+
+  return (
+    <TooltipComponent label={tooltipText} position="top">
+      <span
+        className={[
+          styles.metricBadge,
+          colorClass,
+          !colorClass && color ? styles.customMetric : "",
+          mini ? styles.miniMetric : "",
+          isTweening ? styles.isTweeningMetric : "",
+          className,
+        ].filter(Boolean).join(" ")}
+        style={customColorStyle}
+      >
+        {icon && <span className={styles.metricIcon}>{icon}</span>}
+        <span>{formattedDisplayValue}</span>
+        {label && <span>{label}</span>}
+      </span>
+    </TooltipComponent>
+  );
+}
+
+interface DateTimeBadgeProps {
+  date?: string | Date | number | null;
+  showIcon?: boolean;
+  relative?: boolean;
+  highlightNew?: boolean;
+  className?: string;
+}
+
+function DateTimeBadge({
+  date,
+  showIcon = true,
+  relative = true,
+  highlightNew = false,
+  className = "",
+}: DateTimeBadgeProps) {
+  const dateTimeInstance = useMemo(() => {
+    if (!date) return null;
+    if (date instanceof Date) return DateTime.fromJSDate(date);
+    if (typeof date === "number") return DateTime.fromMillis(date);
+    return DateTime.fromISO(date);
+  }, [date]);
+
+  const fullFormattedDateTime = useMemo(() => {
+    if (!dateTimeInstance || !dateTimeInstance.isValid) return "";
+    return dateTimeInstance.toFormat("EEEE, MMMM d, yyyy 'at' h:mm:ss a");
+  }, [dateTimeInstance]);
+
+  const [tickValue, setTickValue] = useState(0);
+
+  const { label: shortLabel, intervalMs, isJustNow } = useMemo(
+    () => computeLabel(dateTimeInstance, relative),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dateTimeInstance, relative, tickValue],
+  );
+
+  const previousJustNowRef = useRef(isJustNow);
+  const [isFading, setIsFading] = useState(false);
+
+  useEffect(() => {
+    if (previousJustNowRef.current && !isJustNow && highlightNew) {
+      setIsFading(true);
+      const timerInstance = setTimeout(() => setIsFading(false), 1000);
+      return () => clearTimeout(timerInstance);
+    }
+    previousJustNowRef.current = isJustNow;
+  }, [isJustNow, highlightNew]);
+
+  useEffect(() => {
+    previousJustNowRef.current = isJustNow;
+  }, [isJustNow]);
+
+  useEffect(() => {
+    if (!dateTimeInstance || !dateTimeInstance.isValid || !intervalMs) return;
+
+    let timerIdInstance: ReturnType<typeof setTimeout> | undefined;
+
+    const scheduleTick = () => {
+      const { intervalMs: nextIntervalMs } = computeLabel(dateTimeInstance, relative);
+      if (!nextIntervalMs) return;
+      timerIdInstance = setTimeout(() => {
+        setTickValue((currentTick) => currentTick + 1);
+        scheduleTick();
+      }, nextIntervalMs);
+    };
+
+    scheduleTick();
+
+    return () => clearTimeout(timerIdInstance);
+  }, [dateTimeInstance, relative, intervalMs]);
+
+  if (!dateTimeInstance || !dateTimeInstance.isValid) return null;
+
+  const highlightClassName = highlightNew && isJustNow
+    ? styles.justNow
+    : isFading
+      ? styles.justNowFadeOut
+      : "";
+
+  return (
+    <TooltipComponent label={fullFormattedDateTime} position="top">
+      <span
+        className={`${styles.dateTimeBadge} ${highlightClassName} ${className}`}
+      >
+        {showIcon && <Calendar size={10} className={styles.dateTimeIcon} />}
+        {shortLabel}
+      </span>
+    </TooltipComponent>
+  );
+}
+
 export type BadgeProps =
   | {
       type?: undefined;
@@ -443,61 +604,7 @@ export default function BadgeComponent(props: BadgeProps) {
     }
 
     case "metric": {
-      const {
-        value,
-        label,
-        icon,
-        tooltip,
-        formatFn,
-        color,
-        tween = false,
-        tweenDuration = 600,
-        round = true,
-        mini = false,
-        hideWhenZero = true,
-        className = "",
-      } = props;
-
-      const [displayValue, isTweening] = useTweenValue(value, {
-        duration: tweenDuration,
-        round,
-        enabled: tween,
-      });
-
-      if (hideWhenZero && (!value || value <= 0)) return null;
-
-      const formattedDisplayValue = formatFn
-        ? formatFn(displayValue)
-        : round
-          ? Math.round(displayValue).toLocaleString()
-          : displayValue.toLocaleString();
-
-      const tooltipText = tooltip || `${Math.round(value).toLocaleString()}${label ? ` ${label}` : ""}`;
-
-      const colorClass = color && styles[color] ? styles[color] : "";
-      const customColorStyle = color && !styles[color]
-        ? ({ "--metric-color": color } as React.CSSProperties)
-        : undefined;
-
-      return (
-        <TooltipComponent label={tooltipText} position="top">
-          <span
-            className={[
-              styles.metricBadge,
-              colorClass,
-              !colorClass && color ? styles.customMetric : "",
-              mini ? styles.miniMetric : "",
-              isTweening ? styles.isTweeningMetric : "",
-              className,
-            ].filter(Boolean).join(" ")}
-            style={customColorStyle}
-          >
-            {icon && <span className={styles.metricIcon}>{icon}</span>}
-            <span>{formattedDisplayValue}</span>
-            {label && <span>{label}</span>}
-          </span>
-        </TooltipComponent>
-      );
+      return <MetricBadge {...props} />;
     }
 
     case "domain": {
@@ -567,81 +674,7 @@ export default function BadgeComponent(props: BadgeProps) {
     }
 
     case "dateTime": {
-      const { date, showIcon = true, relative = true, highlightNew = false, className = "" } = props;
-
-      const dateTimeInstance = useMemo(() => {
-        if (!date) return null;
-        if (date instanceof Date) return DateTime.fromJSDate(date);
-        if (typeof date === "number") return DateTime.fromMillis(date);
-        return DateTime.fromISO(date);
-      }, [date]);
-
-      const fullFormattedDateTime = useMemo(() => {
-        if (!dateTimeInstance || !dateTimeInstance.isValid) return "";
-        return dateTimeInstance.toFormat("EEEE, MMMM d, yyyy 'at' h:mm:ss a");
-      }, [dateTimeInstance]);
-
-      const [tickValue, setTickValue] = useState(0);
-
-      const { label: shortLabel, intervalMs, isJustNow } = useMemo(
-        () => computeLabel(dateTimeInstance, relative),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [dateTimeInstance, relative, tickValue],
-      );
-
-      const previousJustNowRef = useRef(isJustNow);
-      const [isFading, setIsFading] = useState(false);
-
-      useEffect(() => {
-        if (previousJustNowRef.current && !isJustNow && highlightNew) {
-          setIsFading(true);
-          const timerInstance = setTimeout(() => setIsFading(false), 1000);
-          return () => clearTimeout(timerInstance);
-        }
-        previousJustNowRef.current = isJustNow;
-      }, [isJustNow, highlightNew]);
-
-      useEffect(() => {
-        previousJustNowRef.current = isJustNow;
-      }, [isJustNow]);
-
-      useEffect(() => {
-        if (!dateTimeInstance || !dateTimeInstance.isValid || !intervalMs) return;
-
-        let timerIdInstance: ReturnType<typeof setTimeout> | undefined;
-
-        const scheduleTick = () => {
-          const { intervalMs: nextIntervalMs } = computeLabel(dateTimeInstance, relative);
-          if (!nextIntervalMs) return;
-          timerIdInstance = setTimeout(() => {
-            setTickValue((currentTick) => currentTick + 1);
-            scheduleTick();
-          }, nextIntervalMs);
-        };
-
-        scheduleTick();
-
-        return () => clearTimeout(timerIdInstance);
-      }, [dateTimeInstance, relative, intervalMs]);
-
-      if (!dateTimeInstance || !dateTimeInstance.isValid) return null;
-
-      const highlightClassName = highlightNew && isJustNow
-        ? styles.justNow
-        : isFading
-          ? styles.justNowFadeOut
-          : "";
-
-      return (
-        <TooltipComponent label={fullFormattedDateTime} position="top">
-          <span
-            className={`${styles.dateTimeBadge} ${highlightClassName} ${className}`}
-          >
-            {showIcon && <Calendar size={10} className={styles.dateTimeIcon} />}
-            {shortLabel}
-          </span>
-        </TooltipComponent>
-      );
+      return <DateTimeBadge {...props} />;
     }
 
     default:

@@ -60,6 +60,90 @@ const TIERS = [
 function getTier(milliseconds) {
     return TIERS.find((currentTier) => milliseconds <= currentTier.max) || TIERS[TIERS.length - 1];
 }
+function MetricBadge({ value, label, icon, tooltip, formatFn, color, tween = false, tweenDuration = 600, round = true, mini = false, hideWhenZero = true, className = "", }) {
+    const [displayValue, isTweening] = useTweenValue(value, {
+        duration: tweenDuration,
+        round,
+        enabled: tween,
+    });
+    if (hideWhenZero && (!value || value <= 0))
+        return null;
+    const formattedDisplayValue = formatFn
+        ? formatFn(displayValue)
+        : round
+            ? Math.round(displayValue).toLocaleString()
+            : displayValue.toLocaleString();
+    const tooltipText = tooltip || `${Math.round(value).toLocaleString()}${label ? ` ${label}` : ""}`;
+    const colorClass = color && styles[color] ? styles[color] : "";
+    const customColorStyle = color && !styles[color]
+        ? { "--metric-color": color }
+        : undefined;
+    return (_jsx(TooltipComponent, { label: tooltipText, position: "top", children: _jsxs("span", { className: [
+                styles.metricBadge,
+                colorClass,
+                !colorClass && color ? styles.customMetric : "",
+                mini ? styles.miniMetric : "",
+                isTweening ? styles.isTweeningMetric : "",
+                className,
+            ].filter(Boolean).join(" "), style: customColorStyle, children: [icon && _jsx("span", { className: styles.metricIcon, children: icon }), _jsx("span", { children: formattedDisplayValue }), label && _jsx("span", { children: label })] }) }));
+}
+function DateTimeBadge({ date, showIcon = true, relative = true, highlightNew = false, className = "", }) {
+    const dateTimeInstance = useMemo(() => {
+        if (!date)
+            return null;
+        if (date instanceof Date)
+            return DateTime.fromJSDate(date);
+        if (typeof date === "number")
+            return DateTime.fromMillis(date);
+        return DateTime.fromISO(date);
+    }, [date]);
+    const fullFormattedDateTime = useMemo(() => {
+        if (!dateTimeInstance || !dateTimeInstance.isValid)
+            return "";
+        return dateTimeInstance.toFormat("EEEE, MMMM d, yyyy 'at' h:mm:ss a");
+    }, [dateTimeInstance]);
+    const [tickValue, setTickValue] = useState(0);
+    const { label: shortLabel, intervalMs, isJustNow } = useMemo(() => computeLabel(dateTimeInstance, relative), 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dateTimeInstance, relative, tickValue]);
+    const previousJustNowRef = useRef(isJustNow);
+    const [isFading, setIsFading] = useState(false);
+    useEffect(() => {
+        if (previousJustNowRef.current && !isJustNow && highlightNew) {
+            setIsFading(true);
+            const timerInstance = setTimeout(() => setIsFading(false), 1000);
+            return () => clearTimeout(timerInstance);
+        }
+        previousJustNowRef.current = isJustNow;
+    }, [isJustNow, highlightNew]);
+    useEffect(() => {
+        previousJustNowRef.current = isJustNow;
+    }, [isJustNow]);
+    useEffect(() => {
+        if (!dateTimeInstance || !dateTimeInstance.isValid || !intervalMs)
+            return;
+        let timerIdInstance;
+        const scheduleTick = () => {
+            const { intervalMs: nextIntervalMs } = computeLabel(dateTimeInstance, relative);
+            if (!nextIntervalMs)
+                return;
+            timerIdInstance = setTimeout(() => {
+                setTickValue((currentTick) => currentTick + 1);
+                scheduleTick();
+            }, nextIntervalMs);
+        };
+        scheduleTick();
+        return () => clearTimeout(timerIdInstance);
+    }, [dateTimeInstance, relative, intervalMs]);
+    if (!dateTimeInstance || !dateTimeInstance.isValid)
+        return null;
+    const highlightClassName = highlightNew && isJustNow
+        ? styles.justNow
+        : isFading
+            ? styles.justNowFadeOut
+            : "";
+    return (_jsx(TooltipComponent, { label: fullFormattedDateTime, position: "top", children: _jsxs("span", { className: `${styles.dateTimeBadge} ${highlightClassName} ${className}`, children: [showIcon && _jsx(Calendar, { size: 10, className: styles.dateTimeIcon }), shortLabel] }) }));
+}
 export default function BadgeComponent(props) {
     if (props.type === undefined) {
         const { variant = "info", children, className = "", mini = false, tooltip, ...rest } = props;
@@ -157,32 +241,7 @@ export default function BadgeComponent(props) {
             return (_jsx(TooltipComponent, { label: tooltipContent, position: "top", children: badgeElement }));
         }
         case "metric": {
-            const { value, label, icon, tooltip, formatFn, color, tween = false, tweenDuration = 600, round = true, mini = false, hideWhenZero = true, className = "", } = props;
-            const [displayValue, isTweening] = useTweenValue(value, {
-                duration: tweenDuration,
-                round,
-                enabled: tween,
-            });
-            if (hideWhenZero && (!value || value <= 0))
-                return null;
-            const formattedDisplayValue = formatFn
-                ? formatFn(displayValue)
-                : round
-                    ? Math.round(displayValue).toLocaleString()
-                    : displayValue.toLocaleString();
-            const tooltipText = tooltip || `${Math.round(value).toLocaleString()}${label ? ` ${label}` : ""}`;
-            const colorClass = color && styles[color] ? styles[color] : "";
-            const customColorStyle = color && !styles[color]
-                ? { "--metric-color": color }
-                : undefined;
-            return (_jsx(TooltipComponent, { label: tooltipText, position: "top", children: _jsxs("span", { className: [
-                        styles.metricBadge,
-                        colorClass,
-                        !colorClass && color ? styles.customMetric : "",
-                        mini ? styles.miniMetric : "",
-                        isTweening ? styles.isTweeningMetric : "",
-                        className,
-                    ].filter(Boolean).join(" "), style: customColorStyle, children: [icon && _jsx("span", { className: styles.metricIcon, children: icon }), _jsx("span", { children: formattedDisplayValue }), label && _jsx("span", { children: label })] }) }));
+            return _jsx(MetricBadge, { ...props });
         }
         case "domain": {
             const { domain, icons, className = "", tooltip, ...rest } = props;
@@ -209,62 +268,7 @@ export default function BadgeComponent(props) {
             return badgeElement;
         }
         case "dateTime": {
-            const { date, showIcon = true, relative = true, highlightNew = false, className = "" } = props;
-            const dateTimeInstance = useMemo(() => {
-                if (!date)
-                    return null;
-                if (date instanceof Date)
-                    return DateTime.fromJSDate(date);
-                if (typeof date === "number")
-                    return DateTime.fromMillis(date);
-                return DateTime.fromISO(date);
-            }, [date]);
-            const fullFormattedDateTime = useMemo(() => {
-                if (!dateTimeInstance || !dateTimeInstance.isValid)
-                    return "";
-                return dateTimeInstance.toFormat("EEEE, MMMM d, yyyy 'at' h:mm:ss a");
-            }, [dateTimeInstance]);
-            const [tickValue, setTickValue] = useState(0);
-            const { label: shortLabel, intervalMs, isJustNow } = useMemo(() => computeLabel(dateTimeInstance, relative), 
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            [dateTimeInstance, relative, tickValue]);
-            const previousJustNowRef = useRef(isJustNow);
-            const [isFading, setIsFading] = useState(false);
-            useEffect(() => {
-                if (previousJustNowRef.current && !isJustNow && highlightNew) {
-                    setIsFading(true);
-                    const timerInstance = setTimeout(() => setIsFading(false), 1000);
-                    return () => clearTimeout(timerInstance);
-                }
-                previousJustNowRef.current = isJustNow;
-            }, [isJustNow, highlightNew]);
-            useEffect(() => {
-                previousJustNowRef.current = isJustNow;
-            }, [isJustNow]);
-            useEffect(() => {
-                if (!dateTimeInstance || !dateTimeInstance.isValid || !intervalMs)
-                    return;
-                let timerIdInstance;
-                const scheduleTick = () => {
-                    const { intervalMs: nextIntervalMs } = computeLabel(dateTimeInstance, relative);
-                    if (!nextIntervalMs)
-                        return;
-                    timerIdInstance = setTimeout(() => {
-                        setTickValue((currentTick) => currentTick + 1);
-                        scheduleTick();
-                    }, nextIntervalMs);
-                };
-                scheduleTick();
-                return () => clearTimeout(timerIdInstance);
-            }, [dateTimeInstance, relative, intervalMs]);
-            if (!dateTimeInstance || !dateTimeInstance.isValid)
-                return null;
-            const highlightClassName = highlightNew && isJustNow
-                ? styles.justNow
-                : isFading
-                    ? styles.justNowFadeOut
-                    : "";
-            return (_jsx(TooltipComponent, { label: fullFormattedDateTime, position: "top", children: _jsxs("span", { className: `${styles.dateTimeBadge} ${highlightClassName} ${className}`, children: [showIcon && _jsx(Calendar, { size: 10, className: styles.dateTimeIcon }), shortLabel] }) }));
+            return _jsx(DateTimeBadge, { ...props });
         }
         default:
             return null;
