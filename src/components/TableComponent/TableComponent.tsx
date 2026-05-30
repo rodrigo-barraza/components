@@ -270,7 +270,16 @@ export default function TableComponent<T, TSub = unknown>({
   storageKey,
 }: TableComponentProps<T, TSub>) {
   const { sound } = useComponents();
-  const [internalSort, setInternalSort] = useState<{ key: string | null; dir: "asc" | "desc" }>({ key: null, dir: "desc" });
+  const [internalSort, setInternalSort] = useState<{ key: string | null; dir: "asc" | "desc" }>(() => {
+    if (storageKey) {
+      try {
+        const saved = localStorage.getItem(`table-sort:${storageKey}`);
+        if (saved) return JSON.parse(saved);
+      } catch { /* ignore */ }
+    }
+    const firstSortableKey = columns.find((column) => column.sortable !== false)?.key || null;
+    return { key: firstSortableKey, dir: "asc" };
+  });
   const sort = onSort
     ? { key: externalSortKey || null, dir: (externalSortDir || "desc") as "asc" | "desc" }
     : internalSort;
@@ -373,12 +382,18 @@ export default function TableComponent<T, TSub = unknown>({
     if (sort.key === key) {
       newDir = sort.dir === "desc" ? "asc" : "desc";
     } else {
-      newDir = "desc";
+      newDir = "asc";
     }
     if (onSort) {
       onSort(key, newDir);
     } else {
-      setInternalSort({ key, dir: newDir });
+      const newState = { key, dir: newDir };
+      setInternalSort(newState);
+      if (storageKey) {
+        try {
+          localStorage.setItem(`table-sort:${storageKey}`, JSON.stringify(newState));
+        } catch { /* ignore */ }
+      }
     }
   }
 

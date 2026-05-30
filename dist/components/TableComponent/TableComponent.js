@@ -112,7 +112,18 @@ function ColumnFilter({ columns, hiddenColumns, onToggle, onToggleAll, storageKe
 }
 export default function TableComponent({ title, subtitle, columns, data = [], getRowKey, getSubRows, renderExpandedContent, onRowClick, emptyText = "No data", sortKey: externalSortKey, sortDir: externalSortDir, onSort, maxHeight, activeRowKey, highlightedRowKey, highlightedRowRef, onRowMouseEnter, onRowMouseLeave, getRowClassName, getRowStyle, mini = false, storageKey, }) {
     const { sound } = useComponents();
-    const [internalSort, setInternalSort] = useState({ key: null, dir: "desc" });
+    const [internalSort, setInternalSort] = useState(() => {
+        if (storageKey) {
+            try {
+                const saved = localStorage.getItem(`table-sort:${storageKey}`);
+                if (saved)
+                    return JSON.parse(saved);
+            }
+            catch { /* ignore */ }
+        }
+        const firstSortableKey = columns.find((column) => column.sortable !== false)?.key || null;
+        return { key: firstSortableKey, dir: "asc" };
+    });
     const sort = onSort
         ? { key: externalSortKey || null, dir: (externalSortDir || "desc") }
         : internalSort;
@@ -218,13 +229,20 @@ export default function TableComponent({ title, subtitle, columns, data = [], ge
             newDir = sort.dir === "desc" ? "asc" : "desc";
         }
         else {
-            newDir = "desc";
+            newDir = "asc";
         }
         if (onSort) {
             onSort(key, newDir);
         }
         else {
-            setInternalSort({ key, dir: newDir });
+            const newState = { key, dir: newDir };
+            setInternalSort(newState);
+            if (storageKey) {
+                try {
+                    localStorage.setItem(`table-sort:${storageKey}`, JSON.stringify(newState));
+                }
+                catch { /* ignore */ }
+            }
         }
     }
     function toggleExpand(rowKey) {
