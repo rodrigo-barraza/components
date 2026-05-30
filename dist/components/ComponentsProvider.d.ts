@@ -14,13 +14,16 @@ import { type ReactNode } from "react";
  */
 export interface ComponentsContextValue {
     sound: boolean;
+    userMenu?: ReactNode;
 }
 interface ComponentsProviderProps {
     /** Enable procedural audio feedback */
     sound?: boolean;
+    /** Global user avatar menu/dropdown widget to display in header sections */
+    userMenu?: ReactNode;
     children: ReactNode;
 }
-export declare function ComponentsProvider({ sound, children }: ComponentsProviderProps): import("react/jsx-runtime").JSX.Element;
+export declare function ComponentsProvider({ sound, userMenu, children }: ComponentsProviderProps): import("react/jsx-runtime").JSX.Element;
 /**
  * Hook to access library-wide configuration.
  */

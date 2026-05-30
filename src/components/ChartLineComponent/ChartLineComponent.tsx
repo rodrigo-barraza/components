@@ -17,10 +17,10 @@ export interface ChartLineComponentProps {
 /**
  * ChartLineComponent — GPU-composited Canvas sparkline area chart.
  *
- * Renders a smooth, filled line chart suitable for inline metrics
- * (CPU %, memory usage, etc.). Uses monotone cubic interpolation for
- * visually-pleasant curves, a gradient fill under the line, a glow
- * effect on the stroke, and a trailing "current value" dot.
+ * Renders a precise, filled line chart suitable for inline metrics
+ * (CPU %, memory usage, etc.). Uses a linear path for exact data
+ * point accuracy, a gradient fill under the line, a glow effect on the
+ * stroke, and a trailing "current value" dot.
  *
  * On hover, a vertical crosshair and floating tooltip display the
  * Y-axis value at the nearest data point.
@@ -168,20 +168,11 @@ export default function ChartLineComponent({
         (Math.min(dataValue, clampedMax) / clampedMax) * chartH,
     }));
 
-    // Build smooth path using monotone cubic interpolation (Catmull-Rom)
+    // Build precise path using linear segments for exact data point representation
     const buildPath = () => {
       canvasContext.moveTo(points[0].x, points[0].y);
-      for (let i = 0; i < points.length - 1; i++) {
-        const p0 = points[Math.max(0, i - 1)];
-        const p1 = points[i];
-        const p2 = points[i + 1];
-        const p3 = points[Math.min(points.length - 1, i + 2)];
-        const tension = 0.3;
-        const cp1x = p1.x + (p2.x - p0.x) * tension;
-        const cp1y = p1.y + (p2.y - p0.y) * tension;
-        const cp2x = p2.x - (p3.x - p1.x) * tension;
-        const cp2y = p2.y - (p3.y - p1.y) * tension;
-        canvasContext.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
+      for (let i = 1; i < points.length; i++) {
+        canvasContext.lineTo(points[i].x, points[i].y);
       }
     };
 
@@ -298,6 +289,7 @@ export default function ChartLineComponent({
     <div
       ref={containerRef}
       className={`${styles.sparklineContainer} ${className || ""}`}
+      style={{ height: `${height}px` }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >

@@ -1,5 +1,6 @@
 import { ReactNode, forwardRef, useEffect, useRef } from "react";
 import { ArrowLeft } from "lucide-react";
+import { useComponents } from "../ComponentsProvider.js";
 import styles from "./LayoutHeaderComponent.module.css";
 
 export interface LayoutHeaderToggleButtonProps {
@@ -21,6 +22,7 @@ export interface LayoutHeaderComponentProps {
   isMobile?: boolean;
   className?: string;
   children?: ReactNode;
+  userMenu?: ReactNode;
 }
 
 const LayoutHeaderComponent = forwardRef<HTMLElement, LayoutHeaderComponentProps>(
@@ -36,9 +38,12 @@ const LayoutHeaderComponent = forwardRef<HTMLElement, LayoutHeaderComponentProps
       isMobile = false,
       className,
       children,
+      userMenu,
     },
     ref,
   ) {
+    const { userMenu: globalUserMenu } = useComponents();
+    const resolvedUserMenu = userMenu ?? globalUserMenu;
     const headerReference = useRef<HTMLElement>(null);
 
     // Programmatic contrast color for header content based on --accent-primary luminance
@@ -163,6 +168,12 @@ const LayoutHeaderComponent = forwardRef<HTMLElement, LayoutHeaderComponentProps
           {controls}
 
           {children}
+
+          {resolvedUserMenu && (
+            <div className={styles["header-user-menu-wrapper"]}>
+              {resolvedUserMenu}
+            </div>
+          )}
 
           {trailingToggle && (
             <button

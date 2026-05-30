@@ -1,4 +1,5 @@
 // ── Components ──────────────────────────────────────────
+export { default as AvatarComponent } from "./components/AvatarComponent/AvatarComponent.js";
 export { default as BadgeComponent } from "./components/BadgeComponent/BadgeComponent.js";
 export { default as BottomAppBarComponent } from "./components/BottomAppBarComponent/BottomAppBarComponent.js";
 export { default as ButtonComponent } from "./components/ButtonComponent/ButtonComponent.js";

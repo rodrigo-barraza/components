@@ -11,10 +11,10 @@ export interface ChartLineComponentProps {
 /**
  * ChartLineComponent — GPU-composited Canvas sparkline area chart.
  *
- * Renders a smooth, filled line chart suitable for inline metrics
- * (CPU %, memory usage, etc.). Uses monotone cubic interpolation for
- * visually-pleasant curves, a gradient fill under the line, a glow
- * effect on the stroke, and a trailing "current value" dot.
+ * Renders a precise, filled line chart suitable for inline metrics
+ * (CPU %, memory usage, etc.). Uses a linear path for exact data
+ * point accuracy, a gradient fill under the line, a glow effect on the
+ * stroke, and a trailing "current value" dot.
  *
  * On hover, a vertical crosshair and floating tooltip display the
  * Y-axis value at the nearest data point.

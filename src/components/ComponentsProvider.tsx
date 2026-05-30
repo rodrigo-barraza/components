@@ -18,6 +18,7 @@ import { createContext, useContext, type ReactNode } from "react";
 
 export interface ComponentsContextValue {
   sound: boolean;
+  userMenu?: ReactNode;
 }
 
 const ComponentsContext = createContext<ComponentsContextValue>({
@@ -27,12 +28,14 @@ const ComponentsContext = createContext<ComponentsContextValue>({
 interface ComponentsProviderProps {
   /** Enable procedural audio feedback */
   sound?: boolean;
+  /** Global user avatar menu/dropdown widget to display in header sections */
+  userMenu?: ReactNode;
   children: ReactNode;
 }
 
-export function ComponentsProvider({ sound = false, children }: ComponentsProviderProps) {
+export function ComponentsProvider({ sound = false, userMenu, children }: ComponentsProviderProps) {
   return (
-    <ComponentsContext.Provider value={{ sound }}>
+    <ComponentsContext.Provider value={{ sound, userMenu }}>
       {children}
     </ComponentsContext.Provider>
   );

@@ -1,8 +1,11 @@
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import { forwardRef, useEffect, useRef } from "react";
 import { ArrowLeft } from "lucide-react";
+import { useComponents } from "../ComponentsProvider.js";
 import styles from "./LayoutHeaderComponent.module.css";
-const LayoutHeaderComponent = forwardRef(function LayoutHeaderComponent({ title, onBack, leadingToggle, trailingToggle, centerContent, metaContent, controls, isMobile = false, className, children, }, ref) {
+const LayoutHeaderComponent = forwardRef(function LayoutHeaderComponent({ title, onBack, leadingToggle, trailingToggle, centerContent, metaContent, controls, isMobile = false, className, children, userMenu, }, ref) {
+    const { userMenu: globalUserMenu } = useComponents();
+    const resolvedUserMenu = userMenu ?? globalUserMenu;
     const headerReference = useRef(null);
     // Programmatic contrast color for header content based on --accent-primary luminance
     useEffect(() => {
@@ -59,7 +62,7 @@ const LayoutHeaderComponent = forwardRef(function LayoutHeaderComponent({ title,
                             ? `Hide ${leadingToggle.label || "panel"}`
                             : `Show ${leadingToggle.label || "panel"}`, children: leadingToggle.isVisible
                             ? leadingToggle.visibleIcon
-                            : leadingToggle.hiddenIcon })), title && (_jsxs("div", { className: `${styles["header-identity"]} ${leadingToggle ? styles["has-leading-toggle"] : ""}`, children: [_jsx("div", { className: styles["header-identity-start"], children: onBack && (_jsx("button", { className: styles["header-back-button"], onClick: onBack, title: "Go back", children: _jsx(ArrowLeft, { size: 16 }) })) }), _jsx("h1", { className: styles["header-page-title"], children: title }), _jsx("div", { className: styles["header-identity-end"] })] })), !isMobile && metaContent, centerContent && (_jsx("div", { className: styles["header-center-area"], children: centerContent })), controls, children, trailingToggle && (_jsx("button", { className: `${styles["header-toggle-button"]} ${!trailingToggle.isVisible ? styles["is-panel-hidden"] : ""}`, onClick: trailingToggle.onToggle, title: trailingToggle.isVisible
+                            : leadingToggle.hiddenIcon })), title && (_jsxs("div", { className: `${styles["header-identity"]} ${leadingToggle ? styles["has-leading-toggle"] : ""}`, children: [_jsx("div", { className: styles["header-identity-start"], children: onBack && (_jsx("button", { className: styles["header-back-button"], onClick: onBack, title: "Go back", children: _jsx(ArrowLeft, { size: 16 }) })) }), _jsx("h1", { className: styles["header-page-title"], children: title }), _jsx("div", { className: styles["header-identity-end"] })] })), !isMobile && metaContent, centerContent && (_jsx("div", { className: styles["header-center-area"], children: centerContent })), controls, children, resolvedUserMenu && (_jsx("div", { className: styles["header-user-menu-wrapper"], children: resolvedUserMenu })), trailingToggle && (_jsx("button", { className: `${styles["header-toggle-button"]} ${!trailingToggle.isVisible ? styles["is-panel-hidden"] : ""}`, onClick: trailingToggle.onToggle, title: trailingToggle.isVisible
                             ? `Hide ${trailingToggle.label || "panel"}`
                             : `Show ${trailingToggle.label || "panel"}`, children: trailingToggle.isVisible
                             ? trailingToggle.visibleIcon
